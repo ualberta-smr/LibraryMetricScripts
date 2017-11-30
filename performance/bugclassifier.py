@@ -20,6 +20,9 @@ def stem_words(tokens):
   return stemmed
 
 def tokenize(text):
+  lowers = text.lower()
+  no_punctuation = lowers.translate(str.maketrans('','',string.punctuation))
+  text = no_punctuation
   tokens = nltk.word_tokenize(text)
   stems = stem_words(tokens)
   return stems
@@ -82,7 +85,6 @@ def main():
       if issue.pull_request != None:
         continue
       text = issue.title
-      input_counts = vectorizer.transform([text])
       input_counts = vectorizer.transform([text])
       prediction = classifier.predict(input_counts)
       if prediction[0] == 1:
