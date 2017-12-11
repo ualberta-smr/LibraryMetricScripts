@@ -73,6 +73,10 @@ def main():
   classifier.fit(counts, list_labels)
   crossValidate(classifier, counts, list_labels)
   
+  with open("performancewords.txt") as f:
+    words = f.readlines()
+  words = [x.strip() for x in words]
+  
   for arg in sys.argv[1:]:
 
     g = Github("yourusername", "password")
@@ -80,21 +84,34 @@ def main():
 
     total_issues = 0
     total_performance = 0
+    total_keyword_issues = 0
 
     for issue in r.get_issues(state="all"):
       if issue.pull_request != None:
         continue
+      total_issues+=1
       text = issue.title
+      keywordFound = False
+      text = text.lower()
+      for word in words:
+        if text.find(word) != -1:
+          keywordFound = True
+      if keywordFound == False:
+        continue
       input_counts = vectorizer.transform([text])
       prediction = classifier.predict(input_counts)
+      total_keyword_issues += 1
       if prediction[0] == 1:
         print(prediction)
         print(text)
         total_performance+=1
-      total_issues+=1
+      else:
+        print(prediction)
+        print(text)
 
     print(arg + ":")
     print("Total Performance issues: %d" % total_performance)
+    print("Total keyword issues: %d" % total_keyword_issues)
     print("Total issues: %d" % total_issues)
 
 if __name__ == "__main__":
