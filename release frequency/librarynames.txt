@@ -1,0 +1,33 @@
+junit
+testng
+slf4j
+log4j
+logback
+apache commons logging
+tinylog
+blitz4j
+minlog
+guava
+apache commons lang
+mockito
+easymock
+powermock
+jmock
+bouncycastle
+apache commons crypto
+conceal
+chimera
+spongycastle
+keyczar
+conscrypt
+gson
+h2
+hsqldb
+derby
+apache shiro
+spring security
+hibernate
+mybatis
+ormlite
+dom4j
+jdom
