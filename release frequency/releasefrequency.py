@@ -1,23 +1,12 @@
-from datetime import datetime, timedelta
-
-def getTime(sec):
-    sec = timedelta(seconds=sec)
-    d = datetime(1,1,1) + sec
-
-    print("Release frequency average: %d:%d:%d:%d (D:H:M:S)\n" % (d.day-1, d.hour, d.minute, d.second))
-
 from github import Github, Repository, GitTag
-import math
+import getpass
 
-def getReleaseFrequency(repository_name):
-  g = Github("yourusername", "yourpassword")
-  r = g.get_repo(repository_name)
+def getReleaseFrequency(repository_name, github_object):
+  r = github_object.get_repo(repository_name)
   print(r.description)
   dates = []
 
   for tag in r.get_tags():
-    #print(tag.name)
-    #print(tag.commit.commit.author.date)
     dates.append(tag.commit.commit.author.date)
   
   dates.sort()
@@ -25,17 +14,27 @@ def getReleaseFrequency(repository_name):
   total_seconds = 0
   for i in range(1, len(dates)):
     total_seconds += int((dates[i] - dates[i-1]).total_seconds())
-  print(total_seconds)
-  getTime(total_seconds/number_of_differences)
+  #divide the average by the number of seconds per day
+  print("Release Frequency Average: %.2f days" % float(total_seconds/number_of_differences/86400))
 
 def main():
   with open("repositories.txt") as f:
     repositories = f.readlines()
   repositories = [x.strip() for x in repositories]
   
+  with open("librarynames.txt") as f:
+    libraries = f.readlines()
+  library = [x.strip('\n') for x in libraries]
+  
+  username = input("Enter Github username: ")
+  password = getpass.getpass("Enter your password: ")
+  g = Github(username, password)
+
+  i = 0
   for repository in repositories:
-    print(repository + ": ")
-    getReleaseFrequency(repository)
+    print("%s: " % library[i])
+    getReleaseFrequency(repository, g)
+    i += 1
 
 if __name__ == "__main__":
   main()
