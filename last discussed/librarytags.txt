@@ -22,6 +22,7 @@ spongycastle
 keyczar
 conscrypt
 jackson
+json-simple
 gson
 fastjson
 h2
@@ -35,3 +36,4 @@ mybatis
 ormlite
 xerces2-j
 dom4j
+jdom
