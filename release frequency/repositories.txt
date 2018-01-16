@@ -20,6 +20,7 @@ intel-hadoop/chimera
 rtyley/spongycastle
 google/keyczar
 google/conscrypt
+fangyidong/json-simple
 google/gson
 h2database/h2database
 apache/derby
@@ -28,5 +29,6 @@ spring-projects/spring-security
 hibernate/hibernate-orm
 mybatis/mybatis-3
 j256/ormlite-android
+apache/xerces2-j
 dom4j/dom4j
 hunterhacker/jdom
