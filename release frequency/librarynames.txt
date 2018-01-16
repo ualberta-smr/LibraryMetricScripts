@@ -20,14 +20,15 @@ chimera
 spongycastle
 keyczar
 conscrypt
+json.simple
 gson
 h2
-hsqldb
 derby
 apache shiro
 spring security
 hibernate
 mybatis
 ormlite
+xerces2
 dom4j
 jdom
