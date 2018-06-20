@@ -9,7 +9,7 @@ def printData(data):
 		print(dates)
 		print("")
 
-def loadData():
+def loadLicenseData():
 	data = {}
 	filename = 'license.pkl'
 	if os.path.isfile(filename):
@@ -28,7 +28,7 @@ def saveData(data):
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def getLicenses():
-	data = loadData()
+	data = loadLicenseData()
 
 	with open("repositories.txt") as f:
 		repositories = f.readlines()

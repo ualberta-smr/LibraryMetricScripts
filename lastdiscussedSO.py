@@ -7,7 +7,7 @@ import stackexchange
 so = stackexchange.Site(stackexchange.StackOverflow, app_key=user_api_key, impose_throttling=True)
 so.be_inclusive()
 
-def loadData():
+def loadLastDiscussedSOData():
   data = {}
   filename = 'lastdiscussedSO.pkl'
   if os.path.isfile(filename):
@@ -25,7 +25,7 @@ def saveData(data):
     pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def getLastDiscussedDates():
-  data = loadData()
+  data = loadLastDiscussedSOData()
   #print(data)
 
   with open("librarytags.txt") as f:

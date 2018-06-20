@@ -31,7 +31,7 @@ def printData(data):
 		print(dates)
 		print("")
 
-def loadData():
+def loadReleaseFrequencyData():
 	data = {}
 	filename = 'releasefrequency.pkl'
 	if os.path.isfile(filename):

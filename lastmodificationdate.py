@@ -9,7 +9,7 @@ def printData(data):
 		print(dates)
 		print("")
 
-def loadData():
+def loadLastModificationDateData():
 	data = {}
 	filename = 'lastmodificationdate.pkl'
 	if os.path.isfile(filename):
@@ -28,7 +28,7 @@ def saveData(data):
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def getLastModificationDates():
-	data = loadData()
+	data = loadLastModificationDateData()
 	print(data)
 
 	with open("repositories.txt") as f:
