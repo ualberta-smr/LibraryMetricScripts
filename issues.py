@@ -3,14 +3,23 @@ import pickle
 import os.path
 from github import Github, Repository
 from github.GithubException import UnknownObjectException
+from performanceclassifier import PerformanceClassifier
+from securityclassifier import SecurityClassifier
 
 class IssueData:
 
   def __init__(self, issue_id):
     self.issue_id = issue_id
+    self.title = None
     self.closing_date = None
     self.first_comment_date = None
     self.creation_date = None
+    self.performance_issue = None
+    self.security_issue = None
+    self.state = None
+
+  def addState(self, state):
+    self.state = state
 
   def addFirstResponseDate(self, date):
     self.first_comment_date = date
@@ -24,8 +33,11 @@ class IssueData:
   def addTitle(self, title):
     self.title = title
 
-  def addClassification(self, classification):
-    self.classification = classification
+  def setPerformanceIssue(self, value):
+    self.performance_issue = value
+
+  def setSecurityIssue(self, value):
+    self.security_issue = value
 
   def __str__(self):
     return self.issue_id
@@ -138,11 +150,28 @@ def getIssueData():
       checkpoint[1] = i
       saveData(checkpoint, 'checkpoint.pkl')
 
+def applyClassifiers():
+  performance_classifier = PerformanceClassifier()
+  security_classifier = SecurityClassifier()
+  issue_data = loadData('issuedata.pkl')
+  for repo, issues in issue_data.items():
+    for issue in issues:
+      if performance_classifier.classify(issue.title) == True:
+        issue.performance_issue = True
+      else:
+        issue.performance_issue = False
+
+      if security_classifier.classify(issue.title) == True:
+        issue.security_issue = True
+      else:
+        issue.security_issue = False
+  saveData(issue_data, 'issuedata.pkl')
 
 def main():
   getIssueData()
   calculateAverageResponseTime()
   calculateAverageClosingTime()
+  applyClassifiers()
 
 if __name__ == "__main__":
   main()

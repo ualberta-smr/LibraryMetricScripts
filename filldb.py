@@ -54,21 +54,34 @@ def fillIssueResponseTimeData():
 		library.save()
 
 def fillIssueData():
+	Issue.objects.all().delete()
 	data = loadData('issuedata.pkl')
 	for repo, issues in data.items():
+		total_issues = 0
+		total_performance_issues = 0
+		total_security_issues = 0
 		library = Library.objects.get(repository=repo)
 		for i in issues:
+			total_issues += 1
 			issue = Issue()
 			issue.issue_id = i.issue_id
 			issue.creation_date = i.creation_date
 			issue.closing_date = i.closing_date
 			issue.first_response_date = i.first_comment_date
-			issue.performance_issue = False
-			issue.security_issue = False
+			issue.performance_issue = i.performance_issue
+			issue.security_issue = i.security_issue
+			if issue.performance_issue == True:
+				total_performance_issues += 1
+			if issue.security_issue == True:
+				total_security_issues += 1
 			issue.library = library
 			issue.save()
 			library.issue_set.add(issue)
 			library.save()
+		library.performance = total_performance_issues/total_issues*100
+		library.security = total_security_issues/total_issues*100
+		library.save()
+
 
 def fillLastDiscussedSOData():
 	data = loadLastDiscussedSOData()
