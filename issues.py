@@ -1,6 +1,9 @@
 import getpass
 import pickle
 import os.path
+import urllib.request
+import xml.etree.ElementTree
+from datetime import datetime
 from github import Github, Repository
 from github.GithubException import UnknownObjectException
 from performanceclassifier import PerformanceClassifier
@@ -150,6 +153,54 @@ def getIssueData():
       checkpoint[1] = i
       saveData(checkpoint, 'checkpoint.pkl')
 
+def getIssueDataJIRA():
+  dict = {}
+  with open("jiralibraries.txt") as f:
+    urls = f.readlines()
+  urls = [x.strip() for x in urls]
+
+  for line in urls:
+    strings = line.split('|')
+    dict[strings[0]] = strings[1]
+
+  for library, url in dict.items():
+    xmlString = urllib.request.urlopen(url).read().decode('utf-8')
+    root = xml.etree.ElementTree.fromstring(xmlString)
+    channel = root.find('channel')
+
+    closed_issues = 0
+    commented_issues = 0
+    total_closing_time = 0
+    total_response_time = 0
+
+    for issue in channel.findall('item'):
+      new_issue = IssueData(issue.find('key').text)
+      new_issue.addTitle(issue.find('summary').text)
+
+      #response time/closing time
+      created_date = datetime.strptime(issue.find('created').text, '%a, %d %b %Y %H:%M:%S %z')
+      new_issue.addCreationDate(created_date)
+      #response time
+      resolved = issue.find('resolved')
+      if resolved != None:
+        resolved_date = datetime.strptime(resolved.text, '%a, %d %b %Y %H:%M:%S %z')
+        new_issue.addClosingDate(resolved_date)
+
+      issueReporter = issue.find('reporter').get('username')
+      if issue.find('comments') != None:
+        for comment in issue.find('comments'):
+          if comment == None or comment.get('author') == issueReporter:
+            continue
+          first_comment_date = datetime.strptime(comment.get('created'), '%a, %d %b %Y %H:%M:%S %z')
+          new_issue.addFirstResponseDate(first_comment_date)
+          break
+      #saveData(issue_data, 'issuedata.pkl')
+      print(new_issue.title)
+      print(new_issue.creation_date)
+      print(new_issue.closing_date)
+      print(new_issue.first_comment_date)
+      print()
+
 def applyClassifiers():
   performance_classifier = PerformanceClassifier()
   security_classifier = SecurityClassifier()
@@ -168,10 +219,11 @@ def applyClassifiers():
   saveData(issue_data, 'issuedata.pkl')
 
 def main():
-  getIssueData()
-  calculateAverageResponseTime()
-  calculateAverageClosingTime()
-  applyClassifiers()
+  #getIssueData()
+  getIssueDataJIRA()
+  #calculateAverageResponseTime()
+  #calculateAverageClosingTime()
+  #applyClassifiers()
 
 if __name__ == "__main__":
   main()

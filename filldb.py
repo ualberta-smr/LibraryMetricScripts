@@ -10,17 +10,32 @@ django.setup()
 
 from librarycomparison.models import Domain, Library, Issue, Release
 
-from releasefrequency import loadReleaseFrequencyData
+from releasefrequency import ReleaseData, loadReleaseFrequencyData
 from license import loadLicenseData
 from lastmodificationdate import loadLastModificationDateData
 from lastdiscussedSO import loadLastDiscussedSOData
 from issues import loadData, IssueData
 
+def fillPopularityData():
+	with open("popularitydata.txt") as f:
+		lines = f.readlines()
+	lines = [x.strip() for x in lines]
+
+	for line in lines:
+		strings = line.split(':')
+		library = strings[0]
+		popularity = strings[1]
+		library = Library.objects.get(name=library)
+		library.popularity = int(strings[1])
+		library.save()
+
+
 def fillReleaseFrequencyData():
+	Release.objects.all().delete()
 	data = loadReleaseFrequencyData()
 	#data is an array of ReleaseData objects 
-	for release_data in data:
-		library = Library.objects.get(repository=release_data.repository)
+	for repo, release_data in data.items():
+		library = Library.objects.get(repository=repo)
 		for i in range(0, len(release_data.release_dates)):
 			release = Release()
 			release.release_date = release_data.release_dates[i]
@@ -28,6 +43,7 @@ def fillReleaseFrequencyData():
 			release.breaking_changes = i
 			release.library = library
 			release.save()
+			library.release_frequency = release_data.release_frequency_average
 			library.release_set.add(release)
 			library.save()
 
@@ -99,10 +115,11 @@ def fillLicenseData():
 		library.save()
 
 if __name__ == '__main__':
+	fillPopularityData()
 	#fillReleaseFrequencyData()
 	#fillLastModificationDateData()
 	#fillLastDiscussedSOData()
 	#fillLicenseData()
 	#fillIssueClosingTimeData()
 	#fillIssueResponseTimeData()
-	fillIssueData()
+	#fillIssueData()

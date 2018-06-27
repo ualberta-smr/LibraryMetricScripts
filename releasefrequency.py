@@ -6,21 +6,22 @@ import getpass
 class ReleaseData:
 	def __init__(self, repository):
 		self.repository = repository
-		release_dates = []
-		release_names = []
+		self.release_dates = []
+		self.release_names = []
+		self.release_frequency_average = 0.0
 
-	def addReleaseName(name):
-		self.release_name.append(name)
+	def addReleaseName(self, name):
+		self.release_names.append(name)
 
-	def addReleaseDate(date):
-		self.release_date.append(date)
+	def addReleaseDate(self, date):
+		self.release_dates.append(date)
 
-	def calculateReleaseFrequency():
+	def calculateReleaseFrequency(self):
 		self.release_dates.sort()
-		number_of_differences = len(dates)-1
+		number_of_differences = len(self.release_dates)-1
 		total_seconds = 0
-		for i in range(1, len(release_dates)):
-			total_seconds += int((release_dates[i] - release_dates[i-1]).total_seconds())
+		for i in range(1, len(self.release_dates)):
+			total_seconds += int((self.release_dates[i] - self.release_dates[i-1]).total_seconds())
 		#divide the average by the number of seconds per day
 		self.release_frequency_average = float(total_seconds/number_of_differences/86400)
 
@@ -50,7 +51,7 @@ def saveData(data):
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def getReleaseDates():
-	data = loadData()
+	data = loadReleaseFrequencyData()
 
 	with open("repositories.txt") as f:
 		repositories = f.readlines()
@@ -71,10 +72,10 @@ def getReleaseDates():
 		#Obtain the date of the git tag
 		for tag in r.get_tags():
 			release_data.addReleaseDate(tag.commit.commit.author.date)
-			release_data.addReleaseDate(names.append(tag.name))
+			release_data.addReleaseName(tag.name)
 		release_data.calculateReleaseFrequency()
 
-		data.append(release_data)
+		data[repository] = release_data
 		saveData(data)
 
 
