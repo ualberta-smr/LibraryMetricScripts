@@ -40,12 +40,20 @@ def getLastModificationDates():
 	g = Github(username, password)
 
 	for repository in repositories:
-		if repository in data:
-			continue
+		#if repository in data:
+		#	continue
 
 		r = g.get_repo(repository)
-		c = r.get_commits()[0]
-		data[repository] = c.commit.author.date
+		dates_string = ""
+		i = 0
+		for c in r.get_commits():
+			if i == 10:
+				break
+			if i > 0:
+				dates_string += ';'
+			dates_string += c.commit.author.date.strftime('%m/%d/%Y')
+			i += 1
+		data[repository] = dates_string
 		saveData(data)
 
 

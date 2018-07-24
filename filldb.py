@@ -15,6 +15,7 @@ from license import loadLicenseData
 from lastmodificationdate import loadLastModificationDateData
 from lastdiscussedSO import loadLastDiscussedSOData
 from issues import loadData, IssueData
+from datetime import datetime
 
 def fillPopularityData():
 	with open("popularitydata.txt") as f:
@@ -50,9 +51,10 @@ def fillReleaseFrequencyData():
 
 def fillLastModificationDateData():
 	data = loadLastModificationDateData()
-	for repo, date in data.items():
+	for repo, dates in data.items():
 		library = Library.objects.get(repository=repo)
-		library.last_modification_date = date
+		library.last_modification_dates = dates
+		library.last_modification_date = datetime.strptime(dates.split(';')[0], '%m/%d/%Y')
 		library.save()
 
 def fillIssueClosingTimeData():
@@ -102,9 +104,13 @@ def fillIssueData():
 def fillLastDiscussedSOData():
 	data = loadLastDiscussedSOData()
 	print(data)
-	for repo, date in data.items():
-		library = Library.objects.get(repository=repo)
-		library.last_discussed_so = date
+	for tag, dates in data.items():
+		library = Library.objects.get(tag=tag)
+		if(dates != 'None'):
+			library.last_discussed_so = datetime.strptime(dates.split(';')[0], '%m/%d/%Y')
+		else:
+			library.last_discussed_so = dates
+		library.last_discussed_so_dates = dates
 		library.save()
 
 def fillLicenseData():
@@ -114,12 +120,29 @@ def fillLicenseData():
 		library.license = license
 		library.save()
 
+def fillOverallScore():
+	highestPopularity = 0
+	number_of_metrics = 3
+	max_score_value = 5
+
+	for library in Library.objects.all():
+		highestPopularity = max(highestPopularity, library.popularity)
+
+	for library in Library.objects.all():
+		score = 0.0
+		score += library.popularity/highestPopularity
+		score += (100-library.performance)/100
+		score += (100-library.security)/100
+		library.overall_score = score*max_score_value/number_of_metrics
+		library.save()
+
 if __name__ == '__main__':
-	fillPopularityData()
+	#fillPopularityData()
 	#fillReleaseFrequencyData()
-	#fillLastModificationDateData()
+	fillLastModificationDateData()
 	#fillLastDiscussedSOData()
 	#fillLicenseData()
 	#fillIssueClosingTimeData()
 	#fillIssueResponseTimeData()
 	#fillIssueData()
+	#fillOverallScore()

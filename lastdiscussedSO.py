@@ -26,24 +26,25 @@ def saveData(data):
 
 def getLastDiscussedDates():
   data = loadLastDiscussedSOData()
-  #print(data)
 
   with open("librarytags.txt") as f:
     tags = f.readlines()
   tags = [x.strip() for x in tags]
 
   for tag in tags:
-    if tag in data:
-      continue
     questions = so.questions(sort='creation', order='DESC', tagged=[tag,'java'])
 
-    if len(questions) > 0:
-        q = questions[0]
-        data[tag] = q.creation_date
-        saveData(data)
+    dates_string = ""
+    for i in range(0, 10):
+      if i > 0:
+        dates_string += ';'
+      dates_string += questions[i].creation_date.strftime('%m/%d/%Y')
+
+    if len(dates_string) == 0:
+      data[tag] = None
     else:
-        data[tag] = None
-        saveData(data)
+      data[tag] = dates_string
+    saveData(data)
 
 if __name__ == "__main__":
   getLastDiscussedDates()
