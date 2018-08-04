@@ -3,12 +3,6 @@ import pickle
 from github import Github, Repository, GitTag
 import getpass
 
-def printData(data):
-	for repo, dates in data.items():
-		print(repo)
-		print(dates)
-		print("")
-
 def loadLicenseData():
 	data = {}
 	filename = 'license.pkl'
@@ -27,15 +21,13 @@ def saveData(data):
 	with open('license.pkl', 'wb') as output:
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
-def getLicenses():
+def getLicenses(username, password):
 	data = loadLicenseData()
 
 	with open("repositories.txt") as f:
 		repositories = f.readlines()
 	repositories = [x.strip() for x in repositories]
 
-	username = input("Enter Github username: ")
-	password = getpass.getpass("Enter your password: ")
 	g = Github(username, password)
 
 	for repository in repositories:
@@ -49,8 +41,10 @@ def getLicenses():
 
 
 def main():
-	getLicenses()
+        username = input("Enter Github username: ")
+        password = getpass.getpass("Enter your password: ")
+        getLicenses(username, password)
 
 if __name__ == "__main__":
-  main()
+        main()
 

@@ -91,7 +91,7 @@ def calculateAverageResponseTime():
     issue_response_times[repo] = float(total_response_time/total_issues_with_comments/86400)
   saveData(issue_response_times, 'issueresponsetime.pkl')
 
-def getIssueData():
+def getIssueData(username, password):
   with open("repositories.txt") as f:
     repositories = f.readlines()
   repositories = [x.strip() for x in repositories]
@@ -106,8 +106,6 @@ def getIssueData():
   if checkpoint == None:
     checkpoint = [repositories[0], 1]
 
-  username = input("Enter Github username: ")
-  password = getpass.getpass("Enter your password: ")
   g = Github(username, password)
   first_flag = True
 
@@ -195,6 +193,10 @@ def getIssueDataJIRA():
           new_issue.addFirstResponseDate(first_comment_date)
           break
       #saveData(issue_data, 'issuedata.pkl')
+      if repository in issue_data:
+        issue_data[repository].append(new_issue)
+      else:
+        issue_data[repository] = [new_issue]
       print(new_issue.title)
       print(new_issue.creation_date)
       print(new_issue.closing_date)
@@ -219,11 +221,13 @@ def applyClassifiers():
   saveData(issue_data, 'issuedata.pkl')
 
 def main():
-  #getIssueData()
-  getIssueDataJIRA()
-  #calculateAverageResponseTime()
-  #calculateAverageClosingTime()
-  #applyClassifiers()
+  username = input("Enter Github username: ")
+  password = getpass.getpass("Enter your password: ")
+  getIssueData(username, password)
+  #getIssueDataJIRA()
+  calculateAverageResponseTime()
+  calculateAverageClosingTime()
+  applyClassifiers()
 
 if __name__ == "__main__":
   main()
