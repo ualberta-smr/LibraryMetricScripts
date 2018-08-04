@@ -1,0 +1,50 @@
+junit4,Testing,junit-team/junit4
+testng,Testing,cbeust/testng
+slf4j,Logging,qos-ch/slf4j
+logging-log4j2,Logging,apache/logging-log4j2
+logback,Logging,qos-ch/logback
+commons-logging,Logging,apache/commons-logging
+tinylog,Logging,pmwmedia/tinylog
+blitz4j,Logging,Netflix/blitz4j
+minlog,Logging,EsotericSoftware/minlog
+guava,Utilities,google/guava
+commons-lang,Utilities,apache/commons-lang
+mockito,Mocking,mockito/mockito
+easymock,Mocking,easymock/easymock
+powermock,Mocking,powermock/powermock
+jmock-library,Mocking,jmock-developers/jmock-library
+bc-java,Cryptography,bcgit/bc-java
+commons-crypto,Cryptography,apache/commons-crypto
+conceal,Cryptography,facebook/conceal
+chimera,Cryptography,intel-hadoop/chimera
+spongycastle,Cryptography,rtyley/spongycastle
+keyczar,Cryptography,google/keyczar
+conscrypt,Cryptography,google/conscrypt
+gson,JSON,google/gson
+json-simple,JSON,fangyidong/json-simple
+h2database,Databases,h2database/h2database
+lsql,Databases,w11k/lsql
+derby,Databases,apache/derby
+shiro,Security,apache/shiro
+spring-security,Security,spring-projects/spring-security
+hibernate-orm,Object-relational Mapping,hibernate/hibernate-orm
+mybatis-3,Object-relational Mapping,mybatis/mybatis-3
+ormlite-android,Object-relational Mapping,j256/ormlite-android
+xerces2-j,XML Processing,apache/xerces2-j
+dom4j,XML Processing,dom4j/dom4j
+jdom,XML Processing,hunterhacker/jdom
+vertx-mail-client,Mail Client,vert-x3/vertx-mail-client
+commons-email,Mail Client,apache/commons-email
+commons-collections,Collections,apache/commons-collections
+fastutil,Collections,vigna/fastutil
+mapdb,Collections,jankotek/mapdb
+hppc,Collections,carrotsearch/hppc
+high-scale-lib,Collections,stephenc/high-scale-lib
+eclipse-collections,Collections,eclipse/eclipse-collections
+jcommon,Collections,facebook/jcommon
+Mallet,Maching Learning,mimno/Mallet
+smile,Machine Learning,haifengl/smile
+deeplearning4j,Machine Learning,deeplearning4j/deeplearning4j
+moa,Machine Learning,Waikato/moa
+elki,Machine Learning,elki-project/elki
+mahout,Machine Learning,apache/mahout
