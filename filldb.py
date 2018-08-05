@@ -130,11 +130,9 @@ def fillBreakingChanges():
         i = 0
         while i < len(lines):
                 splitline = lines[i].split(":")
-                print('splitline: ', splitline)
                 library = splitline[0]
                 release = splitline[1]
                 splitline = lines[i+1].split(";")
-                print(splitline)
                 allbreakingchanges = int(splitline[5])
                 allnonbreakingchanges = int(splitline[10])
                 i += 2
@@ -144,20 +142,11 @@ def fillBreakingChanges():
                 target_release.save()
                 target_library.breaking_changes += allbreakingchanges
                 target_library.non_breaking_changes += allnonbreakingchanges
-                #target_library.backwardsCompatibility = target_library.breaking_changes/target_library.release_set.all().count()
-                print('library name: ', target_library.name)
-                print('breaking changes: ', allbreakingchanges)
-                print('backwards compatibility: ', target_library.backwards_compatibility)
                 target_library.save()
 
         for library in Library.objects.all():
-                print("library: ", library.name)
-                print('breakign changes: ', library.breaking_changes)
-                print('total releases: ', library.release_set.all().count())
                 library.backwards_compatibility = library.breaking_changes/library.release_set.all().count()
                 library.save()
-                print("bc: ", library.backwards_compatibility)
-        
 def fillOverallScore():
 	highestPopularity = 0
 	number_of_metrics = 3
@@ -178,9 +167,9 @@ if __name__ == '__main__':
         #fillPopularityData()
         fillReleaseFrequencyData()
         fillBreakingChanges()
-        #fillLastModificationDateData()
-        #fillLastDiscussedSOData()
-        #fillLicenseData()
+        fillLastModificationDateData()
+        fillLastDiscussedSOData()
+        fillLicenseData()
         #fillIssueClosingTimeData()
         #fillIssueResponseTimeData()
         #fillIssueData()
