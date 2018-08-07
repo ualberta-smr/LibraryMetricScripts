@@ -50,37 +50,36 @@ def saveData(data):
 	with open('releasefrequency.pkl', 'wb') as output:
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
-def getReleaseDates():
-	data = loadReleaseFrequencyData()
+def getReleaseDates(username, password):
+        data = loadReleaseFrequencyData()
 
-	with open("repositories.txt") as f:
-		repositories = f.readlines()
-	repositories = [x.strip() for x in repositories]
+        with open("repositories.txt") as f:
+                repositories = f.readlines()
+        repositories = [x.strip() for x in repositories]
 
-	username = input("Enter Github username: ")
-	password = getpass.getpass("Enter your password: ")
-	g = Github(username, password)
+        g = Github(username, password)
 
-	for repository in repositories:
-		if repository in data:
-			continue
+        for repository in repositories:
+                if repository in data:
+                        continue
 
-		r = g.get_repo(repository)
+                r = g.get_repo(repository)
 
-		release_data = ReleaseData(repository)
+                release_data = ReleaseData(repository)
 
-		#Obtain the date of the git tag
-		for tag in r.get_tags():
-			release_data.addReleaseDate(tag.commit.commit.author.date)
-			release_data.addReleaseName(tag.name)
-		release_data.calculateReleaseFrequency()
+                #Obtain the date of the git tag
+                for tag in r.get_tags():
+                        release_data.addReleaseDate(tag.commit.commit.author.date)
+                        release_data.addReleaseName(tag.name)
+                release_data.calculateReleaseFrequency()
 
-		data[repository] = release_data
-		saveData(data)
-
+                data[repository] = release_data
+                saveData(data)
 
 def main():
-	getReleaseDates()
+        username = input("Enter your Github username: ")
+        password = getpass.getpass("Enter your password: ")
+        getReleaseDates(username, password)
 
 if __name__ == "__main__":
   main()

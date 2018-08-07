@@ -10,14 +10,13 @@ import issues
 def main():
     username = input("Enter Github username: ")
     password = getpass.getpass("Enter your password: ")
-
-    subprocess.Popen("rm *.pkl")
+    
     releasefrequency.getReleaseDates(username, password)
     license.getLicenses(username, password)
     lastmodificationdate.getLastModificationDates(username, password)
     lastdiscussedSO.getLastDiscussedDates()
-    issues.getIssueDataJIRA()
     issues.getIssueData(username, password)
+    #issues.getIssueDataJIRA()
     issues.calculateAverageResponseTime()
     issues.calculateAverageClosingTime()
     issues.applyClassifiers()

@@ -5,7 +5,7 @@ import urllib.request
 import xml.etree.ElementTree
 from datetime import datetime
 from github import Github, Repository
-from github.GithubException import UnknownObjectException
+from github.GithubException import UnknownObjectException, RateLimitExceededException
 from performanceclassifier import PerformanceClassifier
 from securityclassifier import SecurityClassifier
 
@@ -92,41 +92,34 @@ def calculateAverageResponseTime():
   saveData(issue_response_times, 'issueresponsetime.pkl')
 
 def getIssueData(username, password):
-  with open("repositories.txt") as f:
+  with open("github_bug_repositories.txt") as f:
     repositories = f.readlines()
   repositories = [x.strip() for x in repositories]
-
+  
   issue_data = loadData('issuedata.pkl')
-  checkpoint = loadData('checkpoint.pkl')
-  print("Checkpoint: ", checkpoint)
 
   if issue_data == None:
     issue_data = {}
 
-  if checkpoint == None:
-    checkpoint = [repositories[0], 1]
-
   g = Github(username, password)
-  first_flag = True
 
   for repository in repositories:
-    if first_flag == True and repository != checkpoint[0]:
-      continue
-    if first_flag == False:
-      checkpoint[1] = 1
-
-    first_flag = False
-    checkpoint[0] = repository
-    first_issue = checkpoint[1]
+    first_issue = 1
+    print("Current repository: ", repository)
 
     r = g.get_repo(repository)
-
 
     max_issue_number = r.get_issues(state="all")[0].number;
     for i in range(first_issue, max_issue_number):
       try:
         issue = r.get_issue(i)
       except UnknownObjectException:
+        continue
+      except RateLimitExceededException:
+        sleep(60*60)
+        g = Github(username, password)
+        r = g.get_repo(repository)
+        i -= 1
         continue
       if issue == None:
         continue
@@ -138,18 +131,25 @@ def getIssueData(username, password):
       new_issue.addCreationDate(issue.created_at)
       new_issue.addClosingDate(issue.closed_at)
 
-      for comment in issue.get_comments():
-        if comment.user == issue.user:
-           continue
-        new_issue.addFirstResponseDate(comment.created_at)
-        break
+      while True:
+        try:
+          for comment in issue.get_comments():
+            if comment.user == issue.user:
+              continue
+            new_issue.addFirstResponseDate(comment.created_at)
+            break
+          break
+        except RateLimitExceededException:
+          sleep(60*60)
+          g = Github(username, password)
+          r = g.get_repo(repository)
+          issue = r.get_issue(i)
+        
       if repository in issue_data:
         issue_data[repository].append(new_issue)
       else:
         issue_data[repository] = [new_issue]
       saveData(issue_data, 'issuedata.pkl')
-      checkpoint[1] = i
-      saveData(checkpoint, 'checkpoint.pkl')
 
 def getIssueDataJIRA():
   dict = {}
@@ -157,11 +157,14 @@ def getIssueDataJIRA():
     urls = f.readlines()
   urls = [x.strip() for x in urls]
 
+  issue_data = loadData('issuedata.pkl')
+
   for line in urls:
     strings = line.split('|')
     dict[strings[0]] = strings[1]
 
-  for library, url in dict.items():
+  for repository, url in dict.items():
+    print("Current repository: ", repository)
     xmlString = urllib.request.urlopen(url).read().decode('utf-8')
     root = xml.etree.ElementTree.fromstring(xmlString)
     channel = root.find('channel')
@@ -192,16 +195,11 @@ def getIssueDataJIRA():
           first_comment_date = datetime.strptime(comment.get('created'), '%a, %d %b %Y %H:%M:%S %z')
           new_issue.addFirstResponseDate(first_comment_date)
           break
-      #saveData(issue_data, 'issuedata.pkl')
       if repository in issue_data:
         issue_data[repository].append(new_issue)
       else:
         issue_data[repository] = [new_issue]
-      print(new_issue.title)
-      print(new_issue.creation_date)
-      print(new_issue.closing_date)
-      print(new_issue.first_comment_date)
-      print()
+      saveData(issue_data, 'issuedata.pkl')
 
 def applyClassifiers():
   performance_classifier = PerformanceClassifier()
@@ -224,7 +222,7 @@ def main():
   username = input("Enter Github username: ")
   password = getpass.getpass("Enter your password: ")
   getIssueData(username, password)
-  #getIssueDataJIRA()
+  getIssueDataJIRA()
   calculateAverageResponseTime()
   calculateAverageClosingTime()
   applyClassifiers()

@@ -36,6 +36,8 @@ def getLastDiscussedDates():
 
     dates_string = ""
     for i in range(0, 10):
+      if questions == None or i >= len(questions):
+        break
       if i > 0:
         dates_string += ';'
       dates_string += questions[i].creation_date.strftime('%m/%d/%Y')

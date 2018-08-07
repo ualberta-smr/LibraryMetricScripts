@@ -103,16 +103,17 @@ def fillIssueData():
 
 
 def fillLastDiscussedSOData():
-	data = loadLastDiscussedSOData()
-	print(data)
-	for tag, dates in data.items():
-		library = Library.objects.get(tag=tag)
-		if(dates != 'None'):
-			library.last_discussed_so = datetime.strptime(dates.split(';')[0], '%m/%d/%Y')
-		else:
-			library.last_discussed_so = dates
-		library.last_discussed_so_dates = dates
-		library.save()
+        data = loadLastDiscussedSOData()
+        for tag, dates in data.items():
+                print(tag)
+                library = Library.objects.get(tag=tag)
+                if(dates != None):
+                        library.last_discussed_so = datetime.strptime(dates.split(';')[0], '%m/%d/%Y')
+                        library.last_discussed_so_dates = dates
+                else:
+                        library.last_discussed_so = datetime.now()
+                        library.last_discussed_so_dates = ''
+                library.save()
 
 def fillLicenseData():
 	data = loadLicenseData()
@@ -165,11 +166,11 @@ def fillOverallScore():
 
 if __name__ == '__main__':
         #fillPopularityData()
-        fillReleaseFrequencyData()
-        fillBreakingChanges()
-        fillLastModificationDateData()
+        #fillReleaseFrequencyData()
+        #fillBreakingChanges()
+        #fillLastModificationDateData()
         fillLastDiscussedSOData()
-        fillLicenseData()
+        #fillLicenseData()
         #fillIssueClosingTimeData()
         #fillIssueResponseTimeData()
         #fillIssueData()

@@ -39,7 +39,7 @@ apache/commons-collections
 vigna/fastutil
 jankotek/mapdb
 carrotsearch/hppc
-high-scale-lib
+stephenc/high-scale-lib
 eclipse/eclipse-collections
 facebook/jcommon
 mimno/Mallet
