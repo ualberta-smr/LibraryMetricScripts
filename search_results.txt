@@ -1,4 +1,4 @@
-Enter Github username: https://github.com/BonnusLabs/SDKAndroid20.git
+https://github.com/BonnusLabs/SDKAndroid20.git
 https://github.com/teamfx/openjfx-10-dev-tests.git
 https://github.com/RaychHuang/Algorithm.git
 https://github.com/gmpassos/org-gracilianomp-function-simulation.git

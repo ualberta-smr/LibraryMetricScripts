@@ -9,7 +9,7 @@ declare -a packages=("org.junit" "org.testng" "org.slf4j" "org.apache.log4j" "ch
 "org.cliffc.high_scale_lib" "org.eclipse.collections" "com.facebook.util" "cc.mallet" "smile" "org.deeplearning4j" "moa" "de.lmu.ifi.dbs.elki"
 "org.apache.mahout")
 
-declare -a repositories =("junit-team/junit4"
+declare -a repositories=("junit-team/junit4"
 "cbeust/testng"
 "qos-ch/slf4j"
 "apache/logging-log4j2"
@@ -60,8 +60,7 @@ declare -a repositories =("junit-team/junit4"
 "elki-project/elki"
 "apache/mahout")
 
-declare -a counts=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0,
-0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0,)
+declare -a counts=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
 
 while IFS= read -r line
 do
@@ -72,13 +71,23 @@ do
     git clone "$line"
     cd ..
 
+    count=0
     for i in "${packages[@]}"
     do
 	if grep -q -r --include '*.java' "import $i" "CurrentRepository";then
-	    echo "$i"   
+	    echo "$i"
+	    counts[$count]=$((${counts[$count]}+1))
 	fi
+	count=$((count+1))
     done
     rm -rf "CurrentRepository"
     cd ..
 done < "$1"
+
+count=0
+for i in "${repositories[@]}"
+do
+    echo "$i:${counts[$count]}"
+    count=$((count+1))
+done
 

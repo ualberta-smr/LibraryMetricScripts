@@ -1,6 +1,7 @@
 import os
 import pickle
 from github import Github, Repository, GitTag
+from github.GithubException import UnknownObjectException
 import getpass
 
 def loadLicenseData():
@@ -11,8 +12,6 @@ def loadLicenseData():
 			try:
 				print("Loading data")
 				data = pickle.load(input)
-				#print(data)
-				printData(data)
 			except EOFError:
 				print("Failed to load pickle file")
 	return data
@@ -22,22 +21,27 @@ def saveData(data):
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def getLicenses(username, password):
-	data = loadLicenseData()
+        data = loadLicenseData()
 
-	with open("repositories.txt") as f:
-		repositories = f.readlines()
-	repositories = [x.strip() for x in repositories]
+        with open("repositories.txt") as f:
+                repositories = f.readlines()
+        repositories = [x.strip() for x in repositories]
 
-	g = Github(username, password)
+        g = Github(username, password)
 
-	for repository in repositories:
-		if repository in data:
-			continue
+        for repository in repositories:
+                if repository in data:
+                        continue
 
-		r = g.get_repo(repository)
+                try:
+                        r = g.get_repo(repository)
 
-		data[repository] = r.get_license().license.name
-		saveData(data)
+                        print(repository)
+                        data[repository] = r.get_license().license.name
+                        saveData(data)
+                except UnknownObjectException:
+                        data[repository] = 'None'
+                        saveData(data)
 
 
 def main():

@@ -3,9 +3,10 @@ import pickle
 import os.path
 import urllib.request
 import xml.etree.ElementTree
+import time
 from datetime import datetime
 from github import Github, Repository
-from github.GithubException import UnknownObjectException, RateLimitExceededException
+from github.GithubException import UnknownObjectException, RateLimitExceededException, GithubException
 from performanceclassifier import PerformanceClassifier
 from securityclassifier import SecurityClassifier
 
@@ -47,7 +48,7 @@ class IssueData:
 
 
 def loadData(filename):
-  data = None
+  data = {}
   if os.path.isfile(filename):
     with open(filename, 'rb') as input:
       try:
@@ -107,19 +108,30 @@ def getIssueData(username, password):
     first_issue = 1
     print("Current repository: ", repository)
 
-    r = g.get_repo(repository)
+    try:
+      r = g.get_repo(repository)
 
-    max_issue_number = r.get_issues(state="all")[0].number;
+      max_issue_number = r.get_issues(state="all")[0].number
+    except RateLimitExceededException:
+      print("Rate Limit Exceeded... Sleeping 1 hour")
+      time.sleep(60*60)
+      g = Github(username, password)
+      r = g.get_repo(repository)
+      max_issue_number = r.get_issues(state="all")[0].number
+
     for i in range(first_issue, max_issue_number):
       try:
         issue = r.get_issue(i)
       except UnknownObjectException:
         continue
       except RateLimitExceededException:
-        sleep(60*60)
+        print("Rate Limit Exceeded... Sleeping 1 hour") 
+        time.sleep(60*60)
         g = Github(username, password)
         r = g.get_repo(repository)
         i -= 1
+        continue
+      except:
         continue
       if issue == None:
         continue
@@ -140,10 +152,14 @@ def getIssueData(username, password):
             break
           break
         except RateLimitExceededException:
-          sleep(60*60)
+          print("Rate Limit Exceeded... Sleeping 1 hour")
+          time.sleep(60*60)
           g = Github(username, password)
           r = g.get_repo(repository)
           issue = r.get_issue(i)
+        except Exception as e:
+          print(e)
+          continue
         
       if repository in issue_data:
         issue_data[repository].append(new_issue)
@@ -219,10 +235,10 @@ def applyClassifiers():
   saveData(issue_data, 'issuedata.pkl')
 
 def main():
-  username = input("Enter Github username: ")
-  password = getpass.getpass("Enter your password: ")
-  getIssueData(username, password)
-  getIssueDataJIRA()
+  #username = input("Enter Github username: ")
+  #password = getpass.getpass("Enter your password: ")
+  #getIssueData(username, password)
+  #getIssueDataJIRA()
   calculateAverageResponseTime()
   calculateAverageClosingTime()
   applyClassifiers()
