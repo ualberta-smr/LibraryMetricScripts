@@ -1,0 +1,74 @@
+#Obtains the number of client projects of a library using the BOA.
+#
+#Requirements: 
+# - You will need to use BOA to run this script (see http://boa.cs.iastate.edu/boa/)
+#How to run: 
+# - Just run the script with repositories.txt in the same directory.
+# - As the BOA dataset does not dynamically change, you will only need to run this once (until a new dataset is released) 
+
+#Libraries and respective packages strings we used:
+#junit -> org.junit
+#testng -> org.testng
+#slf4j -> org.slf4j
+#log4j -> org.apache.log4j
+#logback -> ch.qos.logback
+#commons-logging -> org.apache.commons.logging
+#tinylog -> org.pmw.tinylog
+#blitz4j -> com.netflix.blitz4j
+#minlog -> com.esotericsoftware.minlog
+#guava -> com.google.common
+#commons-lang -> org.apache.commons.lang
+#mockito -> org.mockito
+#easymock -> org.easymock
+#powermock -> org.powermock
+#jmock -> org.jmock
+#bouncycastle -> org.bouncycastle
+#commons crypto -> org.apache.commons.crypto
+#conceal -> com.facebook.crypto
+#chimera -> com.intel.chimera
+#spongycastle -> org.spongycastle
+#keyczar -> org.keyczar
+#conscrypt -> com.android.org.conscrypt
+#gson -> com.google.gson
+#json.simple -> org.json.simple
+#h2 -> org.h2
+#derby -> org.apache.derby
+#shiro -> org.apache.shiro
+#spring-security -> org.springframework.security
+#hibernate -> org.hibernate
+#ibatis -> org.apache.ibatis
+#ormlite -> com.j256.ormlite
+#xerces -> org.apache.xerces
+#dom4j -> org.dom4j
+#jdom -> org.jdom
+
+p: Project = input;
+Total: output sum[string] of int;
+
+hasLib1: bool = false;
+
+visit(p, visitor {
+    before n: Project -> ifall (i: int; !match(`^java$`, lowercase(n.programming_languages[i]))) stop;
+	before node: CodeRepository -> {
+		# only look at the latest snapshot
+		# and only include Java files
+		snapshot := getsnapshot(node, "SOURCE_JAVA_JLS");
+		foreach (i: int; def(snapshot[i]))
+			visit(snapshot[i]);
+	}
+	before node: ASTRoot -> {
+		if (!hasLib1) {
+		    foreach (i: int; def(node.imports[i]))
+            #Replace packagePrefix with the general package of your subject library (e.g. org.apache.log4j)
+            #See list above for the libraries and packages we used
+		        if(strfind("packagePrefix", node.imports[i]) == 0) {
+			        hasLib1 = true;
+			        break;
+		        }
+		}
+		else stop;
+	}
+});
+
+#Total will contain the total number of projects where the package was found
+if (hasLib1) Total["My target library"] << 1;
