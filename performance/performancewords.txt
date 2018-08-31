@@ -9,8 +9,8 @@ froze
 hangs
 hung
 inefficient
-leak
 memory
+leak
 minimize
 optimize
 outofmemory

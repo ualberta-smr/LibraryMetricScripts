@@ -1,9 +1,11 @@
 attack
-authenticat
-authoriz
+authenticate
+authorize
+availability
+confidential
 cipher
 crack
 decrypt
 encrypt
-secur
-vulnerab
+secure
+vulnerable
