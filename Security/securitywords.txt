@@ -1,0 +1,11 @@
+attack
+authenticate
+authorize
+availability
+confidential
+cipher
+crack
+decrypt
+encrypt
+secure
+vulnerable
