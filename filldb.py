@@ -15,21 +15,20 @@ from license import loadLicenseData
 from lastmodificationdate import loadLastModificationDateData
 from lastdiscussedSO import loadLastDiscussedSOData
 from issues import loadData, IssueData
-from datetime import datetime
+from datetime import datetime, timezone
 
 def fillPopularityData():
-	with open("popularitydata.txt") as f:
-		lines = f.readlines()
-	lines = [x.strip() for x in lines]
+        with open("popularity_results.txt") as f:
+                lines = f.readlines()
+        lines = [x.strip() for x in lines]
 
-	for line in lines:
-		strings = line.split(':')
-		library = strings[0]
-		popularity = strings[1]
-		library = Library.objects.get(name=library)
-		library.popularity = int(strings[1])
-		library.save()
-
+        for line in lines:
+                strings = line.split(':')
+                repository = strings[0]
+                popularity = strings[1]
+                library = Library.objects.get(repository=repository)
+                library.popularity = int(strings[1])
+                library.save()
 
 def fillReleaseFrequencyData():
         Release.objects.all().delete()
@@ -73,33 +72,33 @@ def fillIssueResponseTimeData():
 		library.save()
 
 def fillIssueData():
-	Issue.objects.all().delete()
-	data = loadData('issuedata.pkl')
-	for repo, issues in data.items():
-		total_issues = 0
-		total_performance_issues = 0
-		total_security_issues = 0
-		library = Library.objects.get(repository=repo)
-		for i in issues:
-			total_issues += 1
-			issue = Issue()
-			issue.issue_id = i.issue_id
-			issue.creation_date = i.creation_date
-			issue.closing_date = i.closing_date
-			issue.first_response_date = i.first_comment_date
-			issue.performance_issue = i.performance_issue
-			issue.security_issue = i.security_issue
-			if issue.performance_issue == True:
-				total_performance_issues += 1
-			if issue.security_issue == True:
-				total_security_issues += 1
-			issue.library = library
-			issue.save()
-			library.issue_set.add(issue)
-			library.save()
-		library.performance = total_performance_issues/total_issues*100
-		library.security = total_security_issues/total_issues*100
-		library.save()
+        Issue.objects.all().delete()
+        data = loadData('issuedata.pkl')
+        for repo, issues in data.items():
+                total_issues = 0
+                total_performance_issues = 0
+                total_security_issues = 0
+                library = Library.objects.get(repository=repo)
+                for i in issues:
+                        total_issues += 1
+                        issue = Issue()
+                        issue.issue_id = str(i.issue_id)
+                        issue.creation_date = i.creation_date
+                        issue.closing_date = i.closing_date
+                        issue.first_response_date = i.first_comment_date
+                        issue.performance_issue = i.performance_issue
+                        issue.security_issue = i.security_issue
+                        if issue.performance_issue == True:
+                                total_performance_issues += 1
+                        if issue.security_issue == True:
+                                total_security_issues += 1
+                        issue.library = library
+                        issue.save()
+                        library.issue_set.add(issue)
+                        library.save()
+                library.performance = total_performance_issues/total_issues*100
+                library.security = total_security_issues/total_issues*100
+                library.save()
 
 
 def fillLastDiscussedSOData():
@@ -130,13 +129,23 @@ def fillBreakingChanges():
 
         i = 0
         while i < len(lines):
+                print(lines[i])
                 splitline = lines[i].split(":")
+                print(splitline)
                 library = splitline[0]
                 release = splitline[1]
-                splitline = lines[i+1].split(";")
-                allbreakingchanges = int(splitline[5])
-                allnonbreakingchanges = int(splitline[10])
-                i += 2
+                if release == '':
+                        i += 2
+                        continue
+                if ';' not in lines[i+1]:
+                        i += 1
+                        allbreakingchanges = 0
+                        allnonbreakingchanges = 0
+                else:
+                        splitline = lines[i+1].split(";")
+                        allbreakingchanges = int(splitline[5])
+                        allnonbreakingchanges = int(splitline[10])
+                        i += 2
                 target_library = Library.objects.get(name=library)
                 target_release = target_library.release_set.all().get(name=release)
                 target_release.breaking_changes = allbreakingchanges
@@ -146,32 +155,42 @@ def fillBreakingChanges():
                 target_library.save()
 
         for library in Library.objects.all():
-                library.backwards_compatibility = library.breaking_changes/library.release_set.all().count()
+                release_count = library.release_set.all().count()
+                if release_count == 0:
+                        library.backwards_compatibility = 0
+                else:
+                        library.backwards_compatibility = library.breaking_changes/library.release_set.all().count()
                 library.save()
+
 def fillOverallScore():
-	highestPopularity = 0
-	number_of_metrics = 3
-	max_score_value = 5
+        highestPopularity = 0
+        number_of_metrics = 8
+        max_score_value = 5
 
-	for library in Library.objects.all():
-		highestPopularity = max(highestPopularity, library.popularity)
+        for library in Library.objects.all():
+                highestPopularity = max(highestPopularity, library.popularity)
 
-	for library in Library.objects.all():
-		score = 0.0
-		score += library.popularity/highestPopularity
-		score += (100-library.performance)/100
-		score += (100-library.security)/100
-		library.overall_score = score*max_score_value/number_of_metrics
-		library.save()
+        for library in Library.objects.all():
+                score = 0.0
+                score += library.popularity/max(1, highestPopularity)
+                score += max(0, 1-library.release_frequency/365)
+                score += max(0, 1-library.issue_closing_time/365)
+                score += max(0, 1-library.issue_response_time/365)
+                score += max(0, 1- (int((datetime.now(timezone.utc) - library.last_modification_date).total_seconds())/86400/365))
+                score += library.non_breaking_changes/max(1,(library.breaking_changes+library.non_breaking_changes))
+                score += (100-library.performance)/100
+                score += (100-library.security)/100
+                library.overall_score = score*max_score_value/number_of_metrics
+                library.save()
 
 if __name__ == '__main__':
         #fillPopularityData()
         #fillReleaseFrequencyData()
         #fillBreakingChanges()
         #fillLastModificationDateData()
-        fillLastDiscussedSOData()
-        #fillLicenseData()
+        #fillLastDiscussedSOData()
+        ##fillLicenseData()
         #fillIssueClosingTimeData()
         #fillIssueResponseTimeData()
         #fillIssueData()
-        #fillOverallScore()
+        fillOverallScore()
