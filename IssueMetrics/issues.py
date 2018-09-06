@@ -1,4 +1,5 @@
 import getpass
+import sys
 import pickle
 import os.path
 import urllib.request
@@ -169,7 +170,8 @@ def getIssueData(username, password):
 
 def getIssueDataJIRA():
   dict = {}
-  with open("jiralibraries.txt") as f:
+  file_path = 'jiralibraries.txt'
+  with open(file_path) as f:
     urls = f.readlines()
   urls = [x.strip() for x in urls]
 
@@ -235,10 +237,14 @@ def applyClassifiers():
   saveData(issue_data, 'issuedata.pkl')
 
 def main():
-  username = input("Enter Github username: ")
-  password = getpass.getpass("Enter your password: ")
-  getIssueData(username, password)
+  if len(sys.argv) == 3:
+    username = sys.argv[1]
+    password = sys.argv[2]
+  else:
+    username = input("Enter Github username: ")
+    password = getpass.getpass("Enter your password: ")
   getIssueDataJIRA()
+  getIssueData(username, password)
   calculateAverageResponseTime()
   calculateAverageClosingTime()
   applyClassifiers()
