@@ -3,4 +3,4 @@ The PROMISE2018 release of this repository contains a script for each of our 9 m
 
 Note: Since we did not write the original version of the code that obtains the Backwards Compatibility metric, we cannot upload its code here. The code has been kindly provided to us by Laerte Xavier. Please contact laertexavier@dcc.ufmg.br for more information.
 
-Additionally, we include a submodule called MetricBasedComparisonSurvey which includes the survey data collected in the same paper. 
+Additionally, we include a submodule called MetricBasedComparisonSurvey which includes the survey data collected in the same paper. To know more about the survey data please refer to the README of the MetricBasedComparisonSurvey repository.
