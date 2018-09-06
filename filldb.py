@@ -6,6 +6,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'metricwebsite.settings'
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "metricwebsite.settings")
 import django
 import pickle
+import pygal
 django.setup()
 
 from librarycomparison.models import Domain, Library, Issue, Release
@@ -16,6 +17,303 @@ from lastmodificationdate import loadLastModificationDateData
 from lastdiscussedSO import loadLastDiscussedSOData
 from issues import loadData, IssueData
 from datetime import datetime, timezone
+
+def saveData(data, filename):
+  filename = 'charts/' + filename
+  with open(filename, 'wb') as output:
+    pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+
+def create_popularity_chart(domain):
+	filename = domain + '_popularity_chart.pkl'
+	data = loadData(filename)
+	if data != None:
+		return data
+	bar_chart = pygal.Bar(height=200)
+	selected_domain = Domain.objects.get(name=domain)
+	libraries = selected_domain.library_set.all()
+	for library in libraries:
+		bar_chart.add(library.name, library.popularity)
+	data = bar_chart.render_data_uri()
+	saveData(data, domain + '_popularity_chart.pkl')
+	return data
+
+def create_release_chart(domain):
+	filename = domain + '_release_chart.pkl'
+	data = loadData(filename)
+	if data != None:
+		return data
+	line_chart = pygal.Line(x_label_rotation=90, height = 200, show_minor_x_labels=False)
+	selected_domain = Domain.objects.get(name=domain)
+	libraries = selected_domain.library_set.all()
+	releases_dict = {}
+	release_date_set = set()
+	for release in Release.objects.all():
+		release_date_set.add(release.release_date)
+
+	release_date_list = sorted(list(release_date_set))
+	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), release_date_list)
+	line_chart.x_labels_major = [release_date_list[0].strftime('%b %d %Y'), release_date_list[-1].strftime('%b %d %Y')]
+	line_chart.title = 'Timeline of Releases'
+
+	library_id = 1
+	y_labels = []
+
+	for library in libraries:
+		releases = library.release_set.all()
+		release_list = []
+		for i in range(0, len(release_date_list)):
+			found = False;
+			for j in range(0, len(releases)):
+				if release_date_list[i] == releases[j].release_date:
+					print(library.name)
+					found = True
+					release_list.append(library_id)
+					break
+			if found == False:
+				release_list.append(None)
+		line_chart.add(library.name, release_list)
+		y_labels.append({'label' : library.name, 'value' : library_id})
+		library_id += 1
+	line_chart.y_labels = y_labels
+	data = line_chart.render_data_uri()
+	saveData(data, domain + '_release_chart.pkl')
+	return data
+
+def parseDateString(date_string):
+	strings = date_string.split(';')
+	dates = []
+	for date in strings:
+		dates.append(datetime.strptime(date, '%m/%d/%Y'))
+	return dates
+
+def create_last_discussed_chart(domain):
+        filename = domain + '_last_discussed_chart.pkl'
+        data = loadData(filename)
+        if data != None:
+                return data
+        line_chart = pygal.Line(x_label_rotation=90, height = 200, show_minor_x_labels=False, dots_size=5)
+        selected_domain = Domain.objects.get(name=domain)
+        libraries = selected_domain.library_set.all()
+        #releases_dict = {}
+        date_set = set()
+        for library in libraries:
+                print(library.name)
+                print(library.last_discussed_so_dates)
+                if library.last_discussed_so_dates == '':
+                        continue
+                dates = parseDateString(library.last_discussed_so_dates)
+                date_set.update(dates)
+
+        date_list = sorted(list(date_set))
+        line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), date_list)
+        line_chart.x_labels_major = [date_list[0].strftime('%b %d %Y'), date_list[-1].strftime('%b %d %Y')]
+        line_chart.title = 'The last 10 questions were asked in these dates:'
+
+        library_id = 1
+        y_labels = []
+
+        for library in libraries:
+                if library.last_discussed_so_dates == '':
+                        continue
+                dates = parseDateString(library.last_discussed_so_dates)
+                question_list = []
+                for i in range(0, len(date_list)):
+                        found = False;
+                        for j in range(0, len(dates)):
+                                if date_list[i] == dates[j]:
+                                        found = True
+                                        question_list.append(library_id)
+                                        break
+                        if found == False:
+                                question_list.append(None)
+                line_chart.add(library.name, question_list)
+                y_labels.append({'label' : library.name, 'value' : library_id})
+                library_id += 1
+        line_chart.y_labels = y_labels
+        data = line_chart.render_data_uri()
+        saveData(data, domain + '_last_discussed_chart.pkl')
+        return data
+
+def create_last_modification_chart(domain):
+	filename = domain + '_last_modification_chart.pkl'
+	data = loadData(filename)
+	if data != None:
+		return data
+	line_chart = pygal.Line(x_label_rotation=90, height = 200, show_minor_x_labels=False, dots_size=5)
+	selected_domain = Domain.objects.get(name=domain)
+	libraries = selected_domain.library_set.all()
+	date_set = set()
+	for library in libraries:
+		print(library.name)
+		print(library.last_modification_dates)
+		dates = parseDateString(library.last_modification_dates)
+		date_set.update(dates)
+
+	date_list = sorted(list(date_set))
+	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), date_list)
+	line_chart.x_labels_major = [date_list[0].strftime('%b %d %Y'), date_list[len(date_list)//2].strftime('%b %d %Y'), date_list[-1].strftime('%b %d %Y')]
+	line_chart.title = 'The last 10 modifications were done in these dates:'
+
+	library_id = 1
+	y_labels = []
+
+	for library in libraries:
+		dates = parseDateString(library.last_modification_dates)
+		modification_list = []
+		for i in range(0, len(date_list)):
+			found = False;
+			for j in range(0, len(dates)):
+				if date_list[i] == dates[j]:
+					found = True
+					modification_list.append(library_id)
+					break
+			if found == False:
+				modification_list.append(None)
+		line_chart.add(library.name, modification_list)
+		y_labels.append({'label' : library.name, 'value' : library_id})
+		library_id += 1
+	line_chart.y_labels = y_labels
+	data = line_chart.render_data_uri()
+	saveData(data, domain + '_last_modification_chart.pkl')
+	return data
+
+def create_breaking_changes_chart(domain):
+	filename = domain + '_breaking_changes_chart.pkl'
+	data = loadData(filename)
+	if data != None:
+		return data
+	line_chart = pygal.Line(x_label_rotation=90, show_minor_x_labels=False)
+	selected_domain = Domain.objects.get(name=domain)
+	libraries = selected_domain.library_set.all()
+	releases_dict = {}
+	release_date_set = set()
+	for release in Release.objects.all():
+		release_date_set.add(release.release_date)
+
+	release_date_list = sorted(list(release_date_set))
+	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), release_date_list)
+	line_chart.x_labels_major = [release_date_list[0].strftime('%b %d %Y'), release_date_list[len(release_date_list)//2].strftime('%b %d %Y'),
+	  release_date_list[-1].strftime('%b %d %Y')]
+	line_chart.title = 'Releases. X_axis = release dates, Y_axis = Breaking changes of releases'
+
+	for library in libraries:
+		releases = library.release_set.all()
+		release_list = []
+		for i in range(0, len(release_date_list)):
+			found = False;
+			for j in range(0, len(releases)):
+				if release_date_list[i] == releases[j].release_date:
+					print(library.name)
+					found = True
+					release_list.append(releases[j].breaking_changes)
+					#break
+			if found == False:
+				release_list.append(None)
+		line_chart.add(library.name, release_list)
+		print(library.name, len(release_list))
+	data = line_chart.render_data_uri()
+	saveData(data, domain + '_breaking_changes_chart.pkl')
+	return data
+
+def create_issue_response_chart(domain):
+	filename = domain + '_issue_response_chart.pkl'
+	data = loadData(filename)
+	if data != None:
+		return data
+	line_chart = pygal.Line(x_label_rotation=90, show_minor_x_labels=False, height=300)
+	selected_domain = Domain.objects.get(name=domain)
+	libraries = selected_domain.library_set.all()
+	issue_date_set = set()
+	for issue in Issue.objects.all():
+		if issue.first_response_date != None:
+			issue_date_set.add(issue.creation_date)
+
+	issue_date_list = sorted(list(issue_date_set))
+	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), issue_date_list)
+	line_chart.x_labels_major = [issue_date_list[0].strftime('%b %d %Y'),
+	  issue_date_list[-1].strftime('%b %d %Y')]
+	line_chart.title = 'Issue Response Times. X_axis = number of days, Y_axis = issue creation date'
+
+	for library in libraries:
+		issues = library.issue_set.all()
+		issue_list = []
+		for i in range(0, len(issue_date_list)):
+			found = False;
+			for j in range(0, len(issues)):
+				if issues[j].first_response_date != None and issue_date_list[i] == issues[j].creation_date:
+					found = True
+					issue_list.append(int((issues[j].first_response_date - issues[j].creation_date).total_seconds())/86400)
+			if found == False:
+				issue_list.append(None)
+		line_chart.add(library.name, issue_list)
+	data = line_chart.render_data_uri()
+	saveData(data, domain + '_issue_response_chart.pkl')
+	return data
+
+def create_issue_closing_chart(domain):
+	filename = domain + '_issue_closing_chart.pkl'
+	data = loadData(filename)
+	if data != None:
+		return data
+	line_chart = pygal.Line(x_label_rotation=90, show_minor_x_labels=False, height=300)
+	selected_domain = Domain.objects.get(name=domain)
+	libraries = selected_domain.library_set.all()
+	issue_date_set = set()
+	for issue in Issue.objects.all():
+		if issue.first_response_date != None:
+			issue_date_set.add(issue.creation_date)
+
+	issue_date_list = sorted(list(issue_date_set))
+	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), issue_date_list)
+	line_chart.x_labels_major = [issue_date_list[0].strftime('%b %d %Y'),
+	  issue_date_list[-1].strftime('%b %d %Y')]
+	line_chart.title = 'Issue Closing Times. X_axis = number of days, Y_axis = issue creation date'
+
+	for library in libraries:
+		issues = library.issue_set.all()
+		issue_list = []
+		for i in range(0, len(issue_date_list)):
+			found = False;
+			for j in range(0, len(issues)):
+				if issues[j].closing_date != None and issue_date_list[i] == issues[j].creation_date:
+					found = True
+					issue_list.append(int((issues[j].closing_date - issues[j].creation_date).total_seconds())/86400)
+			if found == False:
+				issue_list.append(None)
+		line_chart.add(library.name, issue_list)
+	data = line_chart.render_data_uri()
+	saveData(data, domain + '_issue_closing_chart.pkl')
+	return data
+
+
+def create_issue_classification_chart(domain):
+	filename = domain + '_issue_classification_chart.pkl'
+	data = loadData(filename)
+	if data != None:
+		return data
+	line_chart = pygal.StackedBar(height=200)
+	selected_domain = Domain.objects.get(name=domain)
+	libraries = selected_domain.library_set.all()
+
+	library_names = []
+	performance_issues = []
+	security_issues = []
+	performance_security_issues = []
+	no_classification_issues = []
+	for library in libraries:
+		library_names.append(library.name)
+		performance_issues.append(library.issue_set.all().filter(performance_issue=True, security_issue=False).count())
+		security_issues.append(library.issue_set.all().filter(security_issue=True, performance_issue=False).count())
+		performance_security_issues.append(library.issue_set.all().filter(security_issue=True, performance_issue=True).count())
+		no_classification_issues.append(library.issue_set.all().filter(security_issue=False, performance_issue=False).count())
+	line_chart.x_labels = library_names
+	line_chart.add('Performance', performance_issues)
+	line_chart.add('Security', security_issues)
+	line_chart.add('Both', performance_security_issues)
+	line_chart.add('None', no_classification_issues)
+	data = line_chart.render_data_uri()
+	saveData(data, domain + '_issue_classification_chart.pkl')
+	return data
 
 def fillPopularityData():
         with open("popularity_results.txt") as f:
