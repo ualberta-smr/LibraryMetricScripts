@@ -1,0 +1,155 @@
+On branch master
+Your branch is up-to-date with 'origin/master'.
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	deleted:    ../Cryptography_breaking_changes_chart.pkl
+	deleted:    ../Cryptography_issue_classification_chart.pkl
+	deleted:    ../Cryptography_issue_closing_chart.pkl
+	deleted:    ../Cryptography_issue_response_chart.pkl
+	deleted:    ../Cryptography_popularity_chart.pkl
+	deleted:    ../Cryptography_release_chart.pkl
+	deleted:    ../Testing_breaking_changes_chart.pkl
+	deleted:    ../Testing_issue_classification_chart.pkl
+	deleted:    ../Testing_issue_closing_chart.pkl
+	deleted:    ../Testing_issue_response_chart.pkl
+	deleted:    ../Testing_last_discussed_chart.pkl
+	deleted:    ../Testing_last_modification_chart.pkl
+	deleted:    ../Testing_popularity_chart.pkl
+	deleted:    ../Testing_release_chart.pkl
+	modified:   ../db.sqlite3
+	modified:   __pycache__/issues.cpython-35.pyc
+	modified:   __pycache__/license.cpython-35.pyc
+	modified:   __pycache__/releasefrequency.cpython-35.pyc
+	modified:   addlibraries.py
+	deleted:    addlibraries.py~
+	deleted:    breakingchanges/cloneRepo.sh~
+	modified:   breakingchanges/countChanges.sh
+	modified:   filldb.py
+	deleted:    github_bug_repositories.txt
+	deleted:    issueclosingtime.pkl
+	deleted:    issuedata.pkl
+	deleted:    issueresponsetime.pkl
+	deleted:    issues.py
+	deleted:    jiralibraries.txt
+	deleted:    lastdiscussedSO.pkl
+	deleted:    lastdiscussedSO.py
+	deleted:    lastmodificationdate.pkl
+	deleted:    lastmodificationdate.py
+	deleted:    librarytags.txt
+	deleted:    license.pkl
+	deleted:    license.py
+	deleted:    performanceclassifier.py
+	deleted:    performancedataset.xlsx
+	deleted:    performancewords.txt
+	deleted:    popularity.sh
+	deleted:    popularity_results.txt
+	deleted:    releasefrequency.pkl
+	deleted:    releasefrequency.py
+	deleted:    repositories.txt
+	deleted:    search_results.txt
+	deleted:    securityclassifier.py
+	deleted:    securitydataset.xlsx
+	deleted:    securitywords.txt
+	modified:   update.py
+	deleted:    update.py~
+	deleted:    ../templates/chart.html
+	modified:   ../templates/faq.html
+	deleted:    ../templates/index.html
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	../charts/
+	../librarycomparison/__pycache__/__init__.cpython-35.pyc
+	../librarycomparison/__pycache__/admin.cpython-35.pyc
+	../librarycomparison/__pycache__/apps.cpython-35.pyc
+	../librarycomparison/__pycache__/models.cpython-35.pyc
+	../librarycomparison/__pycache__/views.cpython-35.pyc
+	../librarycomparison/migrations/0010_auto_20180803_1948.py
+	../librarycomparison/migrations/0011_auto_20180804_0412.py
+	../librarycomparison/migrations/0012_auto_20180805_0134.py
+	../librarycomparison/migrations/0013_auto_20180805_0136.py
+	../librarycomparison/migrations/0014_auto_20180805_0148.py
+	../librarycomparison/migrations/0015_auto_20180814_1830.py
+	../librarycomparison/migrations/0016_feedback.py
+	../librarycomparison/migrations/__pycache__/0001_initial.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0002_auto_20180618_1024.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0003_auto_20180620_1509.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0004_auto_20180620_1516.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0005_auto_20180620_1518.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0006_auto_20180627_1622.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0007_auto_20180723_1954.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0008_auto_20180724_1113.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0009_auto_20180724_1129.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0010_auto_20180803_1948.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0011_auto_20180804_0412.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0012_auto_20180805_0134.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0013_auto_20180805_0136.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0014_auto_20180805_0148.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0015_auto_20180814_1830.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/0016_feedback.cpython-35.pyc
+	../librarycomparison/migrations/__pycache__/__init__.cpython-35.pyc
+	../metricwebsite/__pycache__/__init__.cpython-35.pyc
+	../metricwebsite/__pycache__/settings.cpython-35.pyc
+	../metricwebsite/__pycache__/urls.cpython-35.pyc
+	../metricwebsite/__pycache__/wsgi.cpython-35.pyc
+	IssueMetrics/
+	LastDiscussedOnStackOverflow/
+	LastModificationDate/
+	License/
+	Popularity/
+	ReleaseFrequency/
+	SharedFiles/
+	breakingchanges/Repositories/Mallet/
+	breakingchanges/Repositories/bc-java/
+	breakingchanges/Repositories/blitz4j/
+	breakingchanges/Repositories/chimera/
+	breakingchanges/Repositories/commons-collections/
+	breakingchanges/Repositories/commons-crypto/
+	breakingchanges/Repositories/commons-email/
+	breakingchanges/Repositories/commons-lang/
+	breakingchanges/Repositories/commons-logging/
+	breakingchanges/Repositories/conceal/
+	breakingchanges/Repositories/conscrypt/
+	breakingchanges/Repositories/deeplearning4j/
+	breakingchanges/Repositories/derby/
+	breakingchanges/Repositories/dom4j/
+	breakingchanges/Repositories/easymock/
+	breakingchanges/Repositories/eclipse-collections/
+	breakingchanges/Repositories/elki/
+	breakingchanges/Repositories/fastutil/
+	breakingchanges/Repositories/gson/
+	breakingchanges/Repositories/guava/
+	breakingchanges/Repositories/h2database/
+	breakingchanges/Repositories/hibernate-orm/
+	breakingchanges/Repositories/high-scale-lib/
+	breakingchanges/Repositories/hppc/
+	breakingchanges/Repositories/jcommon/
+	breakingchanges/Repositories/jdom/
+	breakingchanges/Repositories/jmock-library/
+	breakingchanges/Repositories/json-simple/
+	breakingchanges/Repositories/keyczar/
+	breakingchanges/Repositories/logback/
+	breakingchanges/Repositories/logging-log4j2/
+	breakingchanges/Repositories/lsql/
+	breakingchanges/Repositories/mahout/
+	breakingchanges/Repositories/mapdb/
+	breakingchanges/Repositories/minlog/
+	breakingchanges/Repositories/moa/
+	breakingchanges/Repositories/mockito/
+	breakingchanges/Repositories/mybatis-3/
+	breakingchanges/Repositories/ormlite-android/
+	breakingchanges/Repositories/powermock/
+	breakingchanges/Repositories/shiro/
+	breakingchanges/Repositories/slf4j/
+	breakingchanges/Repositories/smile/
+	breakingchanges/Repositories/spongycastle/
+	breakingchanges/Repositories/spring-security/
+	breakingchanges/Repositories/tinylog/
+	breakingchanges/Repositories/vertx-mail-client/
+	breakingchanges/Repositories/xerces2-j/
+	temp.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")

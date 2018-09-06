@@ -27,7 +27,9 @@ def saveData(data):
 def getLastDiscussedDates():
   data = loadLastDiscussedSOData()
 
-  with open("librarytags.txt") as f:
+  rel_path = "SharedFiles/librarytags.txt"
+  file_path = os.path.join(os.pardir, rel_path)
+  with open(file_path) as f:
     tags = f.readlines()
   tags = [x.strip() for x in tags]
 

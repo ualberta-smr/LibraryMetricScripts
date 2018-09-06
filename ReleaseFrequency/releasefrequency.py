@@ -53,7 +53,9 @@ def saveData(data):
 def getReleaseDates(username, password):
         data = loadReleaseFrequencyData()
 
-        with open("repositories.txt") as f:
+        rel_path = "SharedFiles/repositories.txt"
+        file_path = os.path.join(os.pardir, rel_path)
+        with open(file_path) as f:
                 repositories = f.readlines()
         repositories = [x.strip() for x in repositories]
 

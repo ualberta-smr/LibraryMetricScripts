@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#To add a new library, add the prefix of the Java package here in the array of packages. 
 declare -a packages=("org.junit" "org.testng" "org.slf4j" "org.apache.log4j" "ch.qos.logback" "org.apache.commons.logging"
 "org.pmw.tinylog" "com.netflix.blitz4j" "com.esotericsoftware.minlog" "com.google.common" "org.apache.commons.lang" "org.mockito" "org.easymock"
 "org.powermock" "org.jmock" "org.bouncycastle" "org.apache.commons.crypto" "com.facebook.crypto" "com.intel.chimera"
@@ -9,6 +10,7 @@ declare -a packages=("org.junit" "org.testng" "org.slf4j" "org.apache.log4j" "ch
 "org.cliffc.high_scale_lib" "org.eclipse.collections" "com.facebook.util" "cc.mallet" "smile" "org.deeplearning4j" "moa" "de.lmu.ifi.dbs.elki"
 "org.apache.mahout")
 
+#Add the repository of the library here
 declare -a repositories=("junit-team/junit4"
 "cbeust/testng"
 "qos-ch/slf4j"
@@ -60,7 +62,10 @@ declare -a repositories=("junit-team/junit4"
 "elki-project/elki"
 "apache/mahout")
 
+#This array keeps track of the client project counts for each library. Make sure that this matches the number of repositories
 declare -a counts=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+
+rm popularity_results.txt
 
 while IFS= read -r line
 do
@@ -75,7 +80,7 @@ do
     for i in "${packages[@]}"
     do
 	if grep -q -r --include '*.java' "import $i" "CurrentRepository";then
-	    echo "$i"
+	    #echo "$i" >> popularity_results.txt
 	    counts[$count]=$((${counts[$count]}+1))
 	fi
 	count=$((count+1))
@@ -87,7 +92,7 @@ done < "$1"
 count=0
 for i in "${repositories[@]}"
 do
-    echo "$i:${counts[$count]}"
+    echo "$i:${counts[$count]}" >> popularity_results.txt
     count=$((count+1))
 done
 

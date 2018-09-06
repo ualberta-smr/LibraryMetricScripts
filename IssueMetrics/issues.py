@@ -235,10 +235,10 @@ def applyClassifiers():
   saveData(issue_data, 'issuedata.pkl')
 
 def main():
-  #username = input("Enter Github username: ")
-  #password = getpass.getpass("Enter your password: ")
-  #getIssueData(username, password)
-  #getIssueDataJIRA()
+  username = input("Enter Github username: ")
+  password = getpass.getpass("Enter your password: ")
+  getIssueData(username, password)
+  getIssueDataJIRA()
   calculateAverageResponseTime()
   calculateAverageClosingTime()
   applyClassifiers()

@@ -1,8 +1,0 @@
-stephenc/high-scale-lib
-eclipse/eclipse-collections
-facebook/jcommon
-mimno/Mallet
-haifengl/smile
-deeplearning4j/deeplearning4j
-Waikato/moa
-elki-project/elki
