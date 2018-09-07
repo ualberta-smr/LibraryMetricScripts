@@ -1,4 +1,5 @@
-#Extracts the Issue Closing Time (in days) of a library based on its Github repository.
+#Description:
+# - Extracts the Issue Closing Time (in days) of a library based on its Github repository.
 #
 #Requirements: 
 # - You will need to install PyGithub
