@@ -1,4 +1,5 @@
 import os
+import sys
 import pickle
 from github import Github, Repository, GitTag
 from github.GithubException import UnknownObjectException
@@ -24,7 +25,10 @@ def getLicenses(username, password):
         data = loadLicenseData()
 
         rel_path = "SharedFiles/repositories.txt"
-        file_path = os.path.join(os.pardir, rel_path)
+        if os.path.isdir('SharedFiles'):
+                file_path = rel_path
+        else:
+                file_path = os.path.join(os.pardir, rel_path)
         with open(file_path) as f:
                 repositories = f.readlines()
         repositories = [x.strip() for x in repositories]
@@ -45,8 +49,12 @@ def getLicenses(username, password):
 
 
 def main():
-        username = input("Enter Github username: ")
-        password = getpass.getpass("Enter your password: ")
+        if len(sys.argv) == 3:
+                username = sys.argv[1]
+                password = sys.argv[2]
+        else:
+                username = input("Enter Github username: ")
+                password = getpass.getpass("Enter your password: ")
         getLicenses(username, password)
 
 if __name__ == "__main__":

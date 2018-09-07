@@ -28,7 +28,11 @@ def getLastDiscussedDates():
   data = loadLastDiscussedSOData()
 
   rel_path = "SharedFiles/librarytags.txt"
-  file_path = os.path.join(os.pardir, rel_path)
+  if os.path.isdir('SharedFiles'):
+    file_path = rel_path
+  else:
+    file_path = os.path.join(os.pardir, rel_path)
+    
   with open(file_path) as f:
     tags = f.readlines()
   tags = [x.strip() for x in tags]

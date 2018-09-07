@@ -1,4 +1,5 @@
 import os
+import sys
 import pickle
 from github import Github, Repository, GitTag
 import getpass
@@ -23,7 +24,10 @@ def getLastModificationDates(username, password):
         data = loadLastModificationDateData()
 
         rel_path = "SharedFiles/repositories.txt"
-        file_path = os.path.join(os.pardir, rel_path)
+        if os.path.isdir('SharedFiles'):
+                file_path = rel_path
+        else:
+                file_path = os.path.join(os.pardir, rel_path)
         
         with open(file_path) as f:
                 repositories = f.readlines()
@@ -47,8 +51,12 @@ def getLastModificationDates(username, password):
 
 
 def main():
-        username = input("Enter Github username: ")
-        password = getpass.getpass("Enter your password: ")
+        if len(sys.argv) == 3:
+                username = sys.argv[1]
+                password = sys.argv[2]
+        else:
+                username = input("Enter Github username: ")
+                password = getpass.getpass("Enter your password: ")
         getLastModificationDates(username, password)
         
 if __name__ == "__main__":

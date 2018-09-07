@@ -24,10 +24,6 @@ def saveData(data, filename):
     pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def create_popularity_chart(domain):
-	filename = domain + '_popularity_chart.pkl'
-	data = loadData(filename)
-	if data != None:
-		return data
 	bar_chart = pygal.Bar(height=200)
 	selected_domain = Domain.objects.get(name=domain)
 	libraries = selected_domain.library_set.all()
@@ -38,10 +34,6 @@ def create_popularity_chart(domain):
 	return data
 
 def create_release_chart(domain):
-	filename = domain + '_release_chart.pkl'
-	data = loadData(filename)
-	if data != None:
-		return data
 	line_chart = pygal.Line(x_label_rotation=90, height = 200, show_minor_x_labels=False)
 	selected_domain = Domain.objects.get(name=domain)
 	libraries = selected_domain.library_set.all()
@@ -87,14 +79,9 @@ def parseDateString(date_string):
 	return dates
 
 def create_last_discussed_chart(domain):
-        filename = domain + '_last_discussed_chart.pkl'
-        data = loadData(filename)
-        if data != None:
-                return data
         line_chart = pygal.Line(x_label_rotation=90, height = 200, show_minor_x_labels=False, dots_size=5)
         selected_domain = Domain.objects.get(name=domain)
         libraries = selected_domain.library_set.all()
-        #releases_dict = {}
         date_set = set()
         for library in libraries:
                 print(library.name)
@@ -135,10 +122,6 @@ def create_last_discussed_chart(domain):
         return data
 
 def create_last_modification_chart(domain):
-	filename = domain + '_last_modification_chart.pkl'
-	data = loadData(filename)
-	if data != None:
-		return data
 	line_chart = pygal.Line(x_label_rotation=90, height = 200, show_minor_x_labels=False, dots_size=5)
 	selected_domain = Domain.objects.get(name=domain)
 	libraries = selected_domain.library_set.all()
@@ -178,10 +161,6 @@ def create_last_modification_chart(domain):
 	return data
 
 def create_breaking_changes_chart(domain):
-	filename = domain + '_breaking_changes_chart.pkl'
-	data = loadData(filename)
-	if data != None:
-		return data
 	line_chart = pygal.Line(x_label_rotation=90, show_minor_x_labels=False)
 	selected_domain = Domain.objects.get(name=domain)
 	libraries = selected_domain.library_set.all()
@@ -216,10 +195,6 @@ def create_breaking_changes_chart(domain):
 	return data
 
 def create_issue_response_chart(domain):
-	filename = domain + '_issue_response_chart.pkl'
-	data = loadData(filename)
-	if data != None:
-		return data
 	line_chart = pygal.Line(x_label_rotation=90, show_minor_x_labels=False, height=300)
 	selected_domain = Domain.objects.get(name=domain)
 	libraries = selected_domain.library_set.all()
@@ -251,10 +226,6 @@ def create_issue_response_chart(domain):
 	return data
 
 def create_issue_closing_chart(domain):
-	filename = domain + '_issue_closing_chart.pkl'
-	data = loadData(filename)
-	if data != None:
-		return data
 	line_chart = pygal.Line(x_label_rotation=90, show_minor_x_labels=False, height=300)
 	selected_domain = Domain.objects.get(name=domain)
 	libraries = selected_domain.library_set.all()
@@ -287,10 +258,6 @@ def create_issue_closing_chart(domain):
 
 
 def create_issue_classification_chart(domain):
-	filename = domain + '_issue_classification_chart.pkl'
-	data = loadData(filename)
-	if data != None:
-		return data
 	line_chart = pygal.StackedBar(height=200)
 	selected_domain = Domain.objects.get(name=domain)
 	libraries = selected_domain.library_set.all()
@@ -481,6 +448,17 @@ def fillOverallScore():
                 library.overall_score = score*max_score_value/number_of_metrics
                 library.save()
 
+def createCharts():
+  for domain in Domain.objects.all():
+    create_popularity_chart(domain.name)
+    create_release_chart(domain.name)
+    create_breaking_changes_chart(domain.name)
+    create_issue_response_chart(domain.name)
+    create_issue_closing_chart(domain.name)
+    create_issue_classification_chart(domain.name)
+    create_last_discussed_chart(domain.name)
+    create_last_modification_chart(domain.name)
+
 if __name__ == '__main__':
         fillPopularityData()
         fillReleaseFrequencyData()
@@ -492,3 +470,4 @@ if __name__ == '__main__':
         fillIssueResponseTimeData()
         fillIssueData()
         fillOverallScore()
+        createCharts()
