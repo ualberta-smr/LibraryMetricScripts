@@ -1,7 +1,15 @@
-#This script will extract the Security metrics 
-#Requirements: Need the list of security keywords (securitywords.txt) and security dataset (securitydataset.xlsx)
-#              Needs the list of repositories (repositories.txt)
-#              You will need to install Pygithub, and some other libraries (nltk, etc).
+#Description: 
+# - This script will extract the Security metrics, that is, the percentage of bugs
+# in the issue tracking system of a library detected as related to security.
+#Requirements: 
+# - You will need to install Pygithub, and some other libraries (nltk, etc).
+#Input:
+# - The list of security keywords (securitywords.txt)
+# - The security dataset (securitydataset.xlsx)
+# - The list of repositories (repositories.txt)
+#Output:
+# A line printed to stdout for each of the libraries in repositories.txt with the following format:
+#[library] - Security: [percentage of issues detected as security-related]
 #HOW TO USE: Just run the script.
 
 import re
