@@ -1,7 +1,15 @@
-#This script will extract the Performance metrics 
-#Requirements: Need the list of performance keywords (performancewords.txt) and performance dataset (performancedataset.xlsx)
-#              Needs the list of repositories (repositories.txt)
-#              You will need to install Pygithub, and some other libraries (nltk, etc).
+#Description: 
+# - This script will extract the Performance metrics, that is, the percentage of bugs
+# in the issue tracking system of a library detected as related to performance.
+#Requirements: 
+# - You will need to install Pygithub, and some other libraries (nltk, etc).
+#Input:
+# - The list of performance keywords (performancewords.txt)
+# - The performance dataset (performancedataset.xlsx)
+# - The list of repositories (repositories.txt)
+#Output:
+# A line printed to stdout for each of the libraries in repositories.txt with the following format:
+#[library] - Performance: [percentage of issues detected as performance-related]
 #HOW TO USE: Just run the script.
 
 import re
