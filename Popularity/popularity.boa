@@ -1,9 +1,15 @@
-#Obtains the number of client projects of a library using the BOA.
+# Description:
+# - Obtains the number of client projects of a library using the BOA mining software infrastructure.
 #
 #Requirements: 
 # - You will need to use BOA to run this script (see http://boa.cs.iastate.edu/boa/)
+#Input:
+# - The libraries you want to analyze (See the comments in the code below)
+#Output
+# - BOA will print a line with each of the library names, followed by the number of client projects. If BOA did not find any client
+# projects, the library name will not be printed.
 #How to run: 
-# - Just run the script with repositories.txt in the same directory.
+# - Just paste the code in BOA and run it
 # - As the BOA dataset does not dynamically change, you will only need to run this once (until a new dataset is released) 
 
 #Libraries and respective packages strings we used:
