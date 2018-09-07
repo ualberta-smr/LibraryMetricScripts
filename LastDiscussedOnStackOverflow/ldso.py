@@ -1,8 +1,15 @@
-#Extracts the date of the last question posted on Stack Overflow with the given tag of a library.
-#
+#Description: 
+# - Extracts the date of the last question posted on Stack Overflow with the given tag of a library.
 #Requirements: 
 # - You will need to change the value of user_api_key to your Stack Exchange API token
 # - You will need to install PyStackExchange.
+#Input:
+# File librarytags.txt with the Stackoverflow tags of the libraries.
+#Output:
+# The following line will be printed to stdout for each of the libraries in librarytags.txt:
+#[library] - Last Discussed On Stack Overflow: [date]
+#OR if no questions were found for a library, the following line will be printed
+#[library] - No questions found for this tag
 #How to run: 
 # - Just run the script.
 
