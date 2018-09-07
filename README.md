@@ -7,4 +7,4 @@ Additionally, we include a submodule called `MetricBasedComparisonSurvey` which 
 
 # Contributors
 - Fernando López de la Mora (lopezdel at ualberta dot ca)
-- Sarah Nadi (snadi at ualberta dot ca)
+- Sarah Nadi (nadi at ualberta dot ca)
