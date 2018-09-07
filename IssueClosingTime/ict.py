@@ -3,7 +3,12 @@
 #Requirements: 
 # - You will need to install PyGithub
 # - You will need to input your Github credentials to make use of the Github API
-# - Needs a file with the library repository names (repositories.txt)
+#Input:
+# - A file with the library repository names (repositories.txt)
+#Output:
+# - A line with the the average Issue Closing Time in days for each repository in
+#   repositories.txt in the following format (printed to stdout):
+#[repository] - Issue Closing Time: [average number of days]
 #How to run: 
 # - Just run the script with repositories.txt in the same directory.
 
