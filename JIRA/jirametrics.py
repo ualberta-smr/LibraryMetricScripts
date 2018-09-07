@@ -1,7 +1,17 @@
-#This script will extract the Issue Response Time, Issue Closing Time, Performance, and Security metrics for JIRA libraries
-#The list of libraries can be found in the 'dict' dictionary of this file. 
-#Requirements: Need the list of security keywords (securitywords.txt), performance keywords (performancewords.txt)
-#              Needs the security dataset (securitydataset.xlsx) and performance dataset (performancedataset.xlsx)
+#Description:
+# - This script will extract the Issue Response Time, Issue Closing Time, Performance, and Security metrics for JIRA libraries
+#  The list of libraries can be found in the 'dict' dictionary of this file. 
+#Input: 
+# - The list of security keywords (securitywords.txt)
+# - The performance keywords (performancewords.txt)
+# - The security dataset (securitydataset.xlsx)
+# - The performance dataset (performancedataset.xlsx)
+#Output:
+#The following lines will be printed to stdout for each of the libraries in the dict dictionary of this file:
+#[library] - Issue Response Time: [average number of days]
+#[library] - Issue Closing Time: [average number of days]
+#[library] - Security: [percentage of detected security issues in the issue tracking system]
+#[library] - Performance [percentage of detected performance issues in the issue tracking system]
 #HOW TO USE: Just run the script.
 #             To use with another library, add another entry to this dict with its corresponding JIRA issues URL in XML format
 
