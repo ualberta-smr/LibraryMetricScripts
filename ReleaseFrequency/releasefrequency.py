@@ -1,9 +1,14 @@
-#Obtains the Release Frequency (in days) of a library based on its Github repository.
+# Description:
+# - Obtains the Release Frequency (in days) of a library based on its Github repository.
 #
 #Requirements: 
 # - You will need to install PyGithub
 # - You will need to input your Github credentials to make use of the Github API
-# - Needs a file with the library repository names (repositories.txt)
+#Input:
+# - A file with the library repository names (repositories.txt)
+#Output:
+# - A line will be printed to stdout for each of the libraries in repositories.txt with the following format:
+#[library] - Release Frequency: [release frequency in average number of days]
 #How to run: 
 # - Just run the script with repositories.txt in the same directory.
 
