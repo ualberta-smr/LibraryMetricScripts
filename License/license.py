@@ -1,3 +1,16 @@
+#Description: 
+# - Extracts the license of a Github repository.
+#Requirements: 
+# - You will need to enter your Github credentials
+#Input:
+# File SharedFiles/repositories.txt with the list of library repositories
+#Output:
+# A pickle file called license.pkl, which will contain a dictionary where the key is a library repository, and the value of each key is
+#a string containing the license used in the repository:
+#[library repository] => [repository license]
+#How to run: 
+# - Just run the script.
+
 import os
 import sys
 import pickle
