@@ -1,7 +1,21 @@
+#Description: 
+# - Extracts the dates of the last 5 questions posted on Stack Overflow with the given tag of a library.
+#Requirements: 
+# - You will need to change the value of user_api_key to your Stack Exchange API token
+# - You will need to install PyStackExchange.
+#Input:
+# File SharedFiles/librarytags.txt with the Stackoverflow tags of the libraries.
+#Output:
+# A pickle file called lastdiscussedSO.pkl, which will contain a dictionary where the key is a library tag, and the value of each key is
+#a string containing dates in format %m/%d/%Y separated by semicolons:
+#[library tag] => %m/%d/%Y;%m/%d/%Y;%m/%d/%Y;%m/%d/%Y;%m/%d/%Y
+#How to run: 
+# - Just run the script.
+
 import os
 import pickle
 
-user_api_key = "kIqL02JIr5xqq99D*ckRiA(("
+user_api_key = "your stack exchange user API key here"
 
 import stackexchange
 so = stackexchange.Site(stackexchange.StackOverflow, app_key=user_api_key, impose_throttling=True)
