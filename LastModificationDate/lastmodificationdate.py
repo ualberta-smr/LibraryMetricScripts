@@ -1,3 +1,17 @@
+#Description: obtains the Last 5 Modification Dates (last commit) of a library based on its Github repository.
+#
+#Requirements: 
+# - You will need to install PyGithub
+# - You will need to input your Github credentials to make use of the Github API
+#Input:
+# - A file with the library repository names (SharedFiles/repositories.txt)
+#Output:
+# A pickle file called lastmodificationdate.pkl, which will contain a dictionary where the key is a library repository, and the value is each key is
+#a string containing dates in format %m/%d/%Y separated by semicolons:
+#[library repository] => "%m/%d/%Y;%m/%d/%Y;%m/%d/%Y;%m/%d/%Y;%m/%d/%Y"
+#How to run: 
+# - Run the script with repositories.txt
+
 import os
 import sys
 import pickle
