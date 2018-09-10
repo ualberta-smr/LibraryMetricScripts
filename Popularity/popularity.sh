@@ -1,4 +1,10 @@
 #!/bin/bash
+#Description: This metric counts the number of client projects of the libraries defined in repositories.
+#How to use: ./popularity search_results.txt
+#Input: search_results (file with repositories whose source code will be searched for Java import statements)
+#Output: popularity_results.txt (file which will have a line in the following format for each of the libraries)
+#[library]:[number of client projects]
+#
 
 #To add a new library, add the prefix of the Java package here in the array of packages. 
 declare -a packages=("org.junit" "org.testng" "org.slf4j" "org.apache.log4j" "ch.qos.logback" "org.apache.commons.logging"
