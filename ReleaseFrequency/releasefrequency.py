@@ -1,3 +1,18 @@
+# Description:
+# - Obtains the Release Frequency (in days) of a library based on its Github repository. Additionally, this script the date and name of
+# all releases of a library (see class ReleaseData)
+#
+#Requirements: 
+# - You will need to install PyGithub
+# - You will need to input your Github credentials to make use of the Github API
+#Input:
+# - A file with the library repository names (SharedFiles/repositories.txt)
+#Output:
+# - A pickle file called releasefrequency.pkl which will contain a dictionary where the key is the name of the repository and the
+#value is a ReleaseData object (which contains a list of names of releases with its dates)
+#How to run: 
+# - Just run the script.
+
 import os
 import sys
 import pickle
