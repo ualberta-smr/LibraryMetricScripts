@@ -6,7 +6,7 @@ echo -n Password:
 read -s password
 
 echo "Obtaining Popularity..."
-#./Popularity/popularity.sh search_results.txt
+./Popularity/popularity.sh search_results.txt
 
 echo "Obtaining Release Frequency..."
 cd ReleaseFrequency
@@ -45,10 +45,19 @@ rm breakingchanges.csv
 cd ..
 
 echo "Updating database..."
+cp Popularity/popularity_results.txt .
 cp ReleaseFrequency/*.pkl .
 cp License/*.pkl .
-cp LastModificationDate/*.pkl
-cp LastDiscussedOnStackOverflow/*.pkl
+cp LastModificationDate/*.pkl .
+cp LastDiscussedOnStackOverflow/*.pkl .
 cp IssueMetrics/*.pkl .
+cp IssueMetrics/performanceclassifier.py .
+cp IssueMetrics/securityclassifier.py .
 cp breakingchanges/*.csv .
 python3 filldb.py
+rm performanceclassifier.py
+rm securityclassifier.py
+rm breakingchanges.csv
+rm popularity_results.txt
+mv *_chart.pkl ../charts
+rm *.pkl

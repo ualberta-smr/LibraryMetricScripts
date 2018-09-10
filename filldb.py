@@ -11,15 +11,14 @@ django.setup()
 
 from librarycomparison.models import Domain, Library, Issue, Release
 
-from releasefrequency import ReleaseData, loadReleaseFrequencyData
-from license import loadLicenseData
-from lastmodificationdate import loadLastModificationDateData
-from lastdiscussedSO import loadLastDiscussedSOData
-from issues import loadData, IssueData
+from ReleaseFrequency.releasefrequency import ReleaseData, loadReleaseFrequencyData
+from License.license import loadLicenseData
+from LastModificationDate.lastmodificationdate import loadLastModificationDateData
+from LastDiscussedOnStackOverflow.lastdiscussedSO import loadLastDiscussedSOData
+from IssueMetrics.issues import loadData, IssueData
 from datetime import datetime, timezone
 
 def saveData(data, filename):
-  filename = 'charts/' + filename
   with open(filename, 'wb') as output:
     pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
