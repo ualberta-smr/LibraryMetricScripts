@@ -1,3 +1,24 @@
+#Description:
+# - This file extracts the Issue Closing Time (in days), the Issue Response Time, and the Performance and Security metrics of a library
+# based on its Github repository.
+#
+#Requirements: 
+# - You will need to install PyGithub
+# - You will need to input your Github credentials to make use of the Github API
+#Input:
+# - github_bug_repositories.txt - the list of repositories whose bug reports are hosted on Github
+# - jiralibraries.txt - a list of libraries whose bug reports are hosted on JIRA
+# - performanceclassifier.py - the machine learning performance classifier used to classify performance issues
+# - securityclassifier.py - the machine learning performance classifier used to classify security issues
+# - performancedataset.xlsx, performancewords.txt, securitydataset.xlsx, securitywords.txt <- files needed for the classifiers
+#Output:
+# issuedata.pkl - a pickle file containing a dictionary where the key is a repository and its value is a list of IssueData objects (see class)
+# issueresponsetime.pkl a piclkle file containing a dictionary where the key is a repository and its value is the issue response time in days (stored as float)
+# issueclosingtime.pkl a piclkle file containing a dictionary where the key is a repository and its value is the issue closing time in days (stored as float)
+#
+#How to run: 
+# - Just run the script (make sure the input files are in the same directory)
+
 import getpass
 import sys
 import pickle
