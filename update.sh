@@ -60,4 +60,5 @@ rm securityclassifier.py
 rm breakingchanges.csv
 rm popularity_results.txt
 mv *_chart.pkl ../charts
+rm -rf breakingchanges/Repositories/*
 rm *.pkl
