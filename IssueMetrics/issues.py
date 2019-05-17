@@ -29,11 +29,11 @@ import time
 from datetime import datetime
 from github import Github, Repository
 from github.GithubException import UnknownObjectException, RateLimitExceededException, GithubException
-from performanceclassifier import PerformanceClassifier
-from securityclassifier import SecurityClassifier
+from IssueMetrics.performanceclassifier import PerformanceClassifier
+from IssueMetrics.securityclassifier import SecurityClassifier
 
 class IssueData:
-
+IssueMetrics.
   def __init__(self, issue_id):
     self.issue_id = issue_id
     self.title = None
