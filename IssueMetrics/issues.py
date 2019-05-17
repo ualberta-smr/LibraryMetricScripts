@@ -33,7 +33,7 @@ from IssueMetrics.performanceclassifier import PerformanceClassifier
 from IssueMetrics.securityclassifier import SecurityClassifier
 
 class IssueData:
-IssueMetrics.
+
   def __init__(self, issue_id):
     self.issue_id = issue_id
     self.title = None
