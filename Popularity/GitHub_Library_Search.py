@@ -1,3 +1,5 @@
+#THIS is not the final product, I will fix it up and add proper comments when done. Some of these comments are just for myself to keep track so if they don't make sense then just ask :)
+
 #This code is for the popularity metric for the Library comparison website. It takes libraries from the library.txt file and variables from an ini file and retreives the number of times that each library was imported in Github in the previous year. 
 
 import time
@@ -14,7 +16,7 @@ def gitHubStep1(f, termdic, QUERY, g, sleep1, sleep2, max_size):
   
   #check github for rate limit 
   try:  
-    rate_limit =g.get_rate_limit()
+    rate_limit=g.get_rate_limit()
     rate = rate_limit.search
     
     #this reate limit is not accurate as github may stop you before you reach your limit.
@@ -31,7 +33,7 @@ def gitHubStep1(f, termdic, QUERY, g, sleep1, sleep2, max_size):
       msgbox = "Found " + str(result.totalCount) + " file(s)"
       print(msgbox)
     except:
-      GotoSleep("Error Detected in files found, Go to sleep for ", sleep1) #I think change this to sleep2 i.e. 10 minutes 
+      GotoSleep("Error Detected in files found, Go to sleep for ", sleep1) #I think change this to sleep2 i.e. 10 minutes, might make more sense --> test it out and see
             
     returnValue = result.totalCount
     if result.totalCount >= max_size:    
@@ -90,14 +92,17 @@ def stripResuls(txt):
     word = part1+ "/" + txt[:x]
     return word
 
-# main gitHubCall, if the results are larger than the max size allowed per call. then we re call it again with smaller interval time, hardcoded now to 1 day.
+# main gitHubCall, if the results are larger than the max size allowed per call, Re-call it again with smaller interval time (for now, hardcoded to 1 day).
+
+#UPDATE THIS FUNCTION TO FIX THE QUERY SO THAT IT DOES NOT HAVE THE END DATE AND ADD PUSHED!!!-----------
+
 def gitHubCall(f, termdic, current, interval,term, g, sleep1, sleep2, max_size):    
     Q_sub = term + "  " + formatDate(current,interval) 
     noofresults = gitHubStep1(f, termdic, Q_sub, g, sleep1, sleep2, max_size)
     
     if noofresults >= max_size:
         increment = 1
-        print (" Exceeds max ")
+        print ("Exceeds max ")
         while increment < interval:
             Q_sub = term + "  " + formatDate(current,1)   
             noofresults = gitHubStep1(f, termdic, Q_sub, g, sleep1, sleep2, max_size)
@@ -111,6 +116,7 @@ def gitHubCall(f, termdic, current, interval,term, g, sleep1, sleep2, max_size):
 def formatDate(tempDate,interval):
     return str(tempDate) + " .. " + str(tempDate + datetime.timedelta(days=interval))
 
+
 def QueryDates(f, termdic, current_Date, end_Date, interval,term, g, sleep1, sleep2, max_size):
      
     while (current_Date <= end_Date):
@@ -120,6 +126,8 @@ def QueryDates(f, termdic, current_Date, end_Date, interval,term, g, sleep1, sle
           current_Date = current_Date + datetime.timedelta(days=interval)          
           GotoSleep("Force to sleep after each iteration, Go to sleep for ", sleep1)
                    
+
+
 # function to open and read the text file that has all libraries    
 def readLibraries(filenameLib):
     array = []
@@ -197,6 +205,6 @@ def main():
       sendtotalstofile(foutname, keyword, len(termdic.keys()) )
      # GotoSleep("Soon to start a new library search, Go to sleep for ", sleep1)
              
-    print ("\nFinally ..... Execution is over \n")
+    print ("\nFinally... Execution is over \n")
 
 main()
