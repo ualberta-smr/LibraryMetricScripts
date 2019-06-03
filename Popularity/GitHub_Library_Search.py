@@ -200,13 +200,13 @@ def main():
     current_Date = start_Date # this is the current date that will change by interval after each successful iteration
     
     #Maps results to their respective libraries and outputs the results into popularity_results.txt
-    resultDict = readLibraries(configDict["LIBRARY"]) # read all libraries to search against
+    LibraryDict = readLibraries(configDict["LIBRARY"]) # read all libraries to search against
     foutname = "popularity_results.txt"  # this is the output file that we are going to send libraries with their total counts to. No duplications here
    
     fout = open(foutname, "w")  
     fout.close()  
     
-    for keyword,repo in resultDict.items(): 
+    for keyword,repo in LibraryDict.items(): 
       f = "Results-" + keyword + ".txt"  # this is a text file that will contain all repository founds per library, duplication occurs here
       term = "\"import " + keyword + "\" in:file" + " " + configDict["SEARCHTERM"]          
       filename = open(f, "w")
