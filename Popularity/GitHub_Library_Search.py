@@ -199,21 +199,21 @@ def main():
     interval = int(dictContst["INTERVAL"]) # the time span between each iteration
     current_Date = start_Date # this is the current date that will change by interval after each successful iteration
     
-    arr = readLibraries(dictContst["LIBRARY"]) # read all libraries to search against
-    foutname = "Results" + str(start_Date) + "-" + str(end_Date) + ".txt" # this is the output file that we are going to send libraries with their total counts to. No duplications here
-    
+    #Maps results to their respective libraries and outputs the results into popularity_results.txt
+    resultdic = readLibraries(configDict["LIBRARY"]) # read all libraries to search against
+    foutname = "popularity_results.txt"  # this is the output file that we are going to send libraries with their total counts to. No duplications here
+   
     fout = open(foutname, "w")  
     fout.close()  
     
-    for keyword in arr:      
-      f = "Results-" + keyword + "-" + str(start_Date) + "-" + str(end_Date) + ".txt"  # this is a text file that will contain all repository founds per library, duplication occurs here     
-      term = "import " + keyword + dictContst["SEARCHTERM"]      
+    for keyword,repo in resultdic.items(): 
+      f = "Results-" + keyword + ".txt"  # this is a text file that will contain all repository founds per library, duplication occurs here
+      term = "\"import " + keyword + "\" in:file" + " " + configDict["SEARCHTERM"]          
       filename = open(f, "w")
       filename.close()
       termdic = {}
-      QueryDates(f, termdic, current_Date, end_Date, interval,term, g, sleep1, sleep2, max_size) 
-      sendtotalstofile(foutname, keyword, len(termdic.keys()) )
-     # GotoSleep("Soon to start a new library search, Go to sleep for ", sleep1)
+      QuerySize(f, termdic, current_Date, end_Date, interval,term, g, sleep1, sleep2, max_size,Size1,Size2) 
+      sendtotalstofile(foutname, repo, len(termdic.keys()))
              
     print ("\nFinally... Execution is over \n")
 
