@@ -177,6 +177,16 @@ def main():
     
     dictContst = readIniFile() # read all ini data
     
+    if dictContst["YEARLY"] == "FALSE":
+      start_Date = paersedate(dictContst["STARTDATE"])    # start date of the search
+      end_Date = paersedate(dictContst["ENDDATE"])    # enddate date of the search
+    else:
+      start_Date =  datetime.datetime.now() - datetime.timedelta(days=365)
+      end_Date = datetime.datetime.now()
+      
+    Size1 = int(dictContst["SIZE1"])
+    Size2 = int(dictContst["SIZE2"])
+    
     start_Date = paersedate(dictContst["STARTDATE"])    # start date of the search
     end_Date = paersedate(dictContst["ENDDATE"])    # enddate date of the search
     sleep1 = int (dictContst["SLEEP1"]) # regular sleep after each iteration
