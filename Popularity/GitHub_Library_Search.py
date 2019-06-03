@@ -175,28 +175,27 @@ def paersedate(line):
   
 def main():
     
-    dictContst = readIniFile() # read all ini data
+    configDict = readIniFile() # read all ini data
     
-    if dictContst["YEARLY"] == "FALSE":
-      start_Date = paersedate(dictContst["STARTDATE"])    # start date of the search
-      end_Date = paersedate(dictContst["ENDDATE"])    # enddate date of the search
+    if configDict["YEARLY"] == "FALSE":
+      start_Date = paersedate(configDict["STARTDATE"])    # start date of the search
+      end_Date = paersedate(configDict["ENDDATE"])    # enddate date of the search
     else:
       start_Date =  datetime.datetime.now() - datetime.timedelta(days=365)
       end_Date = datetime.datetime.now()
       
-    Size1 = int(dictContst["SIZE1"])
-    Size2 = int(dictContst["SIZE2"])
+    Size1 = int(configDict["SIZE1"])
+    Size2 = int(configDict["SIZE2"])
     
-    start_Date = paersedate(dictContst["STARTDATE"])    # start date of the search
-    end_Date = paersedate(dictContst["ENDDATE"])    # enddate date of the search
-    sleep1 = int (dictContst["SLEEP1"]) # regular sleep after each iteration
-    sleep2 = int (dictContst["SLEEP2"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
-    max_size = int (dictContst["MAXSIZE"]) # max pages returned per gitHub call, for now it is 1000, but could be changed in the future
+    sleep1 = int (configDict["SLEEP1"]) # regular sleep after each iteration
+    sleep2 = int (configDict["SLEEP2"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
+    
+    max_size = int (configDict["MAXSIZE"]) # max pages returned per gitHub call, for now it is 1000, but could be changed in the future
     
     g = None
-    g = Github(dictContst["TOKEN"])   # pass the connection token 
+    g = Github(configDict["TOKEN"])   # pass the connection token 
     
-    interval = int(dictContst["INTERVAL"]) # the time span between each iteration
+    interval = int(configDict["INTERVAL"]) # the time span between each iteration
     current_Date = start_Date # this is the current date that will change by interval after each successful iteration
     
     #Maps results to their respective libraries and outputs the results into popularity_results.txt
