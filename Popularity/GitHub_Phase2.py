@@ -121,13 +121,13 @@ def main():
     
     interval = int(configDict["INTERVAL"]) # the time span between each iteration
     
-    resultdic = readLibraries(configDict["LIBRARY"]) # read all libraries to search against
+    library_dict = readLibraries(configDict["LIBRARY"]) # read all libraries to search against
     foutname = "popularity_results.txt"  # this is the output file that we are going to send libraries with their total counts to. No duplications here
     
     fout = open(foutname, "w")  
     fout.close()  
     
-    for keyword,repo in resultdic.items():  
+    for keyword,repo in library_dict.items():  
       
       Query = "\"import " + keyword + "\" "  + configDict["SEARCHTERM"]                
       frequency = SearchCodeinRepo(interval, Query, g, sleep1, sleep2, max_size, Repo_Array) 
