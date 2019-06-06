@@ -15,7 +15,6 @@ import sys
 from github import Github
 from datetime import date
 
-
 #This is a sleep function so pause the script since GitHub does not allow frequent calls.
 def GotoSleep (msg, timeofSleep):
   
@@ -31,15 +30,13 @@ def GotoSleep (msg, timeofSleep):
   ErrorMsg = "....    " + "Waked up @ " + st
   print (ErrorMsg) 
 
-
 #Outputs all the repositories found into a text file
 def outputtofile(f, repo):
     filename = open(f, "a")
     filename.write(str(repo))
     filename.write("\n")
     filename.close()
-        
-       
+             
 #This is where we query for the top repositories 
 def QueryRepo(foutname, interval,QUERY, g, sleep1, sleep2, max_size):
    
@@ -86,8 +83,6 @@ def QueryRepo(foutname, interval,QUERY, g, sleep1, sleep2, max_size):
     # error detection, just in case
   except:
     GotoSleep("Error: abuse detection mechanism detected,Go to sleep for ", sleep2)
-    
-    return -1 # -1 means a problem detected and we need to re-read the same pages again after sleep
   
 #Reads the ini file data into dict.
 #NOTE TO SELF: REMOVE THIS FUNCTION AND ADD A LIBRARY THAT CAN DO THIS FOR ME ----------

@@ -9,7 +9,6 @@ Output:     A text file called popularity_results.txt which has each library alo
 
 import time
 import datetime
-
 import random
 import sys
 from github import Github
@@ -29,7 +28,6 @@ def GotoSleep (msg, timeofSleep):
   st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') 
   ErrorMsg = "....    " + "Waked up @ " + st
   print (ErrorMsg) 
-
 
 #This is where the search happens, an api query is used to collect results. 
 #The query looks like this: "import LIBRARY-NAME" language:java repo:REPO-NAME
@@ -65,7 +63,7 @@ def SearchCodeinRepo(interval, QUERY, g, sleep1, sleep2, max_size, Repo_Array):
           GotoSleep("Force to sleep after each iteration, Go to sleep for ", sleep1)
     except:
       GotoSleep("Error: abuse detection mechanism detected,Go to sleep for ", sleep2)
-      RollBack = True # -1 means a problem detected and we need to re-read the same pages again after sleep. no change of date
+      RollBack = True 
       
   return frequency 
 
@@ -81,7 +79,6 @@ def readLibraries(filenameLib):
             
     return libdict
   
-# save each library and its frequency in the provided search range
 def sendtotalstofile(fout, keyword, nofound):
   fout = open(fout, "a")  
   fout.write(keyword + ":" + str(nofound) + "\n")
@@ -108,29 +105,12 @@ def readIniFile():
             valuekey = line[:loc]
             dictKeys[keyword] = valuekey
     return dictKeys
-
-# convert string date to date object
-def paersedate(line):
-    
-    line = line.rstrip()
-    loc = line.index("/")
-    keyword = line[:loc]
-    line = line[loc+1:]
-    c_year = int(keyword)
-    
-    loc = line.index("/")
-    keyword = line[:loc]
-    line = line[loc+1:]
-    c_month = int(keyword)
-    c_day = int(line)
-    
-    return (date(c_year, c_month, c_day))
   
 def main():
     
     configDict = readIniFile() # read all ini data
     Repo_Array = ReadRepos()    
-   # print (len(Repo_Array))
+    #print (len(Repo_Array))
     
     sleep1 = int (configDict["SLEEP1"]) # regular sleep after each iteration
     sleep2 = int (configDict["SLEEP2"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
