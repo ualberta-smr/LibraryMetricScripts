@@ -16,35 +16,35 @@ from github import Github
 from datetime import date
 
 #This is a sleep function so pause the script since GitHub does not allow frequent calls.
-def GotoSleep (msg, timeofSleep):
+def go_to_sleep (msg, time_of_sleep):
   
-  ts = time.time()
-  st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')   
-  ErrorMsg = "....    " + msg + str(timeofSleep) + " seconds, Sleeping @ " + st
-  print (ErrorMsg) 
+  time_stamp = time.time()
+  start_date = datetime.datetime.fromtimestamp(time_stamp).strftime('%Y-%m-%d %H:%M:%S')   
+  error_msg = "....    " + msg + str(time_of_sleep) + " seconds, Sleeping @ " + start_date
+  print (error_msg) 
   
-  time.sleep( timeofSleep )  # actual Sleep
+  time.sleep(time_of_sleep)  # actual Sleep
   
-  ts = time.time()  
-  st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') 
-  ErrorMsg = "....    " + "Waked up @ " + st
-  print (ErrorMsg) 
+  time_stamp = time.time()  
+  start_date = datetime.datetime.fromtimestamp(time_stamp).strftime('%Y-%m-%d %H:%M:%S') 
+  error_msg = "....    " + "Waked up @ " + start_date
+  print (error_msg) 
 
 #Outputs all the repositories found into a text file
-def outputtofile(f, repo):
-    filename = open(f, "a")
-    filename.write(str(repo))
-    filename.write("\n")
-    filename.close()
+def output_to_file(repos_file, repo):
+    file_name = open(repos_file, "a")
+    file_name.write(str(repo))
+    file_name.write("\n")
+    file_name.close()
              
 #This is where we query for the top repositories 
-def QueryRepo(foutname, interval,QUERY, g, sleep1, sleep2, max_size):
+def query_repo(output_file_name, interval, base_query, github, quick_sleep, error_sleep, max_size):
    
   #check github for rate limit 
   try:
     
     #check github for rate limit 
-    rate_limit =g.get_rate_limit()
+    rate_limit = github.get_rate_limit()
     rate = rate_limit.search
     print("The rate limit is "+ str(rate.limit))
     if rate.remaining == 0:
@@ -54,18 +54,18 @@ def QueryRepo(foutname, interval,QUERY, g, sleep1, sleep2, max_size):
       print(f'You have {rate.remaining}/{rate.limit} API calls remaining')
       
     # max_size
-    print (QUERY)
-    Final_Q = QUERY
+    print (base_query)
+    final_query = base_query
     
     cnt_General = 1
     while cnt_General < max_size:
-      print (Final_Q)
-      result = g.search_repositories(Final_Q, sort='stars', order='desc')
+      print (final_query)
+      result = github.search_repositories(final_query, sort='stars', order='desc')
       cnt = 1
       pgno = 1      
       while cnt <= 300:            
         for repo in result.get_page(pgno):
-          outputtofile(foutname, repo.full_name)
+          output_to_file(output_file_name, repo.full_name)
           #res = str(pgno)+ "--" + str(cnt)+ ":" + repo.full_name + "("+str(repo.stargazers_count)+")"
           cnt = cnt + 1
           cnt_General = cnt_General + 1
@@ -76,17 +76,17 @@ def QueryRepo(foutname, interval,QUERY, g, sleep1, sleep2, max_size):
           
           stars = repo.stargazers_count
         pgno = pgno + 1  
-      Final_Q =  QUERY + " stars:<" + str(stars)
+      final_query =  base_query + " stars:<" + str(stars)
    
-      GotoSleep("Force to sleep after each iteration, Go to sleep for ", sleep1)
+      go_to_sleep("Force to sleep after each iteration, Go to sleep for ", quick_sleep)
 
     # error detection, just in case
   except:
-    GotoSleep("Error: abuse detection mechanism detected,Go to sleep for ", sleep2)
+    go_to_sleep("Error: abuse detection mechanism detected,Go to sleep for ", error_sleep)
   
 #Reads the ini file data into dict.
 #NOTE TO SELF: REMOVE THIS FUNCTION AND ADD A LIBRARY THAT CAN DO THIS FOR ME ----------
-def readIniFile():
+def read_ini_file():
     dictKeys = {}
     with open("GitHubSearch.ini", "r") as f:
         for line in f:
@@ -102,27 +102,27 @@ def readIniFile():
 #Main function where we set the variables from the configuration file and connect to github 
 def main():
     
-    dictContst = readIniFile() # read all ini data    
+    dictContst = read_ini_file() # read all ini data    
     start_Date =  date.today() - datetime.timedelta(days=365) 
     
-    sleep1 = int (dictContst["SLEEP1"]) # regular sleep after each iteration
-    sleep2 = int (dictContst["SLEEP2"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
+    quick_sleep = int (dictContst["SLEEP1"]) # regular sleep after each iteration
+    error_sleep = int (dictContst["SLEEP2"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
     interval = int(dictContst["INTERVAL"]) # the time span between each iteration
     max_size = int (dictContst["MAXSIZE"]) # max pages returned per gitHub call, for now it is 1000, but could be changed in the future
     
-    g = None
-    g = Github(dictContst["TOKEN"])   # pass the connection token 
+    github = None
+    github = Github(dictContst["TOKEN"])   # pass the connection token 
     
-    foutname = "Top_Repo.txt"  # this is the output file that we are going to send libraries with their total counts to. No duplications here
+    output_file_name = "Top_Repo.txt"  # this is the output file that we are going to send repo names to
     
-    fout = open(foutname, "w")  
-    fout.close()      
+    output_file = open(output_file_name, "w")  
+    output_file.close()      
     
-    Query = "pushed:>" + str(start_Date) + " " + dictContst["SEARCHTERM"]          
-    print (Query)
+    query = "pushed:>" + str(start_Date) + " " + dictContst["SEARCHTERM"]          
+    print (query)
    
-    QueryRepo(foutname, interval, Query, g, sleep1, sleep2, max_size) 
+    query_repo(output_file_name, interval, query, github, quick_sleep, error_sleep, max_size) 
              
-    print ("\n Finally ..... Execution is over \n")
+    print ("\nFinally ..... Execution is over \n")
       
 main()

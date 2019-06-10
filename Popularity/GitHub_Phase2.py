@@ -15,86 +15,95 @@ from github import Github
 from datetime import date
 
 #This is a sleep function so pause the script since GitHub does not allow frequent calls.
-def GotoSleep (msg, timeofSleep):
+def go_to_sleep (msg, time_of_sleep):
   
-  ts = time.time()
-  st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')   
-  ErrorMsg = "....    " + msg + str(timeofSleep) + " seconds, Sleeping @ " + st
-  print (ErrorMsg) 
+  time_stamp = time.time()
+  start_date = datetime.datetime.fromtimestamp(time_stamp).strftime('%Y-%m-%d %H:%M:%S')   
+  error_msg = "....    " + msg + str(time_of_sleep) + " seconds, Sleeping @ " + start_date
+  print (error_msg) 
   
-  time.sleep( timeofSleep )  #actual Sleep
+  time.sleep(time_of_sleep)  #actual Sleep
   
-  ts = time.time()  
-  st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') 
-  ErrorMsg = "....    " + "Waked up @ " + st
-  print (ErrorMsg) 
+  time_stamp = time.time()  
+  start_date = datetime.datetime.fromtimestamp(time_stamp).strftime('%Y-%m-%d %H:%M:%S') 
+  error_msg = "....    " + "Waked up @ " + start_date
+  print (error_msg) 
 
 #This is where the search happens, an api query is used to collect results. 
 #The query looks like this: "import LIBRARY-NAME" language:java repo:REPO-NAME
 #For each Query, if we get ANY results then that means the library was used in that repo
 #If we get ZERO results, it means it was not used in that repo
-def SearchCodeinRepo(interval, QUERY, g, sleep1, sleep2, max_size, Repo_Array):
+def search_code_in_repo(interval, query, github, quick_sleep, error_sleep, max_size, Repo_Array):
    
-  RollBack = True
-  while RollBack:
-    RollBack = False
+  roll_back = True
+  while roll_back:
+    roll_back = False
     frequency = 0
     #check github for rate limit 
     try:
-      rate_limit =g.get_rate_limit()
+    
+      rate_limit = github.get_rate_limit()
       rate = rate_limit.search            
       # this reate limit is not accurate as github may stop you before you reach your limit.
       print ("search limit: " + str(rate) + ". Reset Time: " + str(rate.reset))
       if rate.remaining == 0:
         #print(f'You have 0/{rate.limit} API calls remianing. Reset time: {rate.reset}')            
-        GotoSleep("No more resources to use, Go to sleep for ", sleep2)  
-
-      cnt = 1  
-      for repo in Repo_Array:
-        cnt = cnt + 1 
-        Query_Final = QUERY + " repo:"+repo
-        print (Query_Final)
-        msgbox = ""
-        result = None
-        result = g.search_code(Query_Final)  
-        if  result.totalCount > 0:             
-          frequency =  frequency + 1
-        if cnt % 15 == 0:
-          GotoSleep("Force to sleep after each iteration, Go to sleep for ", sleep1)
-    except:
-      GotoSleep("Error: abuse detection mechanism detected,Go to sleep for ", sleep2)
-      RollBack = True 
+        go_to_sleep("No more resources to use, Go to sleep for ", error_sleep)  
+           
+      loc = 0
+      tracking_counter = 1
+      arraysize = len(Repo_Array)     
+      while loc < arraysize:      
+        try:
+          tracking_counter = tracking_counter + 1                    
+          Query_Final = query + " repo:"+Repo_Array[loc] 
+          loc = loc + 1
+          msg = str(loc) + " out of " + str (arraysize) + " Query : " + Query_Final
+          print (msg)
+          result = None
+          result = github.search_code(Query_Final)        
+          num_found = result.totalCount      
+          if  num_found > 0:
+            frequency =  frequency + 1      
+          if tracking_counter % 15 == 0:
+            go_to_sleep("Force to sleep after each iteration, Go to sleep for ", quick_sleep)          
+        except:             
+          loc = loc - 1
+          go_to_sleep("Error: Internal abuse detection mechanism detected,Go to sleep for ", error_sleep)
       
+    except:
+      go_to_sleep("Error: abuse detection mechanism detected,Go to sleep for ", error_sleep)
+      roll_back = True # -1 means a problem detected and we need to re-read the same pages again after sleep. no change of date
+   
   return frequency 
-
-def readLibraries(filenameLib):
-    libdict = {}
-    with open(filenameLib, "r") as f:
+ 
+def read_libraries(filename_lib):
+    lib_dict = {}
+    with open(filename_lib, "r") as f:
         for line in f:
             line = line.rstrip()
             loc = line.index(":")
             lib_repository = line[:loc]
             lib_package = line[loc+1:]
-            libdict[lib_package]=lib_repository            
+            lib_dict[lib_package] = lib_repository            
             
-    return libdict
+    return lib_dict
   
-def sendtotalstofile(fout, keyword, nofound):
-  fout = open(fout, "a")  
-  fout.write(keyword + ":" + str(nofound) + "\n")
-  fout.close()  
+def send_totals_to_file(output_file, keyword, num_found):
+  output_file = open(output_file, "a")  
+  output_file.write(keyword + ":" + str(num_found) + "\n")
+  output_file.close()  
 
-def ReadRepos():
-    repoArray = []
+def read_repos():
+    repo_array = []
     with open("Top_Repo.txt", "r") as f:
         for line in f:          
-            repoArray.append(line.rstrip())
-    return repoArray
+            repo_array.append(line.rstrip())
+    return repo_array
 
 #Reads the ini file data into dict.
-#NOTE TO SELF: REMOVE THIS FUNCTION AND ADD A LIBRARY THAT CAN DO THIS FOR ME ----------
-def readIniFile():
-    dictKeys = {}
+def read_ini_file():
+    dict_keys = {}
     with open("GitHubSearch.ini", "r") as f:
         for line in f:
             line = line.rstrip()
@@ -102,36 +111,35 @@ def readIniFile():
             keyword = line[1:loc]
             line = line[loc+2:]
             loc = line.index("]")
-            valuekey = line[:loc]
-            dictKeys[keyword] = valuekey
-    return dictKeys
+            value_key = line[:loc]
+            dict_keys[keyword] = value_key
+    return dict_keys
   
 def main():
     
-    configDict = readIniFile() # read all ini data
-    Repo_Array = ReadRepos()    
-    #print (len(Repo_Array))
+    config_dict = read_ini_file() # read all ini data
+    repo_array = read_repos()    
     
-    sleep1 = int (configDict["SLEEP1"]) # regular sleep after each iteration
-    sleep2 = int (configDict["SLEEP2"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
-    max_size = int (configDict["MAXSIZE"]) # max number of results returned per gitHub call, for now it is 1500, but could be changed in the future
+    quick_sleep = int (config_dict["SLEEP1"]) # regular sleep after each iteration
+    error_sleep = int (config_dict["SLEEP2"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
+    max_size = int (config_dict["MAXSIZE"]) # max number of results returned per gitHub call, for now it is 1500, but could be changed in the future
     
     g = None
-    g = Github(configDict["TOKEN"])   # pass the connection token 
+    g = Github(config_dict["TOKEN"])   # pass the connection token 
     
-    interval = int(configDict["INTERVAL"]) # the time span between each iteration
+    interval = int(config_dict["INTERVAL"]) # the time span between each iteration
     
-    library_dict = readLibraries(configDict["LIBRARY"]) # read all libraries to search against
-    foutname = "popularity_results.txt"  # this is the output file that we are going to send libraries with their total counts to. No duplications here
+    library_dict = read_libraries(config_dict["LIBRARY"]) # read all libraries to search against
+    output_file_name = "popularity_results.txt"  # this is the output file that we are going to send libraries with their total counts to
     
-    fout = open(foutname, "w")  
-    fout.close()  
+    output_file = open(output_file_name, "w")  
+    output_file.close()  
     
     for keyword,repo in library_dict.items():  
       
-      Query = "\"import " + keyword + "\" "  + configDict["SEARCHTERM"]                
-      frequency = SearchCodeinRepo(interval, Query, g, sleep1, sleep2, max_size, Repo_Array) 
-      sendtotalstofile(foutname, repo, frequency )
+      query = "\"import " + keyword + "\" "  + config_dict["SEARCHTERM"]                
+      frequency = search_code_in_repo(interval, query, g, quick_sleep, error_sleep, max_size, repo_array) 
+      send_totals_to_file(output_file_name, repo, frequency )
        
     print ("\n Finally ..... Execution is over \n")    
     
