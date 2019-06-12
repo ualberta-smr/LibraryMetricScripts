@@ -56,12 +56,12 @@ def search_code_in_repo(interval, query, github, quick_sleep, error_sleep, max_s
       while loc < arraysize:      
         try:
           tracking_counter = tracking_counter + 1                    
-          Query_Final = query + " repo:"+Repo_Array[loc] 
+          query_Final = query + " repo:"+Repo_Array[loc] 
           loc = loc + 1
-          msg = str(loc) + " out of " + str (arraysize) + " Query : " + Query_Final
+          msg = str(loc) + " out of " + str (arraysize) + " Query : " + query_Final
           print (msg)
           result = None
-          result = github.search_code(Query_Final)        
+          result = github.search_code(query_Final)        
           num_found = result.totalCount      
           if  num_found > 0:
             frequency =  frequency + 1      
