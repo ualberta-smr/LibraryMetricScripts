@@ -64,6 +64,7 @@ def query_repo(output_file_name, interval, base_query, github, quick_sleep, erro
       result = github.search_repositories(final_query, sort='stars', order='desc')
       cnt = 1
       pgno = 1      
+    # 300 is how many repo's the script reads at a time (it was kept at 300 as reading more than that may result in a crash of the Github object 
       while cnt <= 300:            
         for repo in result.get_page(pgno):
           output_to_file(output_file_name, repo.full_name)
