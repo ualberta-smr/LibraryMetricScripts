@@ -36,15 +36,15 @@ def search_code_in_repo(query, github, quick_sleep, error_sleep, max_size, Repo_
         #print(f'You have 0/{rate.limit} API calls remianing. Reset time: {rate.reset}')            
         Common_Utilities.go_to_sleep("No more resources to use, Go to sleep for ", error_sleep)  
            
-      loc = 0
+      index = 0
       tracking_counter = 1
       arraysize = len(Repo_Array)     
-      while loc < arraysize:      
+      while index < arraysize:      
         try:
           tracking_counter = tracking_counter + 1                    
-          query_final = query + " repo:"+Repo_Array[loc] 
-          loc = loc + 1
-          msg = str(loc) + " out of " + str (arraysize) + " Query : " + query_final
+          query_final = query + " repo:"+Repo_Array[index] 
+          index = index + 1
+          msg = str(index) + " out of " + str (arraysize) + " Query : " + query_final
           print (msg)
           result = None
           result = github.search_code(query_final)        
@@ -54,7 +54,7 @@ def search_code_in_repo(query, github, quick_sleep, error_sleep, max_size, Repo_
           if tracking_counter % 15 == 0:
             Common_Utilities.go_to_sleep("Force to sleep after each iteration, Go to sleep for ", quick_sleep)          
         except:             
-          loc = loc - 1
+          index = index - 1
           Common_Utilities.go_to_sleep("Error: Internal abuse detection mechanism detected,Go to sleep for ", error_sleep)
       
     except:
@@ -110,7 +110,7 @@ def main():
     
     for keyword,repo in library_dict.items():  
       
-      query = "\"import " + keyword + "\" "  + config_dict["SEARCHTERM"]                
+      query = "\"import " + keyword + "\" "  + config_dict["SEARCHTERM"]  
       frequency = search_code_in_repo(query, g, quick_sleep, error_sleep, max_size, repo_array) 
       send_totals_to_file(output_file_name, repo, frequency )
        
