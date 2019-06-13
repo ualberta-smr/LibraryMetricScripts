@@ -2,7 +2,7 @@
 		"TOKEN": "a973b10eb159639b02ff2627514cf0018e938528",
 		"SLEEP1": "60",
 		"SLEEP2": "180",
-		"LIBRARY": "LibraryData.json",
+		"LIBRARY": "../LibraryData.json",
 		"SEARCHTERM":"language:Java",
 		"MAXSIZE": "1000"
 	}
