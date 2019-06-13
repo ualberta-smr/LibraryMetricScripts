@@ -4,5 +4,6 @@
 		"ERROR_SLEEP": "180",
 		"LIBRARY_LIST": "../LibraryData.json",
 		"SEARCHTERM":"language:Java",
-		"MAXSIZE": "1000"
+		"MAXSIZE": "1000",
+		"OUTPUT_FILE":"popularity_results"
 	}
