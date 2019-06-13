@@ -95,8 +95,8 @@ def main():
     config_dict = Common_Utilities.read_ini_file() # read all ini data
     repo_array = read_repos()    
     
-    quick_sleep = int (config_dict["SLEEP1"]) # regular sleep after each iteration
-    error_sleep = int (config_dict["SLEEP2"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
+    quick_sleep = int (config_dict["QUICK_SLEEP"]) # regular sleep after each iteration
+    error_sleep = int (config_dict["ERROR_SLEEP"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
     max_size = int (config_dict["MAXSIZE"]) # max number of results returned per gitHub call, for now it is 1500, but could be changed in the future
     
     g = None

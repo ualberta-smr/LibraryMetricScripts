@@ -28,7 +28,7 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
     try: #check github for rate limit 
         rate_limit = github.get_rate_limit()
         rate = rate_limit.search
-        print(f'The rate limit is{rate.limit}')
+        print(f'The rate limit is {rate.limit}')
     
         if rate.remaining == 0:
             print(f'You have 0/{rate.limit} API calls remianing. Reset time: {rate.reset}')
@@ -53,10 +53,6 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
                     cnt = cnt + 1
                     cnt_General = cnt_General + 1
           
-                    #res is the results THIS IS ONLY HERE FOR NOW so that I can see the script results during the run  
-                    res = str(cnt_General)+ ":" + str(cnt) + "in page " + str(pgno) + " Stars " + str(repo.stargazers_count) 
-                    print(res)
-          
                     stars = repo.stargazers_count
                 pgno = pgno + 1  
             final_query =  base_query + " stars:<" + str(stars)
@@ -72,8 +68,8 @@ def main():
     dictContst = Common_Utilities.read_ini_file() # read all ini data    
     start_Date =  date.today() - datetime.timedelta(days=365) 
     
-    quick_sleep = int (dictContst["SLEEP1"]) # regular sleep after each iteration
-    error_sleep = int (dictContst["SLEEP2"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
+    quick_sleep = int (dictContst["QUICK_SLEEP"]) # regular sleep after each iteration
+    error_sleep = int (dictContst["ERROR_SLEEP"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
     max_size = int (dictContst["MAXSIZE"]) # max pages returned per gitHub call, for now it is 1000, but could be changed in the future
     
     github = None
