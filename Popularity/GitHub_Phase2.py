@@ -102,7 +102,7 @@ def main():
     g = None
     g = Github(config_dict["TOKEN"])   # pass the connection token 
     
-    library_dict = read_libraries(config_dict["LIBRARY"]) # read all libraries to search against
+    library_dict = read_libraries(config_dict["LIBRARY_LIST"]) # read all libraries to search against
     output_file_name = "popularity_results.txt"  # this is the output file that we are going to send libraries with their total counts to
     
     output_file = open(output_file_name, "w")  
