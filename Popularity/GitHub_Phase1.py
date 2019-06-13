@@ -65,22 +65,24 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
 #Main function where we set the variables from the configuration file and connect to github 
 def main():
     
-    dictContst = Common_Utilities.read_ini_file() # read all ini data    
-    start_Date =  date.today() - datetime.timedelta(days=365) 
+    config_dict = Common_Utilities.read_ini_file() # read all ini data    
     
-    quick_sleep = int (dictContst["QUICK_SLEEP"]) # regular sleep after each iteration
-    error_sleep = int (dictContst["ERROR_SLEEP"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
-    max_size = int (dictContst["MAXSIZE"]) # max pages returned per gitHub call, for now it is 1000, but could be changed in the future
+    time_span = int(config_dict["TIME_SPAN"])
+    start_Date =  date.today() - datetime.timedelta(days=time_span) 
+    
+    quick_sleep = int (config_dict["QUICK_SLEEP"]) # regular sleep after each iteration
+    error_sleep = int (config_dict["ERROR_SLEEP"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
+    max_size = int (config_dict["MAXSIZE"]) # max pages returned per gitHub call, for now it is 1000, but could be changed in the future
     
     github = None
-    github = Github(dictContst["TOKEN"])   # pass the connection token 
+    github = Github(config_dict["TOKEN"])   # pass the connection token 
     
     output_file_name = "Top_Repo.txt"  # this is the output file that we are going to send repo names to
     
     output_file = open(output_file_name, "w")  
     output_file.close()      
     
-    query = "pushed:>" + str(start_Date) + " " + dictContst["SEARCHTERM"]          
+    query = "pushed:>" + str(start_Date) + " " + config_dict["SEARCHTERM"]          
     print (query)
    
     query_repo(output_file_name, query, github, quick_sleep, error_sleep, max_size) 

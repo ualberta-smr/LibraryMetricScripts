@@ -5,5 +5,6 @@
 		"LIBRARY_LIST": "../LibraryData.json",
 		"SEARCHTERM":"language:Java",
 		"MAXSIZE": "1000",
-		"OUTPUT_FILE":"popularity_results"
+		"OUTPUT_FILE":"popularity_results",
+		"TIME_SPAN":"365"
 	}
