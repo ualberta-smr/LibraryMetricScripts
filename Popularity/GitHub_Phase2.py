@@ -6,12 +6,9 @@ Requires:   A configuration file called GitHubSearch.ini
 Output:     A text file called popularity_results.txt which has each library along with a number representing how many distinct repositories it was in 
 '''
 
-import time
-import datetime
 import random
 import sys
 from github import Github
-from datetime import date
 import json  
 import Common_Utilities
 
@@ -103,7 +100,8 @@ def main():
     g = Github(config_dict["TOKEN"])   # pass the connection token 
     
     library_dict = read_libraries(config_dict["LIBRARY_LIST"]) # read all libraries to search against
-    output_file_name = "popularity_results.txt"  # this is the output file that we are going to send libraries with their total counts to
+    #output_file_name = "popularity_results.txt" 
+    output_file_name = config_dict["OUTPUT_FILE"] # this is the output file that we are going to send libraries with their total counts to
     
     output_file = open(output_file_name, "w")  
     output_file.close()  
