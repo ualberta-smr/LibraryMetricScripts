@@ -16,10 +16,11 @@ from datetime import date
 import Common_Utilities
 
 #Outputs all the repositories found into a text file
-def output_to_file(repos_file, repo):
+def output_to_file(repos_file, repo_set):
     file_name = open(repos_file, "a")
-    file_name.write(str(repo))
-    file_name.write("\n")
+    for repo in repo_set:
+        file_name.write(str(repo))
+        file_name.write("\n")
     file_name.close()
              
 #This is where we query for the top repositories 
@@ -36,11 +37,12 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
         else:
             print(f'You have {rate.remaining}/{rate.limit} API calls remaining')
       
-   
         print (base_query)
         final_query = base_query
     
         cnt_General = 1
+        repo_set = set() 
+        
         while cnt_General < max_size:
             print (final_query)
             result = github.search_repositories(final_query, sort='stars', order='desc')
@@ -49,14 +51,17 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
             # 300 is how many repo's the script reads at a time (it was kept at 300 as reading more than that may result in a crash of the Github object 
             while cnt <= 300:            
                 for repo in result.get_page(pgno):
-                    output_to_file(output_file_name, repo.full_name)
+                    repo_set.add(repo.full_name) 
                     cnt = cnt + 1
                     cnt_General = cnt_General + 1
           
                     stars = repo.stargazers_count
                 pgno = pgno + 1  
-            final_query =  base_query + " stars:<" + str(stars)
+            final_query =  base_query + " stars:<=" + str(stars)
             Common_Utilities.go_to_sleep("Force to sleep after each iteration, Go to sleep for ", quick_sleep)
+        
+        output_to_file(output_file_name, repo_set)
+        
     
     # error detection, just in case
     except:
