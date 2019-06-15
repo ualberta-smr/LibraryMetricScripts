@@ -2,7 +2,7 @@
 		"TOKEN": "a973b10eb159639b02ff2627514cf0018e938528",
 		"QUICK_SLEEP": "60",
 		"ERROR_SLEEP": "180",
-		"LIBRARY_LIST": "../LibraryData.json",
+		"LIBRARY_LIST": "LibraryData.json",
 		"SEARCHTERM":"language:Java",
 		"MAXSIZE": "1000",
 		"OUTPUT_FILE":"popularity_results",
