@@ -1,0 +1,51 @@
+junit4,Testing,junit-team/junit4,junit
+testng,Testing,cbeust/testng,testng
+slf4j,Logging,qos-ch/slf4j,slf4j
+logging-log4j2,Logging,apache/logging-log4j2,log4j
+logback,Logging,qos-ch/logback,logback
+commons-logging,Logging,apache/commons-logging,apache-commons-logging
+tinylog,Logging,pmwmedia/tinylog,tinylog
+blitz4j,Logging,Netflix/blitz4j,blitz4j
+minlog,Logging,EsotericSoftware/minlog,minlog
+guava,Utilities,google/guava,guava
+commons-lang,Utilities,apache/commons-lang,apache-commons-lang
+mockito,Mocking,mockito/mockito,mockito
+easymock,Mocking,easymock/easymock,easymock
+powermock,Mocking,powermock/powermock,powermock
+jmock-library,Mocking,jmock-developers/jmock-library,jmock
+bc-java,Cryptography,bcgit/bc-java,bouncycastle
+commons-crypto,Cryptography,apache/commons-crypto,apache-commons-crypto
+conceal,Cryptography,facebook/conceal,facebook-conceal
+chimera,Cryptography,intel-hadoop/chimera,intel-chimera
+spongycastle,Cryptography,rtyley/spongycastle,spongycastle
+keyczar,Cryptography,google/keyczar,keyczar
+conscrypt,Cryptography,google/conscrypt,conscrypt
+gson,JSON,google/gson,gson
+json-simple,JSON,fangyidong/json-simple,json-simple
+jOOQ,Databases,jOOQ/jOOQ,jooq
+h2database,Databases,h2database/h2database,h2
+lsql,Databases,w11k/lsql,lsql
+derby,Databases,apache/derby,derby
+shiro,Security,apache/shiro,shiro
+spring-security,Security,spring-projects/spring-security,spring-security
+hibernate-orm,Object-relational Mapping,hibernate/hibernate-orm,hibernate
+mybatis-3,Object-relational Mapping,mybatis/mybatis-3,mybatis
+ormlite-android,Object-relational Mapping,j256/ormlite-android,ormlite
+xerces2-j,XML Processing,apache/xerces2-j,xerces2-j
+dom4j,XML Processing,dom4j/dom4j,dom4j
+jdom,XML Processing,hunterhacker/jdom,jdom
+vertx-mail-client,Mail Client,vert-x3/vertx-mail-client,vertx-mail-client
+commons-email,Mail Client,apache/commons-email,apache-commons-email
+commons-collections,Collections,apache/commons-collections,apache-commons-collection
+fastutil,Collections,vigna/fastutil,fastutil
+mapdb,Collections,jankotek/mapdb,mapdb
+hppc,Collections,carrotsearch/hppc,hppc
+high-scale-lib,Collections,stephenc/high-scale-lib,high-scale-lib
+eclipse-collections,Collections,eclipse/eclipse-collections,eclipse-collections
+jcommon,Collections,facebook/jcommon,facebook-jcommon
+Mallet,Machine Learning,mimno/Mallet,mallet
+smile,Machine Learning,haifengl/smile,smile
+deeplearning4j,Machine Learning,deeplearning4j/deeplearning4j,deeplearning4j
+moa,Machine Learning,Waikato/moa,moa
+elki,Machine Learning,elki-project/elki,elki
+mahout,Machine Learning,apache/mahout,mahout
