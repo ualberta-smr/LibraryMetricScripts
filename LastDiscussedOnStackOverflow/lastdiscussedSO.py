@@ -4,7 +4,7 @@
 # - You will need to change the value of user_api_key to your Stack Exchange API token
 # - You will need to install PyStackExchange.
 #Input:
-# File SharedFiles/librarytags.txt with the Stackoverflow tags of the libraries.
+# File scripts/LibraryData.json which contains the Stackoverflow tags of the libraries.
 #Output:
 # A pickle file called lastdiscussedSO.pkl, which will contain a dictionary where the key is a library tag, and the value of each key is
 #a string containing dates in format %m/%d/%Y separated by semicolons:
@@ -14,6 +14,7 @@
 
 import os
 import pickle
+import json 
 
 user_api_key = "your stack exchange user API key here"
 
@@ -39,17 +40,14 @@ def saveData(data):
     pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def getLastDiscussedDates():
+  
   data = loadLastDiscussedSOData()
-
-  rel_path = "SharedFiles/librarytags.txt"
-  if os.path.isdir('SharedFiles'):
-    file_path = rel_path
-  else:
-    file_path = os.path.join(os.pardir, rel_path)
-    
-  with open(file_path) as f:
-    tags = f.readlines()
-  tags = [x.strip() for x in tags]
+  
+  tags = []
+  with open('../LibraryData.json', 'r') as f:
+    LibraryData = json.loads(f.read()) 
+  for line in LibraryData:
+    tags.append(line['SOtags'])
 
   for tag in tags:
     questions = so.questions(sort='creation', order='DESC', tagged=[tag,'java'])
