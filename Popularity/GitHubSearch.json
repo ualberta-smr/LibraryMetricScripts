@@ -1,5 +1,5 @@
 	{
-		"TOKEN": "a973b10eb159639b02ff2627514cf0018e938528",
+		"TOKEN": "ENTER YOUR GITHUB KEY HERE",
 		"QUICK_SLEEP": "60",
 		"ERROR_SLEEP": "180",
 		"LIBRARY_LIST": "../LibraryData.json",
