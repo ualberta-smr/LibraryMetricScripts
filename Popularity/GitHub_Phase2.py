@@ -60,7 +60,7 @@ def search_code_in_repo(query, github, quick_sleep, error_sleep, max_size, Repo_
    
   return frequency 
  
-def read_json_file(filenameLib):  # REHABJASON
+def read_json_file(filenameLib): 
   mainArray = []
   with open(filenameLib, 'r') as myfile:
     mainArray = json.loads(myfile.read())    
@@ -71,7 +71,7 @@ def read_libraries(filenameLib):
   libdict = {}
   f = read_json_file(filenameLib)
   for line in f:
-    libdict[line['Package']]=line['FullRepName']          
+    libdict[line['Package']]=line['FullRepoName']          
             
   return libdict
   
@@ -100,7 +100,7 @@ def main():
     g = Github(config_dict["TOKEN"])   # pass the connection token 
     
     library_dict = read_libraries(config_dict["LIBRARY_LIST"]) # read all libraries to search against
-    #output_file_name = "popularity_results.txt" 
+
     output_file_name = config_dict["OUTPUT_FILE"] # this is the output file that we are going to send libraries with their total counts to
     
     output_file = open(output_file_name, "w")  
