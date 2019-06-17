@@ -6,8 +6,7 @@
 # - You will need to install PyGithub
 # - You will need to input your Github credentials to make use of the Github API
 #Input:
-# - github_bug_repositories.txt - the list of repositories whose bug reports are hosted on Github
-# - jiralibraries.txt - a list of libraries whose bug reports are hosted on JIRA
+# - LibraryData.json - includes the list of repositories whose bug reports are hosted on Github and a list of libraries whose bug reports are hosted on JIRA
 # - performanceclassifier.py - the machine learning performance classifier used to classify performance issues
 # - securityclassifier.py - the machine learning performance classifier used to classify security issues
 # - performancedataset.xlsx, performancewords.txt, securitydataset.xlsx, securitywords.txt <- files needed for the classifiers
@@ -29,8 +28,9 @@ import time
 from datetime import datetime
 from github import Github, Repository
 from github.GithubException import UnknownObjectException, RateLimitExceededException, GithubException
-from IssueMetrics.performanceclassifier import PerformanceClassifier
-from IssueMetrics.securityclassifier import SecurityClassifier
+from performanceclassifier import PerformanceClassifier
+from securityclassifier import SecurityClassifier
+import json
 
 class IssueData:
 
@@ -114,11 +114,13 @@ def calculateAverageResponseTime():
     issue_response_times[repo] = float(total_response_time/total_issues_with_comments/86400)
   saveData(issue_response_times, 'issueresponsetime.pkl')
 
-def getIssueData(username, password):
-  with open("github_bug_repositories.txt") as f:
-    repositories = f.readlines()
-  repositories = [x.strip() for x in repositories]
-  
+def getIssueData(username, password, arr):
+
+  repositories = []
+  for line in arr:    
+    if line['JIRAURL'] == "":
+      repositories.append(line['FullRepoName'])
+ 
   issue_data = loadData('issuedata.pkl')
 
   if issue_data == None:
@@ -189,19 +191,15 @@ def getIssueData(username, password):
         issue_data[repository] = [new_issue]
       saveData(issue_data, 'issuedata.pkl')
 
-def getIssueDataJIRA():
+def getIssueDataJIRA(urls):
   dict = {}
-  file_path = 'jiralibraries.txt'
-  with open(file_path) as f:
-    urls = f.readlines()
-  urls = [x.strip() for x in urls]
-
   issue_data = loadData('issuedata.pkl')
 
-  for line in urls:
-    strings = line.split('|')
-    dict[strings[0]] = strings[1]
-
+  for line in urls:    
+    if line['JIRAURL'] != "":     
+      dict[line['FullRepoName']]=line['JIRAURL']  
+  
+ 
   for repository, url in dict.items():
     print("Current repository: ", repository)
     xmlString = urllib.request.urlopen(url).read().decode('utf-8')
@@ -257,16 +255,24 @@ def applyClassifiers():
         issue.security_issue = False
   saveData(issue_data, 'issuedata.pkl')
 
-def main():
+def readJasonFile(filenameLib):
+    mainArray = []
+    with open(filenameLib, 'r') as myfile:
+        mainArray = json.loads(myfile.read())    
+    return mainArray
   
+def main():
   if len(sys.argv) == 3:
     username = sys.argv[1]
     password = sys.argv[2]
   else:
     username = input("Enter Github username: ")
     password = getpass.getpass("Enter your password: ")
-  getIssueDataJIRA()
-  getIssueData(username, password)
+  
+  arr = readJasonFile('../LibraryData.json')
+  print(arr)
+  getIssueDataJIRA(arr)
+  getIssueData(username, password, arr)
   calculateAverageResponseTime()
   calculateAverageClosingTime()
   applyClassifiers()
