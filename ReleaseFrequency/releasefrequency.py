@@ -6,7 +6,7 @@
 # - You will need to install PyGithub
 # - You will need to input your Github credentials to make use of the Github API
 #Input:
-# - A file with the library repository names (SharedFiles/repositories.txt)
+# - A file with the library repository names (LibraryData.json)
 #Output:
 # - A pickle file called releasefrequency.pkl which will contain a dictionary where the key is the name of the repository and the
 #value is a ReleaseData object (which contains a list of names of releases with its dates)
@@ -18,6 +18,7 @@ import sys
 import pickle
 from github import Github, Repository, GitTag
 import getpass
+import json
 
 class ReleaseData:
 	def __init__(self, repository):
@@ -41,7 +42,6 @@ class ReleaseData:
 		#divide the average by the number of seconds per day
 		self.release_frequency_average = float(total_seconds/number_of_differences/86400)
 
-
 def printData(data):
 	for repo, dates in data.items():
 		print(repo)
@@ -56,6 +56,7 @@ def loadReleaseFrequencyData():
 			try:
 				print("Loading data")
 				data = pickle.load(input)
+				print("done")
 				#print(data)
 				printData(data)
 			except EOFError:
@@ -67,35 +68,35 @@ def saveData(data):
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def getReleaseDates(username, password):
-        data = loadReleaseFrequencyData()
+	
+	data = loadReleaseFrequencyData()
 
-        rel_path = "SharedFiles/repositories.txt"
-        if os.path.isdir('SharedFiles'):
-                file_path = rel_path
-        else:
-                file_path = os.path.join(os.pardir, rel_path)
-        with open(file_path) as f:
-                repositories = f.readlines()
-        repositories = [x.strip() for x in repositories]
-
-        g = Github(username, password)
-
-        for repository in repositories:
-                if repository in data:
-                        continue
-
-                r = g.get_repo(repository)
-
-                release_data = ReleaseData(repository)
-
-                #Obtain the date of the git tag
-                for tag in r.get_tags():
-                        release_data.addReleaseDate(tag.commit.commit.author.date)
-                        release_data.addReleaseName(tag.name)
-                release_data.calculateReleaseFrequency()
-
-                data[repository] = release_data
-                saveData(data)
+	repositories = []
+	with open('../LibraryData.json', 'r') as f:
+		LibraryData = json.loads(f.read()) 
+	for line in LibraryData:
+		repositories.append(line['FullRepoName'])
+	
+	g = Github(username, password)
+	
+	print(repositories)
+	
+	for repository in repositories:
+		
+		if repository in data:
+			continue
+		
+		r = g.get_repo(repository)
+		release_data = ReleaseData(repository)
+		
+		#Obtain the date of the git tag
+		for tag in r.get_tags():
+			release_data.addReleaseDate(tag.commit.commit.author.date)
+			release_data.addReleaseName(tag.name)
+		release_data.calculateReleaseFrequency()
+		
+		data[repository] = release_data
+		saveData(data)
 
 def main():
         if len(sys.argv) == 3:
@@ -109,5 +110,4 @@ def main():
         getReleaseDates(username, password)
 
 if __name__ == "__main__":
-  main()
-
+	main()
