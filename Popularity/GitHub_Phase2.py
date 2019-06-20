@@ -64,9 +64,9 @@ def search_code_in_repo(query, github, quick_sleep, error_sleep, max_size, Repo_
    
   return frequency 
    
-def read_libraries():
+def read_libraries(file_path):
   libdict = {}
-  f = read_json_file()
+  f = read_json_file(file_path)
   for line in f:
     libdict[line['Package']]=line['FullRepoName']          
             
@@ -96,7 +96,7 @@ def main():
     g = None
     g = Github(config_dict["TOKEN"])   # pass the connection token 
     
-    library_dict = read_libraries() # read all libraries to search against
+    library_dict = read_libraries(config_dict["LIBRARY_LIST"]) # read all libraries to search against
 
     output_file_name = config_dict["OUTPUT_FILE"] # this is the output file that we are going to send libraries with their total counts to
     
