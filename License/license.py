@@ -12,12 +12,16 @@
 # - Just run the script.
 
 import os
-import sys
 import pickle
 from github import Github, Repository, GitTag
 from github.GithubException import UnknownObjectException
 import getpass
 import json 
+
+#This makes the utility_tool visible from this file
+import sys
+sys.path.append('../')
+from SharedFiles.utility_tool import read_json_file
 
 def loadLicenseData():
 	data = {}
@@ -39,8 +43,7 @@ def getLicenses(username, password):
 	data = loadLicenseData()
 
 	repositories = []
-	with open('../LibraryData.json', 'r') as f:
-		LibraryData = json.loads(f.read()) 
+	LibraryData = read_json_file('../SharedFiles/LibraryData.json')
 	for line in LibraryData:
 		repositories.append(line['FullRepoName'])
 	
