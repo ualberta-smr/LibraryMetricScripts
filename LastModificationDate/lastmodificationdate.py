@@ -13,11 +13,15 @@
 # - Run the script with repositories.txt
 
 import os
-import sys
 import pickle
 from github import Github, Repository, GitTag
 import getpass
 import json
+
+#This makes the utility_tool visible from this file
+import sys
+sys.path.append('../')
+from SharedFiles.utility_tool import read_json_file
 
 def loadLastModificationDateData():
 	data = {}
@@ -38,10 +42,9 @@ def saveData(data):
 def getLastModificationDates(username, password):
 	
 	data = loadLastModificationDateData()
-	
+	  
 	repositories = []
-	with open('../LibraryData.json', 'r') as f:
-		LibraryData = json.loads(f.read()) 
+	LibraryData = read_json_file('../SharedFiles/LibraryData.json')
 	for line in LibraryData:
 		repositories.append(line['FullRepoName'])
 	
