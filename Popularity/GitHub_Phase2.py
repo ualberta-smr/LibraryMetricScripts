@@ -7,10 +7,14 @@ Output:     A text file called popularity_results.txt which has each library alo
 '''
 
 import random
-import sys
 from github import Github
 import json  
 import Common_Utilities
+
+#This makes the utility_tool visible from this file
+import sys
+sys.path.append('../')
+from SharedFiles.utility_tool import read_json_file
 
 #This is where the search happens, an api query is used to collect results. 
 #The query looks like this: "import LIBRARY-NAME" language:java repo:REPO-NAME
@@ -59,14 +63,7 @@ def search_code_in_repo(query, github, quick_sleep, error_sleep, max_size, Repo_
       roll_back = True # -1 means a problem detected and we need to re-read the same pages again after sleep. no change of date
    
   return frequency 
- 
-def read_json_file(filenameLib): 
-  mainArray = []
-  with open(filenameLib, 'r') as myfile:
-    mainArray = json.loads(myfile.read())    
-  return mainArray
-        
-
+   
 def read_libraries(filenameLib):
   libdict = {}
   f = read_json_file(filenameLib)
