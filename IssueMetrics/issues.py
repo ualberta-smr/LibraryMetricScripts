@@ -32,6 +32,11 @@ from performanceclassifier import PerformanceClassifier
 from securityclassifier import SecurityClassifier
 import json
 
+#This makes the utility_tool visible from this file
+import sys
+sys.path.append('../')
+from SharedFiles.utility_tool import read_json_file
+
 class IssueData:
 
   def __init__(self, issue_id):
@@ -255,12 +260,6 @@ def applyClassifiers():
         issue.security_issue = False
   saveData(issue_data, 'issuedata.pkl')
 
-def readJsonFile(filenameLib):
-    mainArray = []
-    with open(filenameLib, 'r') as myfile:
-        mainArray = json.loads(myfile.read())    
-    return mainArray
-  
 def main():
   if len(sys.argv) == 3:
     username = sys.argv[1]
@@ -269,7 +268,7 @@ def main():
     username = input("Enter Github username: ")
     password = getpass.getpass("Enter your password: ")
   
-  lib_data_json = readJsonFile('../LibraryData.json')
+  lib_data_json = read_json_file()
   print(lib_data_json)
   getIssueDataJIRA(lib_data_json)
   getIssueData(username, password, lib_data_json)
