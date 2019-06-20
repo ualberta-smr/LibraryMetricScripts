@@ -14,11 +14,15 @@
 # - Just run the script.
 
 import os
-import sys
 import pickle
 from github import Github, Repository, GitTag
 import getpass
 import json
+
+#This makes the utility_tool visible from this file
+import sys
+sys.path.append('../')
+from SharedFiles.utility_tool import read_json_file
 
 class ReleaseData:
 	def __init__(self, repository):
@@ -72,14 +76,11 @@ def getReleaseDates(username, password):
 	data = loadReleaseFrequencyData()
 
 	repositories = []
-	with open('../LibraryData.json', 'r') as f:
-		LibraryData = json.loads(f.read()) 
+	LibraryData = read_json_file('../SharedFiles/LibraryData.json')
 	for line in LibraryData:
 		repositories.append(line['FullRepoName'])
 	
 	g = Github(username, password)
-	
-	print(repositories)
 	
 	for repository in repositories:
 		
