@@ -255,7 +255,7 @@ def applyClassifiers():
         issue.security_issue = False
   saveData(issue_data, 'issuedata.pkl')
 
-def readJasonFile(filenameLib):
+def readJsonFile(filenameLib):
     mainArray = []
     with open(filenameLib, 'r') as myfile:
         mainArray = json.loads(myfile.read())    
@@ -269,10 +269,10 @@ def main():
     username = input("Enter Github username: ")
     password = getpass.getpass("Enter your password: ")
   
-  arr = readJasonFile('../LibraryData.json')
-  print(arr)
-  getIssueDataJIRA(arr)
-  getIssueData(username, password, arr)
+  lib_data_json = readJsonFile('../LibraryData.json')
+  print(lib_data_json)
+  getIssueDataJIRA(lib_data_json)
+  getIssueData(username, password, lib_data_json)
   calculateAverageResponseTime()
   calculateAverageClosingTime()
   applyClassifiers()
