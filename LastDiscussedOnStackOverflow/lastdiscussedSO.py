@@ -16,6 +16,10 @@ import os
 import pickle
 import json 
 
+import sys
+sys.path.append('../')
+from SharedFiles.utility_tool import read_json_file
+
 user_api_key = "your stack exchange user API key here"
 
 import stackexchange
@@ -44,8 +48,7 @@ def getLastDiscussedDates():
   data = loadLastDiscussedSOData()
   
   tags = []
-  with open('../LibraryData.json', 'r') as f:
-    LibraryData = json.loads(f.read()) 
+  LibraryData = read_json_file('../SharedFiles/LibraryData.json')
   for line in LibraryData:
     tags.append(line['SOtags'])
 
