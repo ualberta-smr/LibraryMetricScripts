@@ -268,8 +268,8 @@ def main():
     username = input("Enter Github username: ")
     password = getpass.getpass("Enter your password: ")
   
-  lib_data_json = read_json_file()
-  print(lib_data_json)
+  lib_data_json = read_json_file("../SharedFiles/LibraryData.json")
+  
   getIssueDataJIRA(lib_data_json)
   getIssueData(username, password, lib_data_json)
   calculateAverageResponseTime()
