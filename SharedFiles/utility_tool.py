@@ -4,8 +4,9 @@ This is the utility function. It takes data from LibraryData.json and returns th
 
 import json
 
-def read_json_file(filenameLib):  
+def read_json_file(file_path): 
+    
     main_array = []
-    with open(filenameLib, 'r') as myfile:
+    with open(file_path, 'r') as myfile:
         main_array = json.loads(myfile.read())    
     return main_array
