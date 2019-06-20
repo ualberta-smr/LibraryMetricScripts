@@ -1,7 +1,10 @@
 #This file adds libraries from the LibraryData.json file
 
-import os
+#This makes the utility_tool visible from this file
 import sys
+from SharedFiles.utility_tool import read_json_file
+
+import os
 import json
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
@@ -11,11 +14,9 @@ import django
 django.setup()
 
 from librarycomparison.models import Domain,Library
-
-
-lines = []
-with open('LibraryData.json', 'r') as myfile:
-    lines = json.loads(myfile.read())    
+    
+repositories = []
+lines = read_json_file('SharedFiles/LibraryData.json')
     
 for line in lines:
     library_name = line['LibraryName']
