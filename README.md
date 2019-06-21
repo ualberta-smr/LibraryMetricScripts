@@ -19,7 +19,7 @@ If you would like to get updated metric data, for the same list of libraries we 
 
 - Go to `Popularity` and open `GitHubSearch.json`. For the parameter called `TOKEN`, add your own GitHub generated token.
 - Go to `LastDiscussedOnStackOverflow` and open `lastdiscussedSO.py`. For the variable called `user_api_key`, you need to add your stack exchange key. 
-- Run `update.sh` which will call all the metric scripts and update an sqlite database with the results. See notes below about the database schema. Not that you will be asked for your Github credentials in the process. 
+- Run `update.sh` which will call all the metric scripts. Each metric produces its own output files which you can just look at. However, in addition, the `update.sh` scripts updates an sqlite database with all the results from all scripts. See notes below about the database schema. Note that you will be asked for your Github credentials in the process. 
 
 # How to Add New Libraries
 
@@ -46,19 +46,17 @@ To add a new library, you need to go to `SharedData/LibraryData.json` and add on
 * After modifying `LibraryData.json`, run `addlibraries.py` (with no arguments) which can be found in the root folder of this repo
 
 # How to Add New Metrics
-- Go to librarycomparisonwebsite/librarycomparison, and open `models.py`, and add new fields to classes `Domain` (feedback for the metric) and `Library`.
+- Go to `librarycomparison/models.py`, and add new fields to classes `Domain` (feedback for the metric) and `Library`.
 - Go to librarycomparison/scripts. After creating the scripts to collect your new metric, make sure to modify `filldb.py` to populate the fields you created in `models.py`.
 - In the same folder, modify `update.sh` to add the code that will run your scripts to collect the data.
 - Finally, go to librarycomparisonwebsite/templates, and modify `domains.html` to display your new metric in the table.
 
-
-
 # Data Schema
-- The data schema can be found in librarycomparisonwebsite/librarycomparison/models.py. It is pretty simple:
-- `Domain` stores information about a domain (e.g. name), as well as the metric feedback specific to that domain
+- The data schema can be found in `librarycomparison/models.py`. The schema is simple:
+- `Domain` stores information about a domain (e.g. name), as well as the metric feedback specific to that domain (latter part is not relevant for this repo per se, but relevant for us in our deployed website to know which metrics to display for which domain)
 - `Library` stores the name, tag, and full repository of a library, as well as all the metric data related to that library. A library must also have a `Domain` object, which has the information about the library domain.
 - `Issue` and `Release` store information about issues and releases of libraries, and are used for specific metrics.
-- `Feedback` just stores text containing submitted user feedback through the website.
+- `Feedback` just stores text containing submitted user feedback through the website (not relevant if you just want to run the scripts)
 
 # Contributors
 - Fernando López de la Mora (lopezdel at ualberta dot ca)
