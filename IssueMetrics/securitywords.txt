@@ -1,0 +1,9 @@
+attack
+authenticat
+authoriz
+cipher
+crack
+decrypt
+encrypt
+secur
+vulnerab
