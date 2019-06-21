@@ -38,6 +38,10 @@ rm *.pkl
 python3 issues.py $username $password
 cd ..
 
+#Not included in this library due to licensing issues
+#This code was kindly shared with us by Laerte Xavier, but we
+#do not have explicit permission to share it.
+#Please contact laertexavier@dcc.ufmg.br for more information.
 echo "Obtaining Backwards Compatibility..."
 cd breakingchanges
 rm breakingchanges.csv
