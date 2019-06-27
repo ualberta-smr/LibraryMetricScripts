@@ -5,8 +5,15 @@ read username
 echo -n Password:
 read -s password
 
+echo "Making sure all libraries are in the database..."
+python3 addlibraries.py
+
 echo "Obtaining Popularity..."
-./Popularity/popularity.sh search_results.txt
+cd Popularity
+rm *.txt
+python3 GitHub_Phase1.py
+python3 GitHub_Phase2.py
+cd ..
 
 echo "Obtaining Release Frequency..."
 cd ReleaseFrequency
