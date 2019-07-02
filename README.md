@@ -23,8 +23,6 @@ If you would like to get updated metric data, for the same list of libraries we 
 
 # How to Add New Libraries
 
-### STEP 1: Add a new json entry for the library 
-
 To add a new library, you need to go to `SharedData/LibraryData.json` and add one json entry (per library added) with the following information: 
 
 * `LibraryName`: The library name is the word that comes after the slash (/) in a libraries' GitHub repository (i.e., not including the username). For example, the name of this repository is `LibraryMetricScripts`.
@@ -40,10 +38,6 @@ To add a new library, you need to go to `SharedData/LibraryData.json` and add on
 * `GitHubURL`: This is the github URL of the repository. Add it in the following format: `git://github.com/[full repository name].git`. For example, the line for testng would be: `git://github.com/cbeust/testng.git`
 
 * `JIRAURL`: If the library that you're adding has its issue tracking system in Github, then leave this as an empty strong (i.e., ""), otherwise, if the issues are hosted on JIRA, then go to the JIRA website of the library. Go to 'View all issues and filters'. Make sure you only have the 'Bug' type selected in Issue type, and make sure to include issues for all status. Click 'Export XML'. This will take you to a website where an XML will be loaded. Copy the URL of that website and paste it here for the parameter `JIRAURL`.
-
-### STEP 2: Run Code
-
-* After modifying `LibraryData.json`, run `addlibraries.py` (with no arguments) which can be found in the root folder of this repo
 
 # How to Add New Metrics
 - Go to `librarycomparison/models.py`, and add new fields to classes `Domain` (feedback for the metric) and `Library`.
