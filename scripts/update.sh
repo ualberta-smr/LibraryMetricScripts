@@ -49,11 +49,18 @@ cd ..
 #This code was kindly shared with us by Laerte Xavier, but we
 #do not have explicit permission to share it.
 #Please contact laertexavier@dcc.ufmg.br for more information.
-echo "Obtaining Backwards Compatibility..."
-cd breakingchanges
-rm breakingchanges.csv
-./mainScript.sh
-cd ..
+
+DIR="breakingchanges/"
+if [ -d "$DIR" ]; then
+    echo "Obtaining Backwards Compatibility..."
+    cd breakingchanges
+    rm breakingchanges.csv
+    ./mainScript.sh
+    cd ..
+else
+    ###  Control will jump here if $DIR does NOT exists ###
+    echo "${DIR} NOT found, will not compute backwards compatibility"
+fi
 
 echo "Updating database..."
 cp Popularity/popularity_results.txt .
