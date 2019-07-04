@@ -77,6 +77,14 @@ rm performanceclassifier.py
 rm securityclassifier.py
 rm breakingchanges.csv
 rm popularity_results.txt
-mv *_chart.pkl ../charts
+
+DIR="../charts/"
+if [ -d "$DIR" ]; then
+    echo "Moving .pkl charts"
+    mv *_chart.pkl ../charts
+else
+    echo "${DIR} NOT found, .pkl files will not be moved"
+fi
+
 rm -rf breakingchanges/Repositories/*
 rm *.pkl
