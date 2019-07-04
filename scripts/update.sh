@@ -56,6 +56,7 @@ if [ -d "$DIR" ]; then
     cd breakingchanges
     rm breakingchanges.csv
     ./mainScript.sh
+    cp ../../breakingchanges/*.csv .
     cd ../LibraryMetricScripts/scripts 
 else
     echo "${DIR} NOT found, will not compute backwards compatibility"
@@ -70,11 +71,9 @@ cp LastDiscussedOnStackOverflow/*.pkl .
 cp IssueMetrics/*.pkl .
 cp IssueMetrics/performanceclassifier.py .
 cp IssueMetrics/securityclassifier.py .
-cp breakingchanges/*.csv .
 python3 filldb.py
 rm performanceclassifier.py
 rm securityclassifier.py
-rm breakingchanges.csv
 rm popularity_results.txt
 
 DIR="../../../charts/"
@@ -89,6 +88,7 @@ fi
 DIR="../../breakingchanges/"
 if [ -d "$DIR" ]; then
     echo "removing breaking changes files"
+    rm breakingchanges.csv
     rm -rf ../../breakingchanges/Repositories/*
 else
     echo "No breaking changes files to remove"
