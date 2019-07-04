@@ -49,6 +49,7 @@ To add a new library, you need to go to `SharedData/LibraryData.json` and add on
 - The data schema can be found in `librarycomparison/models.py`. The schema is simple:
 - `Domain` stores information about a domain (e.g. name), as well as the metric feedback specific to that domain (latter part is not relevant for this repo per se, but relevant for us in our deployed website to know which metrics to display for which domain)
 - `Library` stores the name, tag, and full repository of a library, as well as all the metric data related to that library. A library must also have a `Domain` object, which has the information about the library domain.
+- `Data` stores all the metric data related to each library as well as the corresponding date for when that data was obtained. This table is related to the `Library` table through a foreign key constraint. 
 - `Issue` and `Release` store information about issues and releases of libraries, and are used for specific metrics.
 - `Feedback` just stores text containing submitted user feedback through the website (not relevant if you just want to run the scripts)
 
