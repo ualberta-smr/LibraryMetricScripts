@@ -56,9 +56,8 @@ if [ -d "$DIR" ]; then
     cd breakingchanges
     rm breakingchanges.csv
     ./mainScript.sh
-    cd ..
+    cd ../LibraryMetricScripts/scripts 
 else
-    ###  Control will jump here if $DIR does NOT exists ###
     echo "${DIR} NOT found, will not compute backwards compatibility"
 fi
 
@@ -81,9 +80,10 @@ rm popularity_results.txt
 DIR="../../../charts/"
 if [ -d "$DIR" ]; then
     echo "Moving .pkl charts"
-    mv *_chart.pkl ../charts
+    mv *_chart.pkl ../../../charts/
 else
     echo "${DIR} NOT found, .pkl files will not be moved"
+    rm -f *_chart.pkl
 fi
 
 rm -rf breakingchanges/Repositories/*
