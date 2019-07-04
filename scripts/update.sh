@@ -50,7 +50,7 @@ cd ..
 #do not have explicit permission to share it.
 #Please contact laertexavier@dcc.ufmg.br for more information.
 
-DIR="breakingchanges/"
+DIR="../../breakingchanges/"
 if [ -d "$DIR" ]; then
     echo "Obtaining Backwards Compatibility..."
     cd breakingchanges
@@ -78,7 +78,7 @@ rm securityclassifier.py
 rm breakingchanges.csv
 rm popularity_results.txt
 
-DIR="../charts/"
+DIR="../../../charts/"
 if [ -d "$DIR" ]; then
     echo "Moving .pkl charts"
     mv *_chart.pkl ../charts
