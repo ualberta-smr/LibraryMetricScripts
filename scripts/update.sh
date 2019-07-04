@@ -53,7 +53,7 @@ cd ..
 DIR="../../breakingchanges/"
 if [ -d "$DIR" ]; then
     echo "Obtaining Backwards Compatibility..."
-    cd breakingchanges
+    cd ../../breakingchanges/
     rm breakingchanges.csv
     ./mainScript.sh
     cp ../../breakingchanges/*.csv .
