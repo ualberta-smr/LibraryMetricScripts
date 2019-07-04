@@ -86,5 +86,12 @@ else
     rm -f *_chart.pkl
 fi
 
-rm -rf breakingchanges/Repositories/*
+DIR="../../breakingchanges/"
+if [ -d "$DIR" ]; then
+    echo "removing breaking changes files"
+    rm -rf ../../breakingchanges/Repositories/*
+else
+    echo "No breaking changes files to remove"
+fi
+
 rm *.pkl
