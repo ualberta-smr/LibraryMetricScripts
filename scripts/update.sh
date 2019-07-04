@@ -56,8 +56,8 @@ if [ -d "$DIR" ]; then
     cd ../../breakingchanges/
     rm breakingchanges.csv
     ./mainScript.sh
+    cd ../LibraryMetricScripts/scripts
     cp ../../breakingchanges/*.csv .
-    cd ../LibraryMetricScripts/scripts 
 else
     echo "${DIR} NOT found, will not compute backwards compatibility"
 fi
