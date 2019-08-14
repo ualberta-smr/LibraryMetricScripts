@@ -32,7 +32,7 @@ def create_date_range(start_date, end_date):
   
   while my_date <= end_date:
     msg = months[my_date.month-1]
-    msg = msg + " " + str(my_date.year)[2:]
+    msg = msg + " '" + str(my_date.year)[2:]
     date_ranges.append(msg)
     my_date = my_date + relativedelta(months=+1) 
   
