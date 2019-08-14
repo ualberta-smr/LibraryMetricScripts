@@ -24,27 +24,23 @@ def saveData(data, filename):
     pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def create_date_range(start_date, end_date):
-   
+  
+  months = ['Jan','Feb','Mar','Apr','May','June','July','Aug','Sept','Oct','Nov','Dec']
+  
   date_ranges = []
-  first_time = True #this is to flag the first point in the trend line
   my_date = start_date
   
   while my_date <= end_date:
-    
-    msg = str(my_date.month)
-    if msg == "1" or first_time:
-      msg = msg + "/" + str(my_date.year)[2:]
-    
+    msg = months[my_date.month-1]
+    msg = msg + " " + str(my_date.year)[2:]
     date_ranges.append(msg)
-    
     my_date = my_date + relativedelta(months=+1) 
-    first_time = False
   
   return date_ranges
 
 def create_popularity_chart(domain,entrymonth,entryyear):
   
-  line_chart  = pygal.Line(height=200, width=1000)
+  line_chart  = pygal.Line(x_label_rotation=45, height=200, width=1000)
   selected_domain = Domain.objects.get(name=domain)  
   
   end_date = datetime.now() 
@@ -506,7 +502,6 @@ def createCharts(entrymonth,entryyear):
     create_last_discussed_chart(domain.name)
     create_last_modification_chart(domain.name)
 
-
 if __name__ == '__main__':
   d = date.today()
   entrymonth = d.month
@@ -516,7 +511,6 @@ if __name__ == '__main__':
   
   fillPopularityData(entrymonth,entryyear)
   createCharts(entrymonth,entryyear)
-  
   fillReleaseFrequencyData()
   fillBreakingChanges()
   fillLastModificationDateData()
@@ -526,4 +520,3 @@ if __name__ == '__main__':
   fillIssueResponseTimeData()
   fillIssueData()
   fillOverallScore()
-  createCharts()
