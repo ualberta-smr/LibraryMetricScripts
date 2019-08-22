@@ -9,28 +9,70 @@ import pickle
 import pygal
 django.setup()
 
-from librarycomparison.models import Domain, Library, Issue, Release
+from librarycomparison.models import Domain, Library, Issue, Release, Data
 
 from ReleaseFrequency.releasefrequency import ReleaseData, loadReleaseFrequencyData
 from License.license import loadLicenseData
 from LastModificationDate.lastmodificationdate import loadLastModificationDateData
 from LastDiscussedOnStackOverflow.lastdiscussedSO import loadLastDiscussedSOData
 from IssueMetrics.issues import loadData, IssueData
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
+from dateutil.relativedelta import *
 
 def saveData(data, filename):
   with open(filename, 'wb') as output:
     pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
-def create_popularity_chart(domain):
-	bar_chart = pygal.Bar(height=200)
-	selected_domain = Domain.objects.get(name=domain)
-	libraries = selected_domain.library_set.all()
-	for library in libraries:
-		bar_chart.add(library.name, library.popularity)
-	data = bar_chart.render_data_uri()
-	saveData(data, domain + '_popularity_chart.pkl')
-	return data
+def create_date_range(start_date, end_date):
+  
+  months = ['Jan','Feb','Mar','Apr','May','June','July','Aug','Sept','Oct','Nov','Dec']
+  
+  date_ranges = []
+  my_date = start_date
+  
+  while my_date <= end_date:
+    msg = months[my_date.month-1]
+    msg = msg + " '" + str(my_date.year)[2:]
+    date_ranges.append(msg)
+    my_date = my_date + relativedelta(months=+1) 
+  
+  return date_ranges
+
+def create_popularity_chart(domain,entrymonth,entryyear):
+  
+  line_chart  = pygal.Line(x_label_rotation=45, height=200, width=1000)
+  selected_domain = Domain.objects.get(name=domain)  
+  
+  end_date = datetime.now() 
+  
+  default_start_date = datetime(2019, 6, 1)
+  start_date = end_date + relativedelta(months=-24)
+  
+  if start_date < default_start_date:
+    start_date = default_start_date
+  
+  libraries = selected_domain.data_set.filter(run_time__gte=start_date).filter(run_time__lte=end_date).order_by('year').order_by('month')
+ 
+  domain_dic = {}
+  for library in libraries:    
+    
+    if library.name in domain_dic.keys():
+      domain_dic[library.name].append(library.popularity)
+    else:
+      popularity_data_arr = []
+      popularity_data_arr.append(library.popularity)
+      domain_dic[library.name] = popularity_data_arr
+  
+  line_chart.x_labels = map(str, create_date_range(start_date,end_date))
+  line_chart.title = domain 
+  for keys, values in domain_dic.items():    
+    line_chart.add(keys, values)
+  
+  data = line_chart.render_data_uri()
+  line_chart.render_in_browser()
+  saveData(data, domain + '_popularity_chart.pkl')
+  
+  return data
 
 def create_release_chart(domain):
 	line_chart = pygal.Line(x_label_rotation=90, height = 200, show_minor_x_labels=False)
@@ -281,19 +323,20 @@ def create_issue_classification_chart(domain):
 	saveData(data, domain + '_issue_classification_chart.pkl')
 	return data
 
-def fillPopularityData():
-        with open("popularity_results.txt") as f:
-                lines = f.readlines()
-        lines = [x.strip() for x in lines]
-
-        for line in lines:
-                strings = line.split(':')
-                repository = strings[0]
-                popularity = strings[1]
-                library = Library.objects.get(repository=repository)
-                library.popularity = int(strings[1])
-                library.save()
-
+def fillPopularityData(entrymonth,entryyear):
+  with open("popularity_results.txt") as f:
+    lines = f.readlines()
+  lines = [x.strip() for x in lines]
+  for line in lines:
+    strings = line.split(':')
+    repository = strings[0]
+    popularity = strings[1]
+    print (repository)
+    library = Data.objects.get(repository=repository, month=entrymonth,year=entryyear)
+    library.popularity = int(strings[1])
+    library.run_time = date.today()    
+    library.save()
+	  
 def fillReleaseFrequencyData():
         Release.objects.all().delete()
         data = loadReleaseFrequencyData()
@@ -447,9 +490,10 @@ def fillOverallScore():
                 library.overall_score = score*max_score_value/number_of_metrics
                 library.save()
 
-def createCharts():
-  for domain in Domain.objects.all():
-    create_popularity_chart(domain.name)
+def createCharts(entrymonth,entryyear):
+  
+  for domain in Domain.objects.all():  
+    create_popularity_chart(domain.name,entrymonth,entryyear)
     create_release_chart(domain.name)
     create_breaking_changes_chart(domain.name)
     create_issue_response_chart(domain.name)
@@ -459,14 +503,20 @@ def createCharts():
     create_last_modification_chart(domain.name)
 
 if __name__ == '__main__':
-        fillPopularityData()
-        fillReleaseFrequencyData()
-        fillBreakingChanges()
-        fillLastModificationDateData()
-        fillLastDiscussedSOData()
-        fillLicenseData()
-        fillIssueClosingTimeData()
-        fillIssueResponseTimeData()
-        fillIssueData()
-        fillOverallScore()
-        createCharts()
+  d = date.today()
+  entrymonth = d.month
+  entryyear = d.year
+  
+  print(entrymonth)
+  
+  fillPopularityData(entrymonth,entryyear)
+  createCharts(entrymonth,entryyear)
+  fillReleaseFrequencyData()
+  fillBreakingChanges()
+  fillLastModificationDateData()
+  fillLastDiscussedSOData()
+  fillLicenseData()
+  fillIssueClosingTimeData()
+  fillIssueResponseTimeData()
+  fillIssueData()
+  fillOverallScore()
