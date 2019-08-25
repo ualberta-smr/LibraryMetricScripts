@@ -18,6 +18,8 @@
 #How to run: 
 # - Just run the script (make sure the input files are in the same directory)
 
+from datetime import datetime
+
 import getpass
 import sys
 import pickle
@@ -36,6 +38,7 @@ import json
 import sys
 sys.path.append('../')
 from SharedFiles.utility_tool import read_json_file
+
 
 class IssueData:
 
@@ -260,7 +263,16 @@ def applyClassifiers():
         issue.security_issue = False
   saveData(issue_data, 'issuedata.pkl')
 
+def printing(name):
+  f= open("IssuesProgress.txt","a+") 
+  msg = name + str(datetime.now().time()) + "\n"
+  f.write(msg)
+  f.close()  
+  
 def main():
+  
+  printing("Start at ")
+  
   if len(sys.argv) == 3:
     username = sys.argv[1]
     password = sys.argv[2]
@@ -271,10 +283,18 @@ def main():
   lib_data_json = read_json_file("../SharedFiles/LibraryData.json")
   
   getIssueDataJIRA(lib_data_json)
+  printing("Now finished getIssueDataJIRA() ")
   getIssueData(username, password, lib_data_json)
+  printing("Now finished getIssueData() ")
   calculateAverageResponseTime()
+  printing("Now finished calculateAverageResponseTime() ")
   calculateAverageClosingTime()
+  printing("Now finished calculateAverageClosingTime() ")
   applyClassifiers()
+  printing("Now finished applyClassifiers() ")
+  
+  printing("Done ")
+  
 
 if __name__ == "__main__":
   main()
