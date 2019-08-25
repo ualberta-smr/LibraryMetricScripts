@@ -11,7 +11,7 @@
 # - securityclassifier.py - the machine learning performance classifier used to classify security issues
 # - performancedataset.xlsx, performancewords.txt, securitydataset.xlsx, securitywords.txt <- files needed for the classifiers
 #Output:
-# issuedata.pkl - a pickle file containing a dictionary where the key is a repository and its value is a list of IssueData objects (see class)
+# hk- a pickle file containing a dictionary where the key is a repository and its value is a list of IssueData objects (see class)
 # issueresponsetime.pkl a piclkle file containing a dictionary where the key is a repository and its value is the issue response time in days (stored as float)
 # issueclosingtime.pkl a piclkle file containing a dictionary where the key is a repository and its value is the issue closing time in days (stored as float)
 #
@@ -78,6 +78,7 @@ class IssueData:
 
 
 def loadData(filename):
+  print(filename)
   data = {}
   if os.path.isfile(filename):
     with open(filename, 'rb') as input:
@@ -277,8 +278,8 @@ def main():
     username = sys.argv[1]
     password = sys.argv[2]
   else:
-    username = input("Enter Github username: ")
-    password = getpass.getpass("Enter your password: ")
+    username = "relhajj" #input("Enter Github username: ")
+    password = "Ayah@2004" #getpass.getpass("Enter your password: ")
   
   lib_data_json = read_json_file("../SharedFiles/LibraryData.json")
   
