@@ -1,0 +1,3 @@
+django==2.1
+PyGithub==v1.43.7
+stackapi==v0.1.12
