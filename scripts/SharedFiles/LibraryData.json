@@ -396,12 +396,12 @@
    "JIRAURL": ""
  },
  {
-   "LibraryName": "Mallet",
-   "Domain": "Machine Learning",
-   "FullRepoName": "mimno/Mallet",
-   "SOtags": "mallet",
-   "Package": "cc.mallet",
-   "GitHubURL": "git://github.com/mimno/Mallet.git",
+   "LibraryName": "DUMMY",
+   "Domain": "",
+   "FullRepoName": "",
+   "SOtags": "",
+   "Package": "",
+   "GitHubURL": "",
    "JIRAURL": ""
  },
  {
@@ -448,5 +448,14 @@
    "Package": "org.apache.mahout",
    "GitHubURL": "git://github.com/apache/mahout.git",
    "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+MAHOUT+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "Mallet",
+   "Domain": "Machine Learning",
+   "FullRepoName": "mimno/Mallet",
+   "SOtags": "mallet",
+   "Package": "cc.mallet",
+   "GitHubURL": "git://github.com/mimno/Mallet.git",
+   "JIRAURL": ""
  }
 ]

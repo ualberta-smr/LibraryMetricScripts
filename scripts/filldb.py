@@ -2,8 +2,8 @@ import os
 import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
-os.environ['DJANGO_SETTINGS_MODULE'] = 'metricwebsite.settings'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "metricwebsite.settings")
+os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
 import django
 import pickle
 import pygal
@@ -43,7 +43,7 @@ def create_popularity_chart(domain,entrymonth,entryyear):
   line_chart  = pygal.Line(x_label_rotation=45, height=200, width=1000)
   selected_domain = Domain.objects.get(name=domain)  
   
-  end_date = datetime.now() 
+  end_date = datetime(2021, 2, 1) #datetime.now() 
   
   default_start_date = datetime(2019, 6, 1)
   start_date = end_date + relativedelta(months=-24)
@@ -506,8 +506,6 @@ if __name__ == '__main__':
   d = date.today()
   entrymonth = d.month
   entryyear = d.year
-  
-  print(entrymonth)
   
   fillPopularityData(entrymonth,entryyear)
   createCharts(entrymonth,entryyear)
