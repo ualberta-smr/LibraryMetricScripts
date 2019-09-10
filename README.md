@@ -12,6 +12,8 @@ The documentation below refers to the current version of the code.
 
 # How to Run
 
+This code requires Python >= 3.6.9 to run. The libraries used are in the `requirements.txt` file.
+
 The current output files for each metric, based on when they last ran, are included inside each directory.
 Most of the output files are Python pickle files, while a few are text files.
 Each script describes its input and output.
