@@ -7,5 +7,3 @@ COPY . /main
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 WORKDIR scripts
-
-CMD ["./update.sh"]
