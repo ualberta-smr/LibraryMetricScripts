@@ -18,6 +18,7 @@ import pickle
 from github import Github, Repository, GitTag
 import getpass
 import json
+from CommonUtilities import Common_Utilities
 
 #This makes the utility_tool visible from this file
 import sys
@@ -54,7 +55,7 @@ def printData(data):
 
 def loadReleaseFrequencyData():
 	data = {}
-	filename = 'releasefrequency.pkl'
+	filename = 'ReleaseFrequency/releasefrequency.pkl'
 	if os.path.isfile(filename):
 		with open(filename, 'rb') as input:
 			try:
@@ -68,19 +69,19 @@ def loadReleaseFrequencyData():
 	return data
 
 def saveData(data):
-	with open('releasefrequency.pkl', 'wb') as output:
+	with open('ReleaseFrequency/releasefrequency.pkl', 'wb') as output:
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
-def getReleaseDates(username, password):
+def getReleaseDates(token):
 	
 	data = loadReleaseFrequencyData()
 
 	repositories = []
-	LibraryData = read_json_file('../SharedFiles/LibraryData.json')
+	LibraryData = read_json_file('SharedFiles/LibraryData.json')
 	for line in LibraryData:
 		repositories.append(line['FullRepoName'])
 	
-	g = Github(username, password)
+	g = Github(token)
 	
 	for repository in repositories:
 		
@@ -100,15 +101,9 @@ def getReleaseDates(username, password):
 		saveData(data)
 
 def main():
-        if len(sys.argv) == 3:
-                print(sys.argv[1])
-                print(sys.argv[2])
-                username = sys.argv[1]
-                password = sys.argv[2]
-        else:
-                username = input("Enter your Github username: ")
-                password = getpass.getpass("Enter your password: ")
-        getReleaseDates(username, password)
+		config_dict = Common_Utilities.read_ini_file() # read all ini data 
+        
+		getReleaseDates(config_dict["TOKEN"])
 
 if __name__ == "__main__":
 	main()

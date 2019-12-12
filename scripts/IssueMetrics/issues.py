@@ -31,11 +31,16 @@ from github.GithubException import UnknownObjectException, RateLimitExceededExce
 from performanceclassifier import PerformanceClassifier
 from securityclassifier import SecurityClassifier
 import json
+from CommonUtilities import Common_Utilities
 
 #This makes the utility_tool visible from this file
 import sys
 sys.path.append('../')
 from SharedFiles.utility_tool import read_json_file
+
+issue_closing_time_pkl = 'IssueMetrics/issueclosingtime.pkl'
+issue_data_pkl = 'IssueMetrics/issuedata.pkl'
+issue_resp_time_pkl = 'IssueMetrics/issueresponsetime.pkl'
 
 class IssueData:
 
@@ -90,7 +95,7 @@ def saveData(data, filename):
 
 
 def calculateAverageClosingTime():
-  issue_data = loadData('issuedata.pkl')
+  issue_data = loadData(issue_data_pkl)
   issue_closing_times = {}
   for repo, issues in issue_data.items():
     total_closing_time = 0
@@ -102,10 +107,10 @@ def calculateAverageClosingTime():
       total_closing_time += closing_time
       total_closed_issues += 1
     issue_closing_times[repo] = float(total_closing_time/total_closed_issues/86400)
-  saveData(issue_closing_times, 'issueclosingtime.pkl')
+  saveData(issue_closing_times, issue_closing_time_pkl)
 
 def calculateAverageResponseTime():
-  issue_data = loadData('issuedata.pkl')
+  issue_data = loadData(issue_data_pkl)
   issue_response_times = {}
   for repo, issues in issue_data.items():
     total_response_time = 0
@@ -117,21 +122,21 @@ def calculateAverageResponseTime():
       total_response_time += response_time
       total_issues_with_comments += 1
     issue_response_times[repo] = float(total_response_time/total_issues_with_comments/86400)
-  saveData(issue_response_times, 'issueresponsetime.pkl')
+  saveData(issue_response_times, issue_resp_time_pkl)
 
-def getIssueData(username, password, arr):
+def getIssueData(token, arr):
 
   repositories = []
   for line in arr:    
     if line['JIRAURL'] == "":
       repositories.append(line['FullRepoName'])
  
-  issue_data = loadData('issuedata.pkl')
+  issue_data = loadData(issue_data_pkl)
 
   if issue_data == None:
     issue_data = {}
 
-  g = Github(username, password)
+  g = Github(token)
 
   for repository in repositories:
     first_issue = 1
@@ -144,7 +149,7 @@ def getIssueData(username, password, arr):
     except RateLimitExceededException:
       print("Rate Limit Exceeded... Sleeping 1 hour")
       time.sleep(60*60)
-      g = Github(username, password)
+      g = Github(token)
       r = g.get_repo(repository)
       max_issue_number = r.get_issues(state="all")[0].number
 
@@ -156,7 +161,7 @@ def getIssueData(username, password, arr):
       except RateLimitExceededException:
         print("Rate Limit Exceeded... Sleeping 1 hour") 
         time.sleep(60*60)
-        g = Github(username, password)
+        g = Github(token)
         r = g.get_repo(repository)
         i -= 1
         continue
@@ -183,7 +188,7 @@ def getIssueData(username, password, arr):
         except RateLimitExceededException:
           print("Rate Limit Exceeded... Sleeping 1 hour")
           time.sleep(60*60)
-          g = Github(username, password)
+          g = Github(token)
           r = g.get_repo(repository)
           issue = r.get_issue(i)
         except Exception as e:
@@ -194,11 +199,11 @@ def getIssueData(username, password, arr):
         issue_data[repository].append(new_issue)
       else:
         issue_data[repository] = [new_issue]
-      saveData(issue_data, 'issuedata.pkl')
+      saveData(issue_data, issue_data_pkl)
 
 def getIssueDataJIRA(urls):
   dict = {}
-  issue_data = loadData('issuedata.pkl')
+  issue_data = loadData(issue_data_pkl)
 
   for line in urls:    
     if line['JIRAURL'] != "":     
@@ -241,12 +246,12 @@ def getIssueDataJIRA(urls):
         issue_data[repository].append(new_issue)
       else:
         issue_data[repository] = [new_issue]
-      saveData(issue_data, 'issuedata.pkl')
+      saveData(issue_data, issue_data_pkl)
 
 def applyClassifiers():
   performance_classifier = PerformanceClassifier()
   security_classifier = SecurityClassifier()
-  issue_data = loadData('issuedata.pkl')
+  issue_data = loadData(issue_data_pkl)
   for repo, issues in issue_data.items():
     for issue in issues:
       if performance_classifier.classify(issue.title) == True:
@@ -258,20 +263,16 @@ def applyClassifiers():
         issue.security_issue = True
       else:
         issue.security_issue = False
-  saveData(issue_data, 'issuedata.pkl')
+  saveData(issue_data, issue_data_pkl)
 
 def main():
-  if len(sys.argv) == 3:
-    username = sys.argv[1]
-    password = sys.argv[2]
-  else:
-    username = input("Enter Github username: ")
-    password = getpass.getpass("Enter your password: ")
+
+  config_dict = Common_Utilities.read_ini_file() # read all ini data 
   
-  lib_data_json = read_json_file("../SharedFiles/LibraryData.json")
+  lib_data_json = read_json_file("SharedFiles/LibraryData.json")
   
   getIssueDataJIRA(lib_data_json)
-  getIssueData(username, password, lib_data_json)
+  getIssueData(config_dict["TOKEN"], lib_data_json)
   calculateAverageResponseTime()
   calculateAverageClosingTime()
   applyClassifiers()

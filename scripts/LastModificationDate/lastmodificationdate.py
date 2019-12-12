@@ -17,6 +17,7 @@ import pickle
 from github import Github, Repository, GitTag
 import getpass
 import json
+from CommonUtilities import Common_Utilities
 
 #This makes the utility_tool visible from this file
 import sys
@@ -25,7 +26,7 @@ from SharedFiles.utility_tool import read_json_file
 
 def loadLastModificationDateData():
 	data = {}
-	filename = 'lastmodificationdate.pkl'
+	filename = 'LastModificationDate/lastmodificationdate.pkl'
 	if os.path.isfile(filename):
 		with open(filename, 'rb') as input:
 			try:
@@ -36,25 +37,26 @@ def loadLastModificationDateData():
 	return data
 
 def saveData(data):
-	with open('lastmodificationdate.pkl', 'wb') as output:
+	with open('LastModificationDate/lastmodificationdate.pkl', 'wb') as output:
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
-def getLastModificationDates(username, password):
+def getLastModificationDates(token):
 	
 	data = loadLastModificationDateData()
 	  
 	repositories = []
-	LibraryData = read_json_file('../SharedFiles/LibraryData.json')
+	LibraryData = read_json_file('SharedFiles/LibraryData.json')
 	for line in LibraryData:
 		repositories.append(line['FullRepoName'])
 	
-	g = Github(username, password)
+	g = Github(token)
 	
 	for repository in repositories:
-		r = g.get_repo(repository)
+		print ("getting data for" , repository)
+		repo = g.get_repo(repository)
 		dates_string = ""
 		i = 0
-		for c in r.get_commits():
+		for c in repo.get_commits():
 			if i == 10:
 				break
 			if i > 0:
@@ -65,13 +67,8 @@ def getLastModificationDates(username, password):
 		saveData(data)
 
 def main():
-        if len(sys.argv) == 3:
-                username = sys.argv[1]
-                password = sys.argv[2]
-        else:
-                username = input("Enter Github username: ")
-                password = getpass.getpass("Enter your password: ")
-        getLastModificationDates(username, password)
+        config_dict = Common_Utilities.read_ini_file() # read all ini data 
+        getLastModificationDates(config_dict["TOKEN"])
         
 if __name__ == "__main__":
   main()

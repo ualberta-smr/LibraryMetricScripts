@@ -17,6 +17,7 @@ from github import Github, Repository, GitTag
 from github.GithubException import UnknownObjectException
 import getpass
 import json 
+from CommonUtilities import Common_Utilities
 
 #This makes the utility_tool visible from this file
 import sys
@@ -25,7 +26,7 @@ from SharedFiles.utility_tool import read_json_file
 
 def loadLicenseData():
 	data = {}
-	filename = 'license.pkl'
+	filename = 'License/license.pkl'
 	if os.path.isfile(filename):
 		with open(filename, 'rb') as input:
 			try:
@@ -36,18 +37,18 @@ def loadLicenseData():
 	return data
 
 def saveData(data):
-	with open('license.pkl', 'wb') as output:
+	with open('License/license.pkl', 'wb') as output:
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
-def getLicenses(username, password):
+def getLicenses(token):
 	data = loadLicenseData()
 
 	repositories = []
-	LibraryData = read_json_file('../SharedFiles/LibraryData.json')
+	LibraryData = read_json_file('SharedFiles/LibraryData.json')
 	for line in LibraryData:
 		repositories.append(line['FullRepoName'])
 	
-	g = Github(username, password)
+	g = Github(token)
 	
 	for repository in repositories:
 		if repository in data:
@@ -62,13 +63,8 @@ def getLicenses(username, password):
 			saveData(data)
 
 def main():
-        if len(sys.argv) == 3:
-                username = sys.argv[1]
-                password = sys.argv[2]
-        else:
-                username = input("Enter Github username: ")
-                password = getpass.getpass("Enter your password: ")
-        getLicenses(username, password)
+        config_dict = Common_Utilities.read_ini_file() # read all ini data 
+        getLicenses(config_dict["TOKEN"])
 
 if __name__ == "__main__":
         main()

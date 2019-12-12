@@ -13,7 +13,7 @@ import random
 import sys
 from github import Github
 from datetime import date
-import Common_Utilities
+from CommonUtilities import Common_Utilities
 
 #Outputs all the repositories found into a text file
 def output_to_file(repos_file, repo_set):
@@ -82,7 +82,7 @@ def main():
     github = None
     github = Github(config_dict["TOKEN"])   # pass the connection token 
     
-    output_file_name = "Top_Repo.txt"  # this is the output file that we are going to send repo names to
+    output_file_name = "Popularity/Top_Repo.txt"  # this is the output file that we are going to send repo names to
     
     output_file = open(output_file_name, "w")  
     output_file.close()      

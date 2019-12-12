@@ -1,49 +1,46 @@
 #!/bin/bash
 
-echo -n Username:
-read username
-echo -n Password:
-read -s password
+pythoncmd=python3.8
 
 echo "Making sure all libraries are in the database..."
-python3 addlibraries.py
+$pythoncmd addlibraries.py
 
 echo "Obtaining Popularity..."
-cd Popularity
-rm *.txt
-python3 GitHub_Phase1.py
-python3 GitHub_Phase2.py
-cd ..
+#cd Popularity
+#rm -f Popularity/*.txt
+#$pythoncmd Popularity/GitHub_Phase1.py
+$pythoncmd Popularity/GitHub_Phase2.py
+#cd ..
 
 echo "Obtaining Release Frequency..."
-cd ReleaseFrequency
-rm *.pkl
-python3 releasefrequency.py $username $password
-cd ..
+#cd ReleaseFrequency
+rm -f ReleaseFrequency/*.pkl
+$pythoncmd ReleaseFrequency/releasefrequency.py
+#cd ..
 
 echo "Obtaining License Information..."
-cd License
-rm *.pkl
-python3 license.py $username $password
-cd ..
+#cd License
+rm -f License/*.pkl
+$pythoncmd License/license.py
+#cd ..
 
 echo "Obtaining Last Modification Date..."
-cd LastModificationDate
-rm *.pkl
-python3 lastmodificationdate.py $username $password
-cd ..
+#cd LastModificationDate
+rm -f LastModificationDate/*.pkl
+$pythoncmd LastModificationDate/lastmodificationdate.py
+#cd ..
 
 echo "Obtaining Last Discussed on Stack Overflow..."
-cd LastDiscussedOnStackOverflow
-rm *.pkl
-python3 lastdiscussedSO.py
-cd ..
+#cd LastDiscussedOnStackOverflow
+rm -f LastDiscussedOnStackOverflow/*.pkl
+$pythoncmd LastDiscussedOnStackOverflow/lastdiscussedSO.py
+#cd ..
 
 echo "Obtaining issue metrics..."
-cd IssueMetrics
-rm *.pkl
-python3 issues.py $username $password
-cd ..
+#cd IssueMetrics
+rm -f IssueMetrics/*.pkl
+$pythoncmd IssueMetrics/issues.py
+#cd ..
 
 #Not included in this library due to licensing issues
 #This code was kindly shared with us by Laerte Xavier, but we
@@ -71,7 +68,7 @@ cp LastDiscussedOnStackOverflow/*.pkl .
 cp IssueMetrics/*.pkl .
 cp IssueMetrics/performanceclassifier.py .
 cp IssueMetrics/securityclassifier.py .
-python3 filldb.py
+$pythoncmd filldb.py
 rm performanceclassifier.py
 rm securityclassifier.py
 rm popularity_results.txt

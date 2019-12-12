@@ -9,7 +9,7 @@ Output:     A text file called popularity_results.txt which has each library alo
 import random
 from github import Github
 import json  
-import Common_Utilities
+from CommonUtilities import Common_Utilities
 
 #This makes the utility_tool visible from this file
 import sys
@@ -79,7 +79,7 @@ def send_totals_to_file(output_file, keyword, num_found):
 
 def read_repos():
     repo_array = []
-    with open("Top_Repo.txt", "r") as f:
+    with open("Popularity/Top_Repo.txt", "r") as f:
         for line in f:          
             repo_array.append(line.rstrip())
     return repo_array

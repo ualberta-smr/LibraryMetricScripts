@@ -14,21 +14,18 @@
 
 import os
 import pickle
-import json 
+import json
+import stackexchange
 
 import sys
 sys.path.append('../')
 from SharedFiles.utility_tool import read_json_file
+from CommonUtilities import Common_Utilities
 
-user_api_key = "your stack exchange user API key here"
-
-import stackexchange
-so = stackexchange.Site(stackexchange.StackOverflow, app_key=user_api_key, impose_throttling=True)
-so.be_inclusive()
 
 def loadLastDiscussedSOData():
   data = {}
-  filename = 'lastdiscussedSO.pkl'
+  filename = 'LastDiscussedOnStackOverflow/lastdiscussedSO.pkl'
   if os.path.isfile(filename):
     with open(filename, 'rb') as input:
       try:
@@ -40,15 +37,23 @@ def loadLastDiscussedSOData():
   return data
 
 def saveData(data):
-  with open('lastdiscussedSO.pkl', 'wb') as output:
+  with open('LastDiscussedOnStackOverflow/lastdiscussedSO.pkl', 'wb') as output:
     pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def getLastDiscussedDates():
+
+  config_dict = Common_Utilities.read_ini_file() # read all ini data 
+  user_api_key = config_dict["SO_TOKEN"]
+
+
+  so = stackexchange.Site(stackexchange.StackOverflow, app_key=user_api_key, impose_throttling=True)
+  so.be_inclusive()
+
   
   data = loadLastDiscussedSOData()
   
   tags = []
-  LibraryData = read_json_file('../SharedFiles/LibraryData.json')
+  LibraryData = read_json_file('SharedFiles/LibraryData.json')
   for line in LibraryData:
     tags.append(line['SOtags'])
 
