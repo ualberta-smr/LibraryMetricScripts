@@ -6,3 +6,4 @@ scikit-learn==0.22
 py-stackexchange==2.2.7
 openpyxl==3.0.1
 pygal==2.4.0
+python-dateutil==2.8.1
