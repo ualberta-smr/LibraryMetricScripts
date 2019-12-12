@@ -7,5 +7,446 @@
    "Package": "org.junit",
    "GitHubURL": "git://github.com/junit-team/junit4.git",
    "JIRAURL": ""
+ },
+ {
+   "LibraryName": "testng",
+   "Domain": "Testing",
+   "FullRepoName": "cbeust/testng",
+   "SOtags": "testng",
+   "Package": "org.testng",
+   "GitHubURL": "git://github.com/cbeust/testng.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "slf4j",
+   "Domain": "Logging",
+   "FullRepoName": "qos-ch/slf4j",
+   "SOtags": "slf4j",
+   "Package": "org.slf4j",
+   "GitHubURL": "git://github.com/qos-ch/slf4j.git",
+   "JIRAURL": "https://jira.qos.ch/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+SLF4J+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "logging-log4j2",
+   "Domain": "Logging",
+   "FullRepoName": "apache/logging-log4j2",
+   "SOtags": "log4j",
+   "Package": "org.apache.log4j",
+   "GitHubURL": "git://github.com/apache/logging-log4j2.git",
+   "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+LOG4J2+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=created&field=reporter&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "logback",
+   "Domain": "Logging",
+   "FullRepoName": "qos-ch/logback",
+   "SOtags": "logback",
+   "Package": "ch.qos.logback",
+   "GitHubURL": "git://github.com/qos-ch/logback.git",
+   "JIRAURL": "https://jira.qos.ch/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+LOGBACK+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments\t\t"
+ },
+ {
+   "LibraryName": "commons-logging",
+   "Domain": "Logging",
+   "FullRepoName": "apache/commons-logging",
+   "SOtags": "apache-commons-logging",
+   "Package": "org.apache.commons.logging",
+   "GitHubURL": "git://github.com/apache/commons-logging.git",
+   "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+LOGGING+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "tinylog",
+   "Domain": "Logging",
+   "FullRepoName": "pmwmedia/tinylog",
+   "SOtags": "tinylog",
+   "Package": "org.pmw.tinylog",
+   "GitHubURL": "git://github.com/pmwmedia/tinylog.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "blitz4j",
+   "Domain": "Logging",
+   "FullRepoName": "Netflix/blitz4j",
+   "SOtags": "blitz4j",
+   "Package": "com.netflix.blitz4j",
+   "GitHubURL": "git://github.com/Netflix/blitz4j.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "minlog",
+   "Domain": "Logging",
+   "FullRepoName": "EsotericSoftware/minlog",
+   "SOtags": "minlog",
+   "Package": "com.esotericsoftware.minlog",
+   "GitHubURL": "git://github.com/EsotericSoftware/minlog.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "guava",
+   "Domain": "Utilities",
+   "FullRepoName": "google/guava",
+   "SOtags": "guava",
+   "Package": "com.google.common",
+   "GitHubURL": "git://github.com/google/guava.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "commons-lang",
+   "Domain": "Utilities",
+   "FullRepoName": "apache/commons-lang",
+   "SOtags": "apache-commons-lang",
+   "Package": "org.apache.commons.lang",
+   "GitHubURL": "git://github.com/apache/commons-lang.git",
+   "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+LANG+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "mockito",
+   "Domain": "Mocking",
+   "FullRepoName": "mockito/mockito",
+   "SOtags": "mockito",
+   "Package": "org.mockito",
+   "GitHubURL": "git://github.com/mockito/mockito.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "easymock",
+   "Domain": "Mocking",
+   "FullRepoName": "easymock/easymock",
+   "SOtags": "easymock",
+   "Package": "org.easymock",
+   "GitHubURL": "git://github.com/easymock/easymock.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "powermock",
+   "Domain": "Mocking",
+   "FullRepoName": "powermock/powermock",
+   "SOtags": "powermock",
+   "Package": "org.powermock",
+   "GitHubURL": "git://github.com/powermock/powermock.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "jmock-library",
+   "Domain": "Mocking",
+   "FullRepoName": "jmock-developers/jmock-library",
+   "SOtags": "jmock",
+   "Package": "org.jmock",
+   "GitHubURL": "git://github.com/jmock-developers/jmock-library.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "bc-java",
+   "Domain": "Cryptography",
+   "FullRepoName": "bcgit/bc-java",
+   "SOtags": "bouncycastle",
+   "Package": "org.bouncycastle",
+   "GitHubURL": "git://github.com/bcgit/bc-java.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "commons-crypto",
+   "Domain": "Cryptography",
+   "FullRepoName": "apache/commons-crypto",
+   "SOtags": "apache-commons-crypto",
+   "Package": "org.apache.commons.crypto",
+   "GitHubURL": "git://github.com/apache/commons-crypto.git",
+   "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+CRYPTO+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "conceal",
+   "Domain": "Cryptography",
+   "FullRepoName": "facebook/conceal",
+   "SOtags": "facebook-conceal",
+   "Package": "com.facebook.crypto",
+   "GitHubURL": "git://github.com/facebook/conceal.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "chimera",
+   "Domain": "Cryptography",
+   "FullRepoName": "intel-hadoop/chimera",
+   "SOtags": "intel-chimera",
+   "Package": "com.intel.chimera",
+   "GitHubURL": "git://github.com/intel-hadoop/chimera.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "spongycastle",
+   "Domain": "Cryptography",
+   "FullRepoName": "rtyley/spongycastle",
+   "SOtags": "spongycastle",
+   "Package": "org.spongycastle",
+   "GitHubURL": "git://github.com/rtyley/spongycastle.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "keyczar",
+   "Domain": "Cryptography",
+   "FullRepoName": "google/keyczar",
+   "SOtags": "keyczar",
+   "Package": "org.keyczar",
+   "GitHubURL": "git://github.com/google/keyczar.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "conscrypt",
+   "Domain": "Cryptography",
+   "FullRepoName": "google/conscrypt",
+   "SOtags": "conscrypt",
+   "Package": "com.android.org.conscrypt",
+   "GitHubURL": "git://github.com/google/conscrypt.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "gson",
+   "Domain": "JSON",
+   "FullRepoName": "google/gson",
+   "SOtags": "gson",
+   "Package": "com.google.gson",
+   "GitHubURL": "git://github.com/google/gson.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "json-simple",
+   "Domain": "JSON",
+   "FullRepoName": "fangyidong/json-simple",
+   "SOtags": "json-simple",
+   "Package": "org.json.simple",
+   "GitHubURL": "git://github.com/fangyidong/json-simple.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "h2database",
+   "Domain": "Databases",
+   "FullRepoName": "h2database/h2database",
+   "SOtags": "h2",
+   "Package": "org.h2",
+   "GitHubURL": "git://github.com/h2database/h2database.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "lsql",
+   "Domain": "Databases",
+   "FullRepoName": "w11k/lsql",
+   "SOtags": "lsql",
+   "Package": "com.w11k.lsql",
+   "GitHubURL": "git://github.com/w11k/lsql.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "derby",
+   "Domain": "Databases",
+   "FullRepoName": "apache/derby",
+   "SOtags": "derby",
+   "Package": "org.apache.derby",
+   "GitHubURL": "git://github.com/apache/derby.git",
+   "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+DERBY+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "shiro",
+   "Domain": "Security",
+   "FullRepoName": "apache/shiro",
+   "SOtags": "shiro",
+   "Package": "org.apache.shiro",
+   "GitHubURL": "git://github.com/apache/shiro.git",
+   "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+SHIRO+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "spring-security",
+   "Domain": "Security",
+   "FullRepoName": "spring-projects/spring-security",
+   "SOtags": "spring-security",
+   "Package": "org.springframework.security",
+   "GitHubURL": "git://github.com/spring-projects/spring-security.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "hibernate-orm",
+   "Domain": "Object-relational Mapping",
+   "FullRepoName": "hibernate/hibernate-orm",
+   "SOtags": "hibernate",
+   "Package": "org.hibernate",
+   "GitHubURL": "git://github.com/hibernate/hibernate-orm.git",
+   "JIRAURL": "https://hibernate.atlassian.net/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+HHH+AND+issuetype+%3D+Bug+order+by+created+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "mybatis-3",
+   "Domain": "Object-relational Mapping",
+   "FullRepoName": "mybatis/mybatis-3",
+   "SOtags": "mybatis",
+   "Package": "org.apache.ibatis",
+   "GitHubURL": "git://github.com/mybatis/mybatis-3.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "ormlite-android",
+   "Domain": "Object-relational Mapping",
+   "FullRepoName": "j256/ormlite-android",
+   "SOtags": "ormlite",
+   "Package": "com.j256.ormlite",
+   "GitHubURL": "git://github.com/j256/ormlite-android.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "xerces2-j",
+   "Domain": "XML Processing",
+   "FullRepoName": "apache/xerces2-j",
+   "SOtags": "xerces2-j",
+   "Package": "org.apache.xerces",
+   "GitHubURL": "git://github.com/apache/xerces2-j.git",
+   "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+XERCESJ+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "dom4j",
+   "Domain": "XML Processing",
+   "FullRepoName": "dom4j/dom4j",
+   "SOtags": "dom4j",
+   "Package": "org.dom4j",
+   "GitHubURL": "git://github.com/dom4j/dom4j.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "jdom",
+   "Domain": "XML Processing",
+   "FullRepoName": "hunterhacker/jdom",
+   "SOtags": "jdom",
+   "Package": "org.jdom",
+   "GitHubURL": "git://github.com/hunterhacker/jdom.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "vertx-mail-client",
+   "Domain": "Mail Client",
+   "FullRepoName": "vert-x3/vertx-mail-client",
+   "SOtags": "vertx-mail-client",
+   "Package": "io.vertx.ext.mail",
+   "GitHubURL": "git://github.com/vert-x3/vertx-mail-client.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "commons-email",
+   "Domain": "Mail Client",
+   "FullRepoName": "apache/commons-email",
+   "SOtags": "apache-commons-email",
+   "Package": "org.apache.commons.mail",
+   "GitHubURL": "git://github.com/apache/commons-email.git",
+   "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+EMAIL+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "commons-collections",
+   "Domain": "Collections",
+   "FullRepoName": "apache/commons-collections",
+   "SOtags": "apache-commons-collection",
+   "Package": "org.apache.commons.collections",
+   "GitHubURL": "git://github.com/apache/commons-collections.git",
+   "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+COLLECTIONS+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "fastutil",
+   "Domain": "Collections",
+   "FullRepoName": "vigna/fastutil",
+   "SOtags": "fastutil",
+   "Package": "it.unimi.dsi.fastutil",
+   "GitHubURL": "git://github.com/vigna/fastutil.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "mapdb",
+   "Domain": "Collections",
+   "FullRepoName": "jankotek/mapdb",
+   "SOtags": "mapdb",
+   "Package": "org.mapdb",
+   "GitHubURL": "git://github.com/jankotek/mapdb.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "hppc",
+   "Domain": "Collections",
+   "FullRepoName": "carrotsearch/hppc",
+   "SOtags": "hppc",
+   "Package": "com.carrotsearch.hppc",
+   "GitHubURL": "git://github.com/carrotsearch/hppc.git",
+   "JIRAURL": "https://issues.carrot2.org/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+HPPC+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "high-scale-lib",
+   "Domain": "Collections",
+   "FullRepoName": "stephenc/high-scale-lib",
+   "SOtags": "high-scale-lib",
+   "Package": "org.cliffc.high_scale_lib",
+   "GitHubURL": "git://github.com/stephenc/high-scale-lib.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "eclipse-collections",
+   "Domain": "Collections",
+   "FullRepoName": "eclipse/eclipse-collections",
+   "SOtags": "eclipse-collections",
+   "Package": "org.eclipse.collections",
+   "GitHubURL": "git://github.com/eclipse/eclipse-collections.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "jcommon",
+   "Domain": "Collections",
+   "FullRepoName": "facebook/jcommon",
+   "SOtags": "facebook-jcommon",
+   "Package": "com.facebook.util",
+   "GitHubURL": "git://github.com/facebook/jcommon.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "smile",
+   "Domain": "Machine Learning",
+   "FullRepoName": "haifengl/smile",
+   "SOtags": "smile",
+   "Package": "smile",
+   "GitHubURL": "git://github.com/haifengl/smile.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "deeplearning4j",
+   "Domain": "Machine Learning",
+   "FullRepoName": "deeplearning4j/deeplearning4j",
+   "SOtags": "deeplearning4j",
+   "Package": "org.deeplearning4j",
+   "GitHubURL": "git://github.com/deeplearning4j/deeplearning4j.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "moa",
+   "Domain": "Machine Learning",
+   "FullRepoName": "Waikato/moa",
+   "SOtags": "moa",
+   "Package": "moa",
+   "GitHubURL": "git://github.com/Waikato/moa.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "elki",
+   "Domain": "Machine Learning",
+   "FullRepoName": "elki-project/elki",
+   "SOtags": "elki",
+   "Package": "de.lmu.ifi.dbs.elki",
+   "GitHubURL": "git://github.com/elki-project/elki.git",
+   "JIRAURL": ""
+ },
+ {
+   "LibraryName": "mahout",
+   "Domain": "Machine Learning",
+   "FullRepoName": "apache/mahout",
+   "SOtags": "mahout",
+   "Package": "org.apache.mahout",
+   "GitHubURL": "git://github.com/apache/mahout.git",
+   "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+MAHOUT+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
+ },
+ {
+   "LibraryName": "Mallet",
+   "Domain": "Machine Learning",
+   "FullRepoName": "mimno/Mallet",
+   "SOtags": "mallet",
+   "Package": "cc.mallet",
+   "GitHubURL": "git://github.com/mimno/Mallet.git",
+   "JIRAURL": ""
  }
 ]
