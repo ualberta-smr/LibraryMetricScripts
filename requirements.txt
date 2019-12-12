@@ -1,4 +1,4 @@
-django==2.1.11
+django==2.1.15
 PyGithub==v1.43.7
 stackapi==v0.1.12
 nltk==3.4.5
