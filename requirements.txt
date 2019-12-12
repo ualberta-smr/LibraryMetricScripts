@@ -4,3 +4,5 @@ stackapi==v0.1.12
 nltk==3.4.5
 scikit-learn==0.22
 py-stackexchange==2.2.7
+openpyxl==3.0.1
+pygal==2.4.0
