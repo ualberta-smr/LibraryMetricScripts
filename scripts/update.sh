@@ -1,14 +1,15 @@
 #!/bin/bash
 
-pythoncmd=python3.8
+#pass in the python command you want to use (depending on the version)
+pythoncmd=$1 #python3.8
 
 echo "Making sure all libraries are in the database..."
 $pythoncmd addlibraries.py
 
 echo "Obtaining Popularity..."
 #cd Popularity
-#rm -f Popularity/*.txt
-#$pythoncmd Popularity/GitHub_Phase1.py
+rm -f Popularity/*.txt
+$pythoncmd Popularity/GitHub_Phase1.py
 $pythoncmd Popularity/GitHub_Phase2.py
 #cd ..
 
@@ -36,7 +37,7 @@ rm -f LastDiscussedOnStackOverflow/*.pkl
 $pythoncmd LastDiscussedOnStackOverflow/lastdiscussedSO.py
 #cd ..
 
-echo "Obtaining issue metrics..."
+#echo "Obtaining issue metrics..."
 #cd IssueMetrics
 rm -f IssueMetrics/*.pkl
 $pythoncmd IssueMetrics/issues.py
@@ -69,17 +70,18 @@ cp IssueMetrics/*.pkl .
 cp IssueMetrics/performanceclassifier.py .
 cp IssueMetrics/securityclassifier.py .
 $pythoncmd filldb.py
-rm performanceclassifier.py
-rm securityclassifier.py
-rm popularity_results.txt
+rm -f performanceclassifier.py
+rm -f securityclassifier.py
+rm -f popularity_results.txt
 
 DIR="../../../charts/"
 if [ -d "$DIR" ]; then
     echo "Moving .pkl charts"
     mv *_chart.pkl ../../../charts/
 else
-    echo "${DIR} NOT found, .pkl files will not be moved"
-    rm -f *_chart.pkl
+    echo "${DIR} NOT found, creating local charts folder"
+    mkdir charts
+    mv *_chart.pkl charts/
 fi
 
 DIR="../../breakingchanges/"
