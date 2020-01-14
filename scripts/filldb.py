@@ -214,7 +214,7 @@ def create_breaking_changes_chart(domain):
 	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), release_date_list)
 	line_chart.x_labels_major = [release_date_list[0].strftime('%b %d %Y'), release_date_list[len(release_date_list)//2].strftime('%b %d %Y'),
 	  release_date_list[-1].strftime('%b %d %Y')]
-	line_chart.title = 'Releases. X_axis = release dates, Y_axis = Breaking changes of releases'
+	line_chart.title = 'Breaking Changes in Releases. X_axis = Release Dates, Y_axis = Number of Breaking changes'
 
 	for library in libraries:
 		releases = library.release_set.all()
@@ -248,7 +248,7 @@ def create_issue_response_chart(domain):
 	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), issue_date_list)
 	line_chart.x_labels_major = [issue_date_list[0].strftime('%b %d %Y'),
 	  issue_date_list[-1].strftime('%b %d %Y')]
-	line_chart.title = 'Issue Response Times. X_axis = number of days, Y_axis = issue creation date'
+	line_chart.title = 'Issue Response Times. X_axis = issue creation date, Y_axis = number of days to respond'
 
 	for library in libraries:
 		issues = library.issue_set.all()
@@ -279,7 +279,7 @@ def create_issue_closing_chart(domain):
 	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), issue_date_list)
 	line_chart.x_labels_major = [issue_date_list[0].strftime('%b %d %Y'),
 	  issue_date_list[-1].strftime('%b %d %Y')]
-	line_chart.title = 'Issue Closing Times. X_axis = number of days, Y_axis = issue creation date'
+	line_chart.title = 'Issue Closing Times. X_axis = issue creation date, Y_axis = number of days to close'
 
 	for library in libraries:
 		issues = library.issue_set.all()
