@@ -336,6 +336,12 @@ def fillPopularityData(entrymonth,entryyear):
     library.popularity = int(strings[1])
     library.run_time = date.today()    
     library.save()
+
+    #not sure what the difference between the data and library table is any more
+    #need to check with Rehab.. for now, filling in the table so website can read it
+    library = Library.objects.get(repository=repository)
+    library.popularity = int(popularity)
+    library.save()
 	  
 def fillReleaseFrequencyData():
         Release.objects.all().delete()
