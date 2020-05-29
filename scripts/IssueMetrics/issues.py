@@ -211,7 +211,7 @@ def getIssueDataJIRA(urls):
   
  
   for repository, url in dict.items():
-    print("Current repository: ", repository)
+    print("Current repository in issues: ", repository)
     xmlString = urllib.request.urlopen(url).read().decode('utf-8')
     root = xml.etree.ElementTree.fromstring(xmlString)
     channel = root.find('channel')
@@ -270,11 +270,16 @@ def main():
   config_dict = Common_Utilities.read_ini_file() # read all ini data 
   
   lib_data_json = read_json_file("SharedFiles/LibraryData.json")
-  
+
+  print("Getting issue data")  
   getIssueDataJIRA(lib_data_json)
   getIssueData(config_dict["TOKEN"], lib_data_json)
+
+  print("Calculating avg response time")  
   calculateAverageResponseTime()
+  print("Calculating avg closing time")  
   calculateAverageClosingTime()
+  print("Applying classifiers")
   applyClassifiers()
 
 if __name__ == "__main__":
