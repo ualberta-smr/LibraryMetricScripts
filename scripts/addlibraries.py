@@ -49,6 +49,7 @@ for entry in libraries:
     library.so_tag = entry['SOtags']
     library.domain = domain
     library.package = entry['Package']
-    library.github_repo = entry['GitHubURL']
+    library.github_repo = entry['FullRepoName']
+    library.github_url = entry['GitHubURL']
     library.jira_url = entry['JIRAURL']
     library.save()
