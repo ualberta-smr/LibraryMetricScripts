@@ -15,7 +15,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
 import django
 django.setup()
 
-from librarycomparison.models import Domain,Library,Data
+from librarycomparison.models import Domain,Library
 
 lines = []
 date = datetime.date.today()
@@ -23,14 +23,12 @@ entrymonth = date.month
 entryyear = date.year
 
 repositories = []
-lines = read_json_file("SharedFiles/LibraryData.json")
+libraries = read_json_file("SharedFiles/LibraryData.json")
     
-for line in lines:
-    library_name = line['LibraryName']
-    domain_name = line['Domain']
-    repository = line['FullRepoName']
-    tag = line['SOtags']    
-    
+for entry in libraries:
+    domain_name = entry['Domain']
+    library_name = entry['LibraryName']
+
     domain = Domain.objects.filter(name=domain_name)
     if not domain.exists():
         domain = Domain()
@@ -41,26 +39,16 @@ for line in lines:
     
     library = Library.objects.filter(name=library_name)
     
+    #create new lib if it doesn't exist. Otherwise, update entry
     if not library.exists():
         library = Library()
-        library.name = library_name
-        library.tag = tag
-        library.repository = repository
-        library.domain = domain
-        library.save()
-        domain.library_set.add(library)
-        domain.save()
-     
-    data = Data.objects.filter(name=library_name, month=entrymonth,year=entryyear)
-    library_instant = Library.objects.get(name=library_name)
+    else:
+        library = Library.objects.get(name=library_name)
     
-    if not data.exists():
-        data = Data()
-        data.name = library_name
-        data.tag = tag
-        data.repository = repository
-        data.domain = domain
-        data.library = library_instant
-        data.month=entrymonth
-        data.year=entryyear
-        data.save()
+    library.name = library_name
+    library.so_tag = entry['SOtags']
+    library.domain = domain
+    library.package = entry['Package']
+    library.github_repo = entry['GitHubURL']
+    library.jira_url = entry['JIRAURL']
+    library.save()
