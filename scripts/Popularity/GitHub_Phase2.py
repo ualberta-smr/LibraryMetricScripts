@@ -42,7 +42,7 @@ def search_code_in_repo(query, github, quick_sleep, error_sleep, max_size, Repo_
       arraysize = len(Repo_Array)     
       while index < arraysize:      
         try:
-          tracking_counter = tracking_counter + 1                    
+          tracking_counter = tracking_counter + 1                
           query_final = query + " repo:"+Repo_Array[index] 
           index = index + 1
           msg = str(index) + " out of " + str (arraysize) + " Query : " + query_final
@@ -85,6 +85,8 @@ def read_repos():
     return repo_array
   
 def main():
+
+    print("Searching for imports in top repos...")
     
     config_dict = Common_Utilities.read_ini_file() # read all ini data
     repo_array = read_repos()    

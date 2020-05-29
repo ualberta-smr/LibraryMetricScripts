@@ -69,6 +69,8 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
 
 #Main function where we set the variables from the configuration file and connect to github 
 def main():
+
+    print("Retrieving list of top repos... \n")
     
     config_dict = Common_Utilities.read_ini_file() # read all ini data    
     
