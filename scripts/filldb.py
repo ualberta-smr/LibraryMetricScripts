@@ -9,7 +9,7 @@ import pickle
 import pygal
 django.setup()
 
-from librarycomparison.models import Domain, Library, Issue, Release, MetricsEntry, Metric, Chart
+from librarycomparison.models import Domain, Library, Issue, LibraryRelease, MetricsEntry, Metric, Chart
 
 from ReleaseFrequency.releasefrequency import ReleaseData, loadReleaseFrequencyData
 from License.license import loadLicenseData
@@ -76,6 +76,24 @@ def create_popularity_chart(domain):
   
   return data
 
+def save_chart_in_db(domain, metric_name, chart_suffix):
+
+	#save chart in DB
+	metric = Metric.objects.get(name=metric_name)
+
+	chart = Chart.objects.filter(domain=domain).filter(metric=metric)
+	
+	#create new chart if it doesn't exist. Otherwise, update entry
+	if not chart.exists():
+		chart = Chart()
+		chart.domain = domain
+		chart.metric = metric
+	else:
+		chart = Chart.objects.filter(domain=domain).get(metric=metric)
+
+	chart.chart = Common_Utilities.pkl_to_blob(domain.name + chart_suffix)
+	chart.save()
+
 def create_release_chart(domain):
 	domain_name = domain.name
 	line_chart = pygal.Line(x_label_rotation=90, height = 200, show_minor_x_labels=False)
@@ -83,7 +101,7 @@ def create_release_chart(domain):
 	libraries = selected_domain.libraries.all()
 	releases_dict = {}
 	release_date_set = set()
-	for release in Release.objects.all():
+	for release in LibraryRelease.objects.all():
 		release_date_set.add(release.release_date)
 
 	release_date_list = sorted(list(release_date_set))
@@ -95,7 +113,7 @@ def create_release_chart(domain):
 	y_labels = []
 
 	for library in libraries:
-		releases = library.release_set.all()
+		releases = library.libraryrelease_set.all()
 		release_list = []
 		for i in range(0, len(release_date_list)):
 			found = False;
@@ -113,21 +131,7 @@ def create_release_chart(domain):
 	data = line_chart.render_data_uri()
 	saveData(data, domain_name + '_release_chart.pkl')
 	
-	#save chart in DB
-	metric = Metric.objects.get(name='release_frequency')
-	print("metric: ", metric)
-	chart = Chart.objects.filter(domain=domain).filter(metric=metric)
-	print("chart:: ", chart)
-	#create new chart if it doesn't exist. Otherwise, update entry
-	if not chart.exists():
-		chart = Chart()
-		chart.domain = domain
-		chart.metric = metric
-	else:
-		chart = Chart.objects.filter(domain=domain).get(metric=metric)
-
-	chart.chart = Common_Utilities.pkl_to_blob(domain_name + '_release_chart')
-	chart.save()
+	save_chart_in_db(domain, "release frequency", '_release_chart')
 
 def parseDateString(date_string):
 	strings = date_string.split(';')
@@ -137,17 +141,17 @@ def parseDateString(date_string):
 	return dates
 
 def create_last_discussed_chart(domain):
+    domain_name = domain.name
     line_chart = pygal.Line(x_label_rotation=90, height = 200, show_minor_x_labels=False, dots_size=5)
-    selected_domain = Domain.objects.get(name=domain)
+    selected_domain = Domain.objects.get(name=domain_name)
     libraries = selected_domain.libraries.all()
     date_set = set()
     for library in libraries:
-            print(library.name)
-            print(library.last_discussed_so_dates)
-            if library.last_discussed_so_dates == '':
-                    continue
-            dates = parseDateString(library.last_discussed_so_dates)
-            date_set.update(dates)
+        metricsentry = MetricsEntry.objects.filter(library=library).latest('created_on')
+        if metricsentry.last_discussed_so_dates == None or metricsentry.last_discussed_so_dates == '':
+            continue
+        dates = parseDateString(metricsentry.last_discussed_so_dates)
+        date_set.update(dates)
 
     date_list = sorted(list(date_set))
     line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), date_list)
@@ -158,36 +162,37 @@ def create_last_discussed_chart(domain):
     y_labels = []
 
     for library in libraries:
-            if library.last_discussed_so_dates == '':
-                    continue
-            dates = parseDateString(library.last_discussed_so_dates)
-            question_list = []
-            for i in range(0, len(date_list)):
-                    found = False;
-                    for j in range(0, len(dates)):
-                            if date_list[i] == dates[j]:
-                                    found = True
-                                    question_list.append(library_id)
-                                    break
-                    if found == False:
-                            question_list.append(None)
-            line_chart.add(library.name, question_list)
-            y_labels.append({'label' : library.name, 'value' : library_id})
-            library_id += 1
+        metricsentry = MetricsEntry.objects.filter(library=library).latest('created_on')
+        if metricsentry.last_discussed_so_dates == None or metricsentry.last_discussed_so_dates == '':
+            continue
+        dates = parseDateString(metricsentry.last_discussed_so_dates)
+        question_list = []
+        for i in range(0, len(date_list)):
+            found = False;
+            for j in range(0, len(dates)):
+                if date_list[i] == dates[j]:
+                    found = True
+                    question_list.append(library_id)
+                    break
+            if found == False:
+                question_list.append(None)
+        line_chart.add(library.name, question_list)
+        y_labels.append({'label' : library.name, 'value' : library_id})
+        library_id += 1
     line_chart.y_labels = y_labels
     data = line_chart.render_data_uri()
-    saveData(data, domain + '_last_discussed_chart.pkl')
-    return data
+    saveData(data, domain_name + '_last_discussed_chart.pkl')
+    save_chart_in_db(domain, "last discussed on SO", '_last_discussed_chart')
 
 def create_last_modification_chart(domain):
+	domain_name = domain.name
 	line_chart = pygal.Line(x_label_rotation=90, height = 200, show_minor_x_labels=False, dots_size=5)
-	selected_domain = Domain.objects.get(name=domain)
+	selected_domain = Domain.objects.get(name=domain_name)
 	libraries = selected_domain.libraries.all()
 	date_set = set()
 	for library in libraries:
-		print(library.name)
-		print(library.last_modification_dates)
-		dates = parseDateString(library.last_modification_dates)
+		metricsentry = MetricsEntry.objects.filter(library=library).latest('created_on')
+		dates = parseDateString(metricsentry.last_modification_dates)
 		date_set.update(dates)
 
 	date_list = sorted(list(date_set))
@@ -199,7 +204,8 @@ def create_last_modification_chart(domain):
 	y_labels = []
 
 	for library in libraries:
-		dates = parseDateString(library.last_modification_dates)
+		metricsentry = MetricsEntry.objects.filter(library=library).latest('created_on')
+		dates = parseDateString(metricsentry.last_modification_dates)
 		modification_list = []
 		for i in range(0, len(date_list)):
 			found = False;
@@ -215,16 +221,17 @@ def create_last_modification_chart(domain):
 		library_id += 1
 	line_chart.y_labels = y_labels
 	data = line_chart.render_data_uri()
-	saveData(data, domain + '_last_modification_chart.pkl')
-	return data
+	saveData(data, domain_name + '_last_modification_chart.pkl')
+	save_chart_in_db(domain, "last modification date", '_last_modification_chart')
 
 def create_breaking_changes_chart(domain):
+	domain_name = domain.name
 	line_chart = pygal.Line(x_label_rotation=90, show_minor_x_labels=False)
-	selected_domain = Domain.objects.get(name=domain)
+	selected_domain = Domain.objects.get(name=domain_name)
 	libraries = selected_domain.libraries.all()
 	releases_dict = {}
 	release_date_set = set()
-	for release in Release.objects.all():
+	for release in LibraryRelease.objects.all():
 		release_date_set.add(release.release_date)
 
 	release_date_list = sorted(list(release_date_set))
@@ -234,27 +241,26 @@ def create_breaking_changes_chart(domain):
 	line_chart.title = 'Breaking Changes in Releases. X_axis = Release Dates, Y_axis = Number of Breaking changes'
 
 	for library in libraries:
-		releases = library.release_set.all()
+		releases = library.libraryrelease_set.all()
 		release_list = []
 		for i in range(0, len(release_date_list)):
 			found = False;
 			for j in range(0, len(releases)):
 				if release_date_list[i] == releases[j].release_date:
-					print(library.name)
 					found = True
 					release_list.append(releases[j].breaking_changes)
 					#break
 			if found == False:
 				release_list.append(None)
 		line_chart.add(library.name, release_list)
-		print(library.name, len(release_list))
 	data = line_chart.render_data_uri()
-	saveData(data, domain + '_breaking_changes_chart.pkl')
-	return data
+	saveData(data, domain_name + '_breaking_changes_chart.pkl')
+	save_chart_in_db(domain, "breaking changes", '_breaking_changes_chart')
 
 def create_issue_response_chart(domain):
+	domain_name = domain.name
 	line_chart = pygal.Line(x_label_rotation=90, show_minor_x_labels=False, height=300)
-	selected_domain = Domain.objects.get(name=domain)
+	selected_domain = Domain.objects.get(name=domain_name)
 	libraries = selected_domain.libraries.all()
 	issue_date_set = set()
 	for issue in Issue.objects.all():
@@ -280,12 +286,14 @@ def create_issue_response_chart(domain):
 				issue_list.append(None)
 		line_chart.add(library.name, issue_list)
 	data = line_chart.render_data_uri()
-	saveData(data, domain + '_issue_response_chart.pkl')
-	return data
+	saveData(data, domain_name + '_issue_response_chart.pkl')
+	save_chart_in_db(domain, "issue response", '_issue_response_chart')
+
 
 def create_issue_closing_chart(domain):
+	domain_name = domain.name
 	line_chart = pygal.Line(x_label_rotation=90, show_minor_x_labels=False, height=300)
-	selected_domain = Domain.objects.get(name=domain)
+	selected_domain = Domain.objects.get(name=domain_name)
 	libraries = selected_domain.libraries.all()
 	issue_date_set = set()
 	for issue in Issue.objects.all():
@@ -311,13 +319,14 @@ def create_issue_closing_chart(domain):
 				issue_list.append(None)
 		line_chart.add(library.name, issue_list)
 	data = line_chart.render_data_uri()
-	saveData(data, domain + '_issue_closing_chart.pkl')
-	return data
+	saveData(data, domain_name + '_issue_closing_chart.pkl')
+	save_chart_in_db(domain, "issue closing", '_issue_closing_chart')
 
 
 def create_issue_classification_chart(domain):
+	domain_name = domain.name
 	line_chart = pygal.StackedBar(height=200)
-	selected_domain = Domain.objects.get(name=domain)
+	selected_domain = Domain.objects.get(name=domain_name)
 	libraries = selected_domain.libraries.all()
 
 	library_names = []
@@ -337,8 +346,8 @@ def create_issue_classification_chart(domain):
 	line_chart.add('Both', performance_security_issues)
 	line_chart.add('None', no_classification_issues)
 	data = line_chart.render_data_uri()
-	saveData(data, domain + '_issue_classification_chart.pkl')
-	return data
+	saveData(data, domain_name + '_issue_classification_chart.pkl')
+	save_chart_in_db(domain, "Issue Classification", '_issue_classification_chart')
 
 def fillPopularityData():
   with open("popularity_results.txt") as f:
@@ -355,30 +364,23 @@ def fillPopularityData():
     metricsentry.popularity = int(popularity)
     metricsentry.save()
 
-
-    # #not sure what the difference between the data and library table is any more
-    # #need to check with Rehab.. for now, filling in the table so website can read it
-    # library = Library.objects.get(repository=repository)
-    # library.popularity = int(popularity)
-    # library.save()
-	  
 def fillReleaseFrequencyData():
-        Release.objects.all().delete()
-        data = loadReleaseFrequencyData()#data is an array of ReleaseData objects 
+    LibraryRelease.objects.all().delete()
+    data = loadReleaseFrequencyData()#data is an array of ReleaseData objects 
 
-        for repo, release_data in data.items():
-            library = Library.objects.get(github_repo=repo)
-            metricsentry = MetricsEntry.objects.filter(library=library).latest('created_on')
-            metricsentry.breaking_changes = 0
-            for i in range(0, len(release_data.release_dates)):
-                release = Release()
-                release.release_date = release_data.release_dates[i]
-                release.name = release_data.release_names[i]
-                release.breaking_changes = 0
-                release.library = library
-                release.save()
-            metricsentry.release_frequency = release_data.release_frequency_average
-            metricsentry.save()
+    for repo, release_data in data.items():
+        library = Library.objects.get(github_repo=repo)
+        metricsentry = MetricsEntry.objects.filter(library=library).latest('created_on')
+        metricsentry.breaking_changes = 0
+        for i in range(0, len(release_data.release_dates)):
+            release = LibraryRelease()
+            release.release_date = release_data.release_dates[i]
+            release.name = release_data.release_names[i]
+            release.breaking_changes = 0
+            release.library = library
+            release.save()
+        metricsentry.release_frequency = release_data.release_frequency_average
+        metricsentry.save()
 
 
 def fillLastModificationDateData():
@@ -466,9 +468,7 @@ def fillBreakingChanges():
 
         i = 0
         while i < len(lines):
-            print(lines[i])
             splitline = lines[i].split(":")
-            print(splitline)
             library = splitline[0]
             release = splitline[1]
             if release == '':
@@ -484,7 +484,7 @@ def fillBreakingChanges():
                     allnonbreakingchanges = int(splitline[10])
                     i += 2
             target_library = Library.objects.get(name=library)
-            target_release = target_library.release_set.all().get(name=release)
+            target_release = target_library.libraryrelease_set.all().get(name=release)
             target_release.breaking_changes = allbreakingchanges
             target_release.save()
             metricsentry = MetricsEntry.objects.filter(library=target_library).latest('created_on')
@@ -494,7 +494,7 @@ def fillBreakingChanges():
 
         for library in Library.objects.all():
             metricsentry = MetricsEntry.objects.filter(library=library).latest('created_on')
-            release_count = library.release_set.all().count()
+            release_count = library.libraryrelease_set.all().count()
             if release_count == 0:
                     metricsentry.backwards_compatibility = 0
             else:
@@ -528,26 +528,26 @@ def createCharts(entrymonth,entryyear):
   for domain in Domain.objects.all():  
     #create_popularity_chart(domain)
     create_release_chart(domain)
-    # create_breaking_changes_chart(domain)
-    # create_issue_response_chart(domain)
-    # create_issue_closing_chart(domain)
-    # create_issue_classification_chart(domain)
-    # create_last_discussed_chart(domain)
-    # create_last_modification_chart(domain)
+    create_breaking_changes_chart(domain)
+    create_issue_response_chart(domain)
+    create_issue_closing_chart(domain)
+    create_issue_classification_chart(domain)
+    create_last_discussed_chart(domain)
+    create_last_modification_chart(domain)
 
 if __name__ == '__main__':
   d = date.today()
   entrymonth = d.month
   entryyear = d.year
   
-  # fillPopularityData()#entrymonth,entryyear)
-  # fillReleaseFrequencyData()
-  # fillBreakingChanges()
-  # fillLastModificationDateData()
-  # fillLastDiscussedSOData()
-  # fillLicenseData()
-  # fillIssueClosingTimeData()
-  # fillIssueResponseTimeData()
-  # fillIssueData()
-  # fillOverallScore()
+  fillPopularityData()#entrymonth,entryyear)
+  fillReleaseFrequencyData()
+  fillBreakingChanges()
+  fillLastModificationDateData()
+  fillLastDiscussedSOData()
+  fillLicenseData()
+  fillIssueClosingTimeData()
+  fillIssueResponseTimeData()
+  fillIssueData()
+  fillOverallScore()
   createCharts(entrymonth,entryyear)
