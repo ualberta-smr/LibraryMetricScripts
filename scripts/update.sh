@@ -7,41 +7,29 @@ echo "Making sure all libraries are in the database..."
 $pythoncmd addlibraries.py
 
 echo "Obtaining Popularity..."
-#cd Popularity
 rm -f Popularity/*.txt
 $pythoncmd Popularity/GitHub_Phase1.py
 $pythoncmd Popularity/GitHub_Phase2.py
-#cd ..
 
 echo "Obtaining Release Frequency..."
-#cd ReleaseFrequency
 rm -f ReleaseFrequency/*.pkl
 $pythoncmd ReleaseFrequency/releasefrequency.py
-#cd ..
 
 echo "Obtaining License Information..."
-#cd License
 rm -f License/*.pkl
 $pythoncmd License/license.py
-#cd ..
 
 echo "Obtaining Last Modification Date..."
-#cd LastModificationDate
 rm -f LastModificationDate/*.pkl
 $pythoncmd LastModificationDate/lastmodificationdate.py
-#cd ..
 
 echo "Obtaining Last Discussed on Stack Overflow..."
-#cd LastDiscussedOnStackOverflow
 rm -f LastDiscussedOnStackOverflow/*.pkl
 $pythoncmd LastDiscussedOnStackOverflow/lastdiscussedSO.py
-#cd ..
 
-#echo "Obtaining issue metrics..."
-#cd IssueMetrics
+echo "Obtaining issue metrics..."
 rm -f IssueMetrics/*.pkl
 $pythoncmd IssueMetrics/issues.py
-#cd ..
 
 #Not included in this library due to licensing issues
 #This code was kindly shared with us by Laerte Xavier, but we

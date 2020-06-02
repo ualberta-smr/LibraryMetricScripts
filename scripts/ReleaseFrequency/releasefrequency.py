@@ -85,6 +85,7 @@ def getReleaseDates(token):
 	
 	for repository in repositories:
 		
+		print("Getting release data for ", repository)
 		if repository in data:
 			continue
 		
