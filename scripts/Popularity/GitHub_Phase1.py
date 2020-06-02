@@ -26,10 +26,12 @@ def output_to_file(repos_file, repo_set):
 #This is where we query for the top repositories 
 def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, max_size):
     
+    repo_set = set() 
+
     try: #check github for rate limit 
         rate_limit = github.get_rate_limit()
         rate = rate_limit.search
-        print(f'The rate limit is {rate.limit}')
+        print(f'Your rate limit is {rate.limit}')
     
         if rate.remaining == 0:
             print(f'You have 0/{rate.limit} API calls remianing. Reset time: {rate.reset}')
@@ -37,35 +39,47 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
         else:
             print(f'You have {rate.remaining}/{rate.limit} API calls remaining')
       
-        print (base_query)
-        final_query = base_query
+        print (f'Base query: {base_query}')
+        curr_query = base_query
     
-        cnt_General = 1
-        repo_set = set() 
+        cnt_General = 0
         
         while cnt_General < max_size:
-            print (final_query)
-            result = github.search_repositories(final_query, sort='stars', order='desc')
-            cnt = 1
+            print (f'Current query: {curr_query}')
+            search_result = github.search_repositories(curr_query, sort='stars', order='desc')
+            cnt = 0
             pgno = 1      
+           
             # 300 is how many repo's the script reads at a time (it was kept at 300 as reading more than that may result in a crash of the Github object 
-            while cnt <= 300:            
-                for repo in result.get_page(pgno):
+            #while cnt <= 300:
+
+            while pgno <= search_result.totalCount and cnt_General <= max_size:
+
+                if pgno % 5 == 0:
+                    Common_Utilities.go_to_sleep("As a precaution, Going to sleep for ", quick_sleep)
+                print("Reading page " , pgno, " at total count ", cnt_General)
+                for repo in search_result.get_page(pgno):
+                    if cnt_General >= max_size:
+                        break
+
                     repo_set.add(repo.full_name) 
-                    cnt = cnt + 1
+                    cnt += 1
                     cnt_General = cnt_General + 1
-          
                     stars = repo.stargazers_count
+
                 pgno = pgno + 1  
-            final_query =  base_query + " stars:<=" + str(stars)
-            Common_Utilities.go_to_sleep("Force to sleep after each iteration, Go to sleep for ", quick_sleep)
+            
+            curr_query =  base_query + " stars:<=" + str(stars)
+
+            if rate.remaining == 0:
+                Common_Utilities.go_to_sleep("Reached API limit per minute, Going to sleep for ", quick_sleep)
         
         output_to_file(output_file_name, repo_set)
-        
-    
+
     # error detection, just in case
     except:
-        Common_Utilities.go_to_sleep("Error: abuse detection mechanism detected,Go to sleep for ", error_sleep)
+        output_to_file(output_file_name, repo_set)
+        Common_Utilities.go_to_sleep("Error: abuse detection mechanism detected, Going to sleep for ", error_sleep)
 
 #Main function where we set the variables from the configuration file and connect to github 
 def main():
@@ -74,7 +88,8 @@ def main():
     
     config_dict = Common_Utilities.read_config_file() # read all ini data    
     
-    time_span = int(config_dict["TIME_SPAN"])
+    #find top that have pushed in the last X days. Right now, TIME_SPAN is 365 days by default
+    time_span = int(config_dict["TIME_SPAN"]) 
     start_Date =  date.today() - datetime.timedelta(days=time_span) 
     
     quick_sleep = int (config_dict["QUICK_SLEEP"]) # regular sleep after each iteration
