@@ -26,8 +26,8 @@ def go_to_sleep (msg, time_of_sleep):
   error_msg = "....    " + "Waked up @ " + start_date
   print (error_msg) 
 
-#Reads the ini file data into dict.
-def read_ini_file():
+#Reads the config file data into dict.
+def read_config_file():
     dictKeys = {}
     with open('Config.json', 'r') as myfile:
         dictKeys = json.loads(myfile.read(),strict=False)

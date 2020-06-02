@@ -102,7 +102,7 @@ def getReleaseDates(token):
 		saveData(data)
 
 def main():
-		config_dict = Common_Utilities.read_ini_file() # read all ini data 
+		config_dict = Common_Utilities.read_config_file() # read all config data 
         
 		getReleaseDates(config_dict["TOKEN"])
 

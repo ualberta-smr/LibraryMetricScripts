@@ -88,7 +88,7 @@ def main():
 
     print("Searching for imports in top repos...")
     
-    config_dict = Common_Utilities.read_ini_file() # read all ini data
+    config_dict = Common_Utilities.read_config_file() # read all config data
     repo_array = read_repos()    
     
     quick_sleep = int (config_dict["QUICK_SLEEP"]) # regular sleep after each iteration

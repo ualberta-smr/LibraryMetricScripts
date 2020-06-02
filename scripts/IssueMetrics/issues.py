@@ -267,7 +267,7 @@ def applyClassifiers():
 
 def main():
 
-  config_dict = Common_Utilities.read_ini_file() # read all ini data 
+  config_dict = Common_Utilities.read_config_file() # read all config data 
   
   lib_data_json = read_json_file("SharedFiles/LibraryData.json")
 

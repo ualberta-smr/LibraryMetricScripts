@@ -63,7 +63,7 @@ def getLicenses(token):
 			saveData(data)
 
 def main():
-        config_dict = Common_Utilities.read_ini_file() # read all ini data 
+        config_dict = Common_Utilities.read_config_file() # read all ini data 
         getLicenses(config_dict["TOKEN"])
 
 if __name__ == "__main__":

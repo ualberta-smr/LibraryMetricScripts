@@ -72,7 +72,7 @@ def main():
 
     print("Retrieving list of top repos... \n")
     
-    config_dict = Common_Utilities.read_ini_file() # read all ini data    
+    config_dict = Common_Utilities.read_config_file() # read all ini data    
     
     time_span = int(config_dict["TIME_SPAN"])
     start_Date =  date.today() - datetime.timedelta(days=time_span) 
