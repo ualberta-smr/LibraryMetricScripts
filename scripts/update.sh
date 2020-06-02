@@ -71,14 +71,14 @@ else
     mkdir charts
     mv *_chart.pkl charts/
 fi
-#
-#DIR="../../breakingchanges/"
-#if [ -d "$DIR" ]; then
-#    echo "removing breaking changes files"
-#    rm breakingchanges.csv
-#    rm -rf ../../breakingchanges/Repositories/*
-#else
-#    echo "No breaking changes files to remove"
-#fi
-#
+
+DIR="../../breakingchanges/"
+if [ -d "$DIR" ]; then
+    echo "removing breaking changes files"
+    rm breakingchanges.csv
+    rm -rf ../../breakingchanges/Repositories/*
+else
+    echo "No breaking changes files to remove"
+fi
+
 rm *.pkl
