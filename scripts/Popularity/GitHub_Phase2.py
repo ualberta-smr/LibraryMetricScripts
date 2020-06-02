@@ -100,7 +100,7 @@ def main():
     
     library_dict = read_libraries(config_dict["LIBRARY_LIST"]) # read all libraries to search against
 
-    output_file_name = config_dict["OUTPUT_FILE"] # this is the output file that we are going to send libraries with their total counts to
+    output_file_name = config_dict["POPULARITY_OUTPUT_FILE"] # this is the output file that we are going to send libraries with their total counts to
     
     output_file = open(output_file_name, "w")  
     output_file.close()  
