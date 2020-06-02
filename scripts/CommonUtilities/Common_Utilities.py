@@ -29,7 +29,7 @@ def go_to_sleep (msg, time_of_sleep):
 #Reads the ini file data into dict.
 def read_ini_file():
     dictKeys = {}
-    with open('GitHubSearch.json', 'r') as myfile:
+    with open('Config.json', 'r') as myfile:
         dictKeys = json.loads(myfile.read(),strict=False)
     return dictKeys 
 
