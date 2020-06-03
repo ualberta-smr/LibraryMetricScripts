@@ -23,7 +23,7 @@ def go_to_sleep (msg, time_of_sleep):
   
   time_stamp = time.time()  
   start_date = datetime.datetime.fromtimestamp(time_stamp).strftime('%Y-%m-%d %H:%M:%S') 
-  error_msg = "....    " + "Waked up @ " + start_date
+  error_msg = "....    " + "Woke up @ " + start_date
   print (error_msg) 
 
 #Reads the config file data into dict.
