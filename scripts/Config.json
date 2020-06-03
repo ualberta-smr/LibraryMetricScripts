@@ -1,11 +1,12 @@
-	{
-		"TOKEN": "ENTER YOUR GITHUB TOKEN HERE",
-		"QUICK_SLEEP": "60",
-		"ERROR_SLEEP": "180",
-		"LIBRARY_LIST": "SharedFiles/LibraryData.json",
-		"SEARCHTERM":"language:Java",
-		"MAXSIZE": "1000",
-		"POPULARITY_OUTPUT_FILE":"Popularity/popularity_results.txt",
-		"TIME_SPAN":"365",
-        "SO_TOKEN":"ENTER YOUR SO TOKEN HERE"
-	}
+    {
+        "TOKEN": "enter your token",
+        "QUICK_SLEEP": "60",
+        "ERROR_SLEEP": "180",
+        "LIBRARY_LIST": "SharedFiles/LibraryData.json",
+        "REPO_SEARCH_QUERY":"language:Java",
+        "IMPORT_SEARCH_QUERY":"in:file language:Java",
+        "MAXSIZE": "1000",
+        "POPULARITY_OUTPUT_FILE":"Popularity/popularity_results.txt",
+        "TIME_SPAN":"365",
+        "SO_TOKEN":"enter your token"
+    }
