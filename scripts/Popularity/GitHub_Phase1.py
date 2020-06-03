@@ -40,12 +40,11 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
             print(f'You have {rate.remaining}/{rate.limit} API calls remaining')
       
         print (f'Base query: {base_query}')
-        curr_query = base_query
-    
-        cnt_General = 0
+        curr_query = base_query + " stars:>100"
+
             
            
-        while cnt_General < max_size:
+        while len(repo_set) < max_size:
             print ("Collected ", cnt_General, " repos so far")
             print (curr_query)
             result = github.search_repositories(curr_query, sort='stars', order='desc')
@@ -58,22 +57,21 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
                     for repo in result.get_page(pgno):
                         repo_set.add(repo.full_name) 
                         cnt = cnt + 1
-                        cnt_General = cnt_General + 1
           
                         stars = repo.stargazers_count
 
-                        if cnt_General == max_size:
+                        if len(repo_set) == max_size:
                             break
                 except:
                     Common_Utilities.go_to_sleep("API limit exceeded, Going to sleep for ", quick_sleep)
                     continue
 
-                if cnt_General == max_size:
+                if len(repo_set) == max_size:
                     break
 
                 pgno = pgno + 1  
             
-            curr_query =  base_query + " stars:<=" + str(stars)
+            curr_query =  base_query + " stars:100.." + str(stars)
             
 
         output_to_file(output_file_name, repo_set)
@@ -106,7 +104,7 @@ def main():
     output_file = open(output_file_name, "w")  
     output_file.close()      
     
-    query = "pushed:>" + str(push_date) + " " + config_dict["SEARCHTERM"]          
+    query = "pushed:>" + str(push_date) + " " + config_dict["REPO_SEARCH_QUERY"]          
     print (query)
    
     query_repo(output_file_name, query, github, quick_sleep, error_sleep, max_size) 
