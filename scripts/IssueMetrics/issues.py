@@ -51,6 +51,11 @@ issue_closing_time_pkl = 'IssueMetrics/issueclosingtime.pkl'
 issue_data_pkl = 'IssueMetrics/issuedata.pkl'
 issue_resp_time_pkl = 'IssueMetrics/issueresponsetime.pkl'
 
+print("start classifiers")
+performance_classifier = PerformanceClassifier()
+security_classifier = SecurityClassifier()
+print("end classifiers================")
+
 class IssueData:
 
   def __init__(self, issue_id):
@@ -86,32 +91,6 @@ class IssueData:
 
   def __str__(self):
     return self.issue_id
-
-def saveIssueInDB(issue, ):
-    data = loadData('issuedata.pkl')
-    for repo, issues in data.items():
-        total_issues = 0
-        total_performance_issues = 0
-        total_security_issues = 0
-        library = Library.objects.get(repository=repo)
-        metricsentry = MetricsEntry.objects.filter(library=library).latest('created_on')
-        for i in issues:
-            total_issues += 1
-            issue = Issue()
-            issue.issue_id = str(i.issue_id)
-            issue.creation_date = i.creation_date
-            issue.closing_date = i.closing_date
-            issue.first_response_date = i.first_comment_date
-            issue.performance_issue = i.performance_issue
-            issue.security_issue = i.security_issue
-            if issue.performance_issue == True:
-                total_performance_issues += 1
-            if issue.security_issue == True:
-                total_security_issues += 1
-            issue.library = library
-            issue.save()
-            library.issue_set.add(issue)
-            library.save()
 
 
 def loadData(filename):
@@ -162,6 +141,27 @@ def calculateAverageResponseTime():
       metricsentry.repsonse_time = float(total_response_time/total_issues_with_comments/86400)
   #saveData(issue_response_times, issue_resp_time_pkl)
 
+def get_latest_issue_date(library):
+  #get latest data we have about this repo
+  
+  print("got library", library.name)
+  latest_issue_date = datetime(1700,1,1)
+  issues = Issue.objects.filter(library=library)
+
+  if issues:
+    latest_issue_date = issues.latest('creation_date').creation_date
+
+  return latest_issue_date
+
+def sleep(github):
+  github_limits = github.github.get_rate_limit()
+  if github_limits.core.remaining == 0:
+    Common_Utilities.go_to_sleep("API minute limit exceeded,Go to sleep for ", 3600)
+
+  if github_limits.search.remaining == 0:
+    Common_Utilities.go_to_sleep("API minute limit exceeded,Go to sleep for ", 61)
+
+
 def getIssueData(token, arr):
 
   repositories = []
@@ -178,31 +178,24 @@ def getIssueData(token, arr):
 
   for repo_name in repositories:
     first_issue = 1
-    print("Current repository: ", repo_name)
+    print("========Current repository: ", repo_name)
+    library = Library.objects.get(github_repo=repo_name)
+    latest_issue_date = get_latest_issue_date(library)
 
     try:
       repo = github.get_repo(repo_name)
-
-      #get latest data we have about this repo
-      library = Library.objects.get(github_repo=repo_name)
-      print("got library", library.name)
-      latest_issue_date = datetime(1700,1,1)
-      issues = Issue.objects.filter(library=library)
-
-      if issues:
-        latest_issue_date = issues.latest('creation_date').creation_date
-
       max_issue_number = repo.get_issues(state="all", since=latest_issue_date)[0].number
 
     except RateLimitExceededException:
-      Common_Utilities.go_to_sleep("API limit exceeded,Go to sleep for ", 60)
+      sleep(github)
+
       repo = github.get_repo(repo_name)
       max_issue_number = r.get_issues(state="all",since=latest_issue_date)[0].number
 
     print("we have ", max_issue_number, "that we will loop through now")
 
     for i in range(first_issue, max_issue_number):
-      print("processing issue ", i)
+      print("**processing issue ", i)
       try:
         gh_issue = repo.get_issue(i)
       except UnknownObjectException:
@@ -214,24 +207,32 @@ def getIssueData(token, arr):
         continue
       except:
         continue
-      if issue == None:
+      if gh_issue == None:
         continue
-      if issue.pull_request != None:
+      if gh_issue.pull_request != None:
         continue
 
+      print("starting to create issue")
       new_issue = Issue()
-      new_issue.issue_id = str(gh_issue.issue_id)
+      new_issue.issue_id = str(gh_issue.id)
       new_issue.creation_date = gh_issue.created_at
-      new_issue.title = gh_issue.title
       new_issue.closing_date = gh_issue.closed_at
       new_issue.library = library
+      try:
+        new_issue.title = gh_issue.title
+        new_issue.performance_issue = performance_classifier.classify(new_issue.title)
+        new_issue.security_issue = security_classifier.classify(new_issue.title)
+      except:
+        print("failed to create title for issue ", gh_issue.id)
+      print("created basics")
 
       while True:
+        print("processing comments")
         try:
-          for comment in issue.get_comments():
-            if comment.user == issue.user:
+          for comment in gh_issue.get_comments():
+            if comment.user == gh_issue.user:
               continue
-            new_issue.first_response_date(comment.created_at)
+            new_issue.first_response_date = comment.created_at
             break
           break
         except RateLimitExceededException:
@@ -242,8 +243,8 @@ def getIssueData(token, arr):
         except Exception as e:
           print(e)
           continue
-        
-      issue.save()
+       
+      new_issue.save()
       #not sure if we need this: library.issue_set.add(issue) library.save()
     Common_Utilities.go_to_sleep("Sleeping before next library..Go to sleep for ", 180)
 
