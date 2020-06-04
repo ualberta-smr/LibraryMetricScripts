@@ -141,7 +141,7 @@ def calculateAverageResponseTime():
       metricsentry.repsonse_time = float(total_response_time/total_issues_with_comments/86400)
   #saveData(issue_response_times, issue_resp_time_pkl)
 
-def get_latest_issue_date(library):
+def get_latest_issue(library):
   #get latest data we have about this repo
   
   print("got library", library.name)
@@ -149,9 +149,12 @@ def get_latest_issue_date(library):
   issues = Issue.objects.filter(library=library)
 
   if issues:
-    latest_issue_date = issues.latest('creation_date').creation_date
+    #latest_issue_date = issues.latest('creation_date').creation_date
+    return issues.latest('creation_date')
 
-  return latest_issue_date
+  # print("Returning latest date: ", latest_issue_date)
+  # return latest_issue_date
+  return None
 
 def sleep(github):
   github_limits = github.github.get_rate_limit()
@@ -180,7 +183,12 @@ def getIssueData(token, arr):
     first_issue = 1
     print("========Current repository: ", repo_name)
     library = Library.objects.get(github_repo=repo_name)
-    latest_issue_date = get_latest_issue_date(library)
+    latest_issue = get_latest_issue(library)
+    latest_issue_date = datetime(1700,1,1)
+    if latest_issue:
+    	latest_issue_date = latest_issue.creation_date
+    	first_issue = int(latest_issue.issue_id)
+
 
     try:
       repo = github.get_repo(repo_name)
@@ -190,10 +198,10 @@ def getIssueData(token, arr):
       sleep(github)
 
       repo = github.get_repo(repo_name)
-      max_issue_number = r.get_issues(state="all",since=latest_issue_date)[0].number
+      max_issue_number = repo.get_issues(state="all",since=latest_issue_date)[0].number
 
-    print("we have ", max_issue_number, "that we will loop through now")
-
+    print("we will loop from issue ", first_issue, "to", max_issue_number, "that we will loop through now")
+ 
     for i in range(first_issue, max_issue_number):
       print("**processing issue ", i)
       try:
@@ -214,7 +222,7 @@ def getIssueData(token, arr):
 
       print("starting to create issue")
       new_issue = Issue()
-      new_issue.issue_id = str(gh_issue.id)
+      new_issue.issue_id = str(gh_issue.number) #the actual issue id on github is the number; not sure what the issue_id in PyGithub is
       new_issue.creation_date = gh_issue.created_at
       new_issue.closing_date = gh_issue.closed_at
       new_issue.library = library
@@ -243,8 +251,13 @@ def getIssueData(token, arr):
         except Exception as e:
           print(e)
           continue
-       
-      new_issue.save()
+      
+      try: 
+        new_issue.save()
+      except: 
+        print("failed to create title for issue ", gh_issue.id, "... replacing with blank")
+        new_issue.title = ""
+        new_issue.save()
       #not sure if we need this: library.issue_set.add(issue) library.save()
     Common_Utilities.go_to_sleep("Sleeping before next library..Go to sleep for ", 180)
 
