@@ -51,18 +51,19 @@ def create_date_range(start_date, end_date):
 
 def create_popularity_chart(domain):
   
-  line_chart  = pygal.Line(x_label_rotation=45, height=200, width=1000)
-  selected_domain = Domain.objects.get(name=domain)  
+  line_chart  = pygal.DateTimeLine(x_label_rotation=45, height=200, width=1000,x_value_formatter=lambda dt: dt.strftime('%b %d, %Y'))
+   
+  line_chart.title = domain.name
   
-  end_date = datetime.now() 
+  # end_date = datetime.now() 
   
-  default_start_date = datetime(2019, 6, 1)
-  start_date = end_date + relativedelta(months=-24)
+  # default_start_date = datetime(2019, 6, 1)
+  # start_date = end_date + relativedelta(months=-24)
   
-  if start_date < default_start_date:
-    start_date = default_start_date
+  # if start_date < default_start_date:
+  #   start_date = default_start_date
   
-  libraries = selected_domain.libraries.all()#('created_on')# data_set.filter(run_time__gte=start_date).filter(run_time__lte=end_date).order_by('year').order_by('month')
+  libraries = domain.libraries.all()#('created_on')# data_set.filter(run_time__gte=start_date).filter(run_time__lte=end_date).order_by('year').order_by('month')
  
   domain_dic = {}
   for library in libraries:   
@@ -74,18 +75,17 @@ def create_popularity_chart(domain):
     for metric in metrics:
 
       if library.name in domain_dic.keys():
-        domain_dic[library.name].append(metric.popularity)
+        domain_dic[library.name].append((metric.created_on,metric.popularity))
       else:
         popularity_data_arr = []
-        popularity_data_arr.append(metric.popularity)
+        popularity_data_arr.append((metric.created_on,metric.popularity))
         domain_dic[library.name] = popularity_data_arr
   
-  line_chart.x_labels = map(str, create_date_range(start_date,end_date))
-  line_chart.title = domain.name
+  #line_chart.x_labels = map(str, create_date_range(start_date,end_date))
+  
 
-  for keys, values in domain_dic.items():
-    print("keys:", str(keys), "values", str(values))    
-    line_chart.add(keys, values)
+  for key, value in domain_dic.items(): 
+    line_chart.add(key, value)
   
   data = line_chart.render_data_uri()
   line_chart.render_in_browser()
@@ -168,14 +168,13 @@ def create_last_discussed_chart(domain):
         if metricsentry == None:
             continue
 
-        print("library:", library.name, "last dates:",metricsentry.last_discussed_so_dates )
         if metricsentry.last_discussed_so_dates == None or metricsentry.last_discussed_so_dates == '':
             continue
         dates = parseDateString(metricsentry.last_discussed_so_dates)
         date_set.update(dates)
 
     date_list = sorted(list(date_set))
-    print("have date set: ", len(date_list))
+
     if len(date_list) == 0:
         print("not creating last discussed chart for", domain.name)
         return
@@ -394,14 +393,12 @@ def fillPopularityData():
     strings = line.split(':')
     repository = strings[0]
     popularity = strings[1]
-    print("repo", repository)
     library = Library.objects.get(github_repo=repository)
     metricsentry = get_latest_metrics_entry(library)
 
     #Only create a new entry if we have not already created an entry today
     #can happen if we need to re-run due to previous errors
     if metricsentry == None or metricsentry.created_on.date() != datetime.today().date():
-        print("creating new entry for:", library.name)
         metricsentry = MetricsEntry()
         metricsentry.library = library
         metricsentry.popularity = int(popularity)
@@ -484,7 +481,6 @@ def fillIssueData():
 def fillLastDiscussedSOData():
     data = loadLastDiscussedSOData()
     for tag, dates in data.items():
-        print("library, ", tag, "with dates: ", dates)
         library = Library.objects.get(so_tag=tag)
         metricsentry = get_latest_metrics_entry(library)
         if metricsentry == None:
@@ -532,11 +528,10 @@ def fillBreakingChanges():
                     i += 2
             target_library = Library.objects.get(name=library)
             try:
-            	print("checking release in library releases:", release)
-            	target_release = target_library.releases.get(name=release)
+                target_release = target_library.releases.get(name=release)
             except:
-            	print("Skipping: Could not find release",release,"for library", library)
-            	continue;
+                print("Skipping: Could not find release",release,"for library", library)
+                continue;
             target_release.breaking_changes = allbreakingchanges
             target_release.save()
             metricsentry = get_latest_metrics_entry(target_library)
@@ -607,12 +602,12 @@ if __name__ == '__main__':
   entrymonth = d.month
   entryyear = d.year
   
-  # fillPopularityData()
-  # calculateReleaseFrequency()
-  # fillBreakingChanges()
-  # fillLastModificationDateData()
-  # fillLastDiscussedSOData()
-  # fillLicenseData()
-  # fillIssueData()
-  # fillOverallScore()
+  fillPopularityData()
+  calculateReleaseFrequency()
+  fillBreakingChanges()
+  fillLastModificationDateData()
+  fillLastDiscussedSOData()
+  fillLicenseData()
+  fillIssueData()
+  fillOverallScore()
   createCharts()

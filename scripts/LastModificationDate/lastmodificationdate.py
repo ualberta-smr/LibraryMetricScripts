@@ -59,7 +59,6 @@ def getLastModificationDates(token):
 	libraries = Library.objects.all()
 	
 	for library in libraries:
-		print ("getting data for" , library.name)
 		repo = github.get_repo(library.github_repo)
 		dates_string = ""
 		i = 0

@@ -5,30 +5,30 @@ pythoncmd=$1 #python3.8
 
 echo "Making sure all libraries are in the database..."
 $pythoncmd addlibraries.py
-#
-#if [ $? -eq 0 ]; then
-#    echo "Added libraries..."
-#else
-#    exit 1
-#fi
-#
-#echo "Obtaining Popularity..."
-#rm -f Popularity/*.txt
-#$pythoncmd Popularity/GitHub_Phase1.py
-#
-#if [ $? -eq 0 ]; then
-#    echo "Found top repos..."
-#else
-#    exit 1
-#fi
-#
-#$pythoncmd Popularity/GitHub_Phase2.py
-#
-#if [ $? -eq 0 ]; then
-#    echo "Got popularity... "
-#else
-#    exit 1
-#fi
+
+if [ $? -eq 0 ]; then
+    echo "Added libraries..."
+else
+    exit 1
+fi
+
+echo "Obtaining Popularity..."
+rm -f Popularity/*.txt
+$pythoncmd Popularity/GitHub_Phase1.py
+
+if [ $? -eq 0 ]; then
+    echo "Found top repos..."
+else
+    exit 1
+fi
+
+$pythoncmd Popularity/GitHub_Phase2.py
+
+if [ $? -eq 0 ]; then
+    echo "Got popularity... "
+else
+    exit 1
+fi
 
 echo "Obtaining Release Frequency..."
 $pythoncmd ReleaseFrequency/releasefrequency.py

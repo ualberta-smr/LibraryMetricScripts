@@ -98,11 +98,8 @@ def getIssueData(token):
       repo = github.get_repo(library.github_repo)
       max_issue_number = repo.get_issues(state="all",since=latest_issue_date)[0].number
 
-    print("we will loop from issue ", first_issue, "to", max_issue_number, "that we will loop through now")
- 
     for i in range(first_issue, max_issue_number):
       looped = True
-      print("**processing issue ", i)
       try:
         gh_issue = repo.get_issue(i)
       except UnknownObjectException:
@@ -119,7 +116,6 @@ def getIssueData(token):
       if gh_issue.pull_request != None:
         continue
 
-      print("starting to create issue")
       new_issue = Issue()
       new_issue.issue_id = str(gh_issue.number) #the actual issue id on github is the number; not sure what the issue_id in PyGithub is
       new_issue.creation_date = gh_issue.created_at
@@ -131,10 +127,8 @@ def getIssueData(token):
         new_issue.security_issue = security_classifier.classify(new_issue.title)
       except:
         print("failed to create title for issue ", gh_issue.id)
-      print("created basics")
 
       while True:
-        print("processing comments")
         try:
           for comment in gh_issue.get_comments():
             if comment.user == gh_issue.user:
@@ -172,8 +166,6 @@ def getIssueDataJIRA(urls):
     xmlString = urllib.request.urlopen(library.jira_url).read().decode('utf-8')
     root = xml.etree.ElementTree.fromstring(xmlString)
     channel = root.find('channel')
-
-    print ("num jira issues:", len(channel.findall('item')))
 
     for issue in channel.findall('item'):
       issue_id = issue.find('key').text
@@ -215,8 +207,8 @@ def main():
 
   print("Getting JIRA issue data")  
   getIssueDataJIRA(lib_data_json)
-  #print("Getting GitHub issue data")
-  #getIssueData(config_dict["TOKEN"])
+  print("Getting GitHub issue data")
+  getIssueData(config_dict["TOKEN"])
 
 if __name__ == "__main__":
   main()
