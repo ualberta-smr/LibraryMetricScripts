@@ -35,15 +35,15 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
     try: #check github for rate limit 
         rate_limit = github.get_rate_limit()
         rate = rate_limit.search
-        print(f'The rate limit is {rate.limit}')
+        print("The rate limit is %d" % rate.limit)
     
         if rate.remaining == 0:
-            print(f'You have 0/{rate.limit} API calls remianing. Reset time: {rate.reset}')
+            print('You have 0/%d API calls remianing. Reset time: %d' % (rate.limit, rate.reset ))
             Common_Utilities.go_to_sleep("Reached API limit per minute, Going to sleep for ", quick_sleep) 
         else:
-            print(f'You have {rate.remaining}/{rate.limit} API calls remaining')
+            print('You have %d/%d API calls remaining' % (rate.remaining/rate.limit))
       
-        print (f'Base query: {base_query}')
+        print ('Base query: %' % base_query)
         curr_query = base_query + " stars:>100"
 
             
