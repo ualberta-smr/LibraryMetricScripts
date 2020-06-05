@@ -27,7 +27,7 @@ def tokenize(text):
 
 def read_dataset(list_descriptions, list_labels):
   from openpyxl import load_workbook
-  wb = load_workbook('IssueMetrics/performancedataset.xlsx')
+  wb = load_workbook('scripts/IssueMetrics/performancedataset.xlsx')
 
   for sheet in wb:
     for i in range(1, len(sheet['B'])):
@@ -65,7 +65,7 @@ def crossValidate(classifier, counts, list_labels):
 
 
 def getPerformanceKeywords():
-  with open("IssueMetrics/performancewords.txt") as f:
+  with open("scripts/IssueMetrics/performancewords.txt") as f:
     words = f.readlines()
   words = [x.strip() for x in words]
   return words

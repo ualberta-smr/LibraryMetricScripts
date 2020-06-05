@@ -24,30 +24,13 @@ import time
 from datetime import datetime
 from github import Github, Repository
 from github.GithubException import UnknownObjectException, RateLimitExceededException, GithubException
-from performanceclassifier import PerformanceClassifier
-from securityclassifier import SecurityClassifier
+from .performanceclassifier import PerformanceClassifier
+from .securityclassifier import SecurityClassifier
 import json
-from CommonUtilities import Common_Utilities
-
-
-#This makes the utility_tool visible from this file
-import sys
-sys.path.append('../')
-from SharedFiles.utility_tool import read_json_file
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
-os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
-import django
-django.setup()
+from scripts.CommonUtilities import Common_Utilities
+from scripts.SharedFiles.utility_tool import read_json_file
 from librarycomparison.models import Library, Issue
 
-
-print("start classifiers")
-performance_classifier = PerformanceClassifier()
-security_classifier = SecurityClassifier()
-print("end classifiers================")
 
 def get_latest_issue(library):
   #get latest issue we have for this repo
@@ -70,7 +53,7 @@ def sleep(github):
     Common_Utilities.go_to_sleep("API minute limit exceeded,Go to sleep for ", 61)
 
 
-def getIssueData(token):
+def getIssueData(token, performance_classifier, security_classifier):
 
   libraries = Library.objects.filter(jira_url__exact="").exclude(jira_url__isnull=True)
 
@@ -98,7 +81,8 @@ def getIssueData(token):
       repo = github.get_repo(library.github_repo)
       max_issue_number = repo.get_issues(state="all",since=latest_issue_date)[0].number
 
-    for i in range(first_issue, max_issue_number):
+    #TODO: CHANGE BACK!!! to max_issue_number
+    for i in range(first_issue, 4):
       looped = True
       try:
         gh_issue = repo.get_issue(i)
@@ -123,10 +107,11 @@ def getIssueData(token):
       new_issue.library = library
       try:
         new_issue.title = gh_issue.title
-        new_issue.performance_issue = performance_classifier.classify(new_issue.title)
-        new_issue.security_issue = security_classifier.classify(new_issue.title)
       except:
         print("failed to create title for issue ", gh_issue.id)
+
+      new_issue.performance_issue = performance_classifier.classify(new_issue.title)
+      new_issue.security_issue = security_classifier.classify(new_issue.title)
 
       while True:
         try:
@@ -155,7 +140,7 @@ def getIssueData(token):
     if looped:
       Common_Utilities.go_to_sleep("Sleeping before next library..Go to sleep for ", 180)
 
-def getIssueDataJIRA(urls):
+def getIssueDataJIRA(urls, performance_classifier, security_classifier):
   dict = {}
 
   libraries = Library.objects.exclude(jira_url="")
@@ -199,16 +184,18 @@ def getIssueDataJIRA(urls):
       #saveData(issue_data, issue_data_pkl)
       #Common_Utilities.go_to_sleep("Sleeping before next library..Go to sleep for ", 180)
 
-def main():
+def get_issues():
 
+  performance_classifier = PerformanceClassifier()
+  security_classifier = SecurityClassifier()
   config_dict = Common_Utilities.read_config_file() # read all config data 
   
-  lib_data_json = read_json_file("SharedFiles/LibraryData.json")
+  lib_data_json = read_json_file(config_dict["LIBRARY_LIST"])
 
   print("Getting JIRA issue data")  
-  getIssueDataJIRA(lib_data_json)
+  getIssueDataJIRA(lib_data_json, performance_classifier, security_classifier)
   print("Getting GitHub issue data")
-  getIssueData(config_dict["TOKEN"])
+  getIssueData(config_dict["TOKEN"], performance_classifier, security_classifier)
 
 if __name__ == "__main__":
-  main()
+  get_issues()

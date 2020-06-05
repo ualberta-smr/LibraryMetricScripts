@@ -12,6 +12,7 @@ from scripts.Popularity.GitHub_Phase2 import search_top_repos
 from scripts.ReleaseFrequency.releasefrequency import get_release_freq
 from scripts.License.license import getLicenses
 from scripts.LastModificationDate.lastmodificationdate import getLastModificationDates
+from scripts.IssueMetrics.issues import get_issues
 
 def run():
 	addlibraries()
@@ -20,3 +21,4 @@ def run():
 	get_release_freq()
 	getLicenses()
 	getLastModificationDates()
+	get_issues()

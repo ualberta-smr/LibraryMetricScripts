@@ -7,15 +7,17 @@ from scripts.SharedFiles.utility_tool import read_json_file
 import json
 import datetime 
 from librarycomparison.models import Domain,Library
+from scripts.CommonUtilities import Common_Utilities
 
 def addlibraries():
+    config_dict = Common_Utilities.read_config_file()
     lines = []
     date = datetime.date.today()
     entrymonth = date.month
     entryyear = date.year
 
     repositories = []
-    libraries = read_json_file("scripts/SharedFiles/LibraryData.json")
+    libraries = read_json_file(config_dict["LIBRARY_LIST"])
         
     for entry in libraries:
         domain_name = entry['Domain']
