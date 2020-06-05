@@ -7,6 +7,10 @@ Requires:   A configuration file called Config.json
             
 Output:     A text file called Top_repo.txt which has all the 1000 repository full names (which will be used in GitHub_Phase2.py)
 '''
+#wasn't working on new computer without this
+import sys
+import os
+sys.path.append(os.getcwd())
 
 import datetime
 import random
@@ -45,7 +49,7 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
             
            
         while len(repo_set) < max_size:
-            print ("Collected ", cnt_General, " repos so far")
+            print ("Collected ", len(repo_set), " repos so far")
             print (curr_query)
             result = github.search_repositories(curr_query, sort='stars', order='desc')
             cnt = 0
@@ -77,9 +81,10 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
         output_to_file(output_file_name, repo_set)
 
     # error detection, just in case
-    except:
+    except Exception as e:
         output_to_file(output_file_name, repo_set)
         print("Error: abuse detection mechanism detected.. outputting what we have...")
+        print(e)
 
 #Main function where we set the variables from the configuration file and connect to github 
 def main():
