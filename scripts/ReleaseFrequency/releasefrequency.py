@@ -15,17 +15,13 @@ import pickle
 from github import Github, Repository, GitTag
 import getpass
 import json
-from CommonUtilities import Common_Utilities
+from scripts.CommonUtilities import Common_Utilities
+from scripts.SharedFiles.utility_tool import read_json_file
 
-#This makes the utility_tool visible from this file
-import sys
-sys.path.append('../')
-from SharedFiles.utility_tool import read_json_file
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
-os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# sys.path.append(BASE_DIR)
+# os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
 import django
 import pickle
 import pygal
@@ -55,10 +51,10 @@ def getReleaseDates(token):
 				release.save()
 
 
-def main():
+def get_release_freq():
 		config_dict = Common_Utilities.read_config_file() # read all config data 
         
 		getReleaseDates(config_dict["TOKEN"])
 
 if __name__ == "__main__":
-	main()
+	get_release_freq()

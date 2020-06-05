@@ -7,7 +7,7 @@ Output:     A text file called popularity_results.txt which has each library alo
 '''
 
 import random
-from github import Github
+from github import Github, GithubException
 import json  
 from scripts.CommonUtilities import Common_Utilities
 from scripts.SharedFiles.utility_tool import read_json_file
@@ -50,11 +50,11 @@ def search_code_in_repo(query, github, quick_sleep, error_sleep, max_size, Repo_
             frequency += 1      
           if tracking_counter % 15 == 0:
             Common_Utilities.go_to_sleep("Force to sleep after every 15 requests, Go to sleep for ", quick_sleep)          
-        except:             
+        except GithubException:             
           index -= 1
           Common_Utilities.go_to_sleep("Error: Internal abuse detection mechanism detected,Go to sleep for ", error_sleep)
       
-    except:
+    except GithubException:
       Common_Utilities.go_to_sleep("Error: abuse detection mechanism detected,Go to sleep for ", error_sleep)
       roll_back = True # -1 means a problem detected and we need to re-read the same pages again after sleep. no change of date
    
@@ -91,8 +91,8 @@ def search_top_repos():
     error_sleep = int (config_dict["ERROR_SLEEP"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
     max_size = int (config_dict["MAXSIZE"]) # max number of results returned per gitHub call, for now it is 1500, but could be changed in the future
     
-    g = None
-    g = Github(config_dict["TOKEN"])   # pass the connection token 
+    github = None
+    github = Github(config_dict["TOKEN"])   # pass the connection token 
     
     library_dict = read_libraries(config_dict["LIBRARY_LIST"]) # read all libraries to search against
 
@@ -104,7 +104,7 @@ def search_top_repos():
     for keyword,repo in library_dict.items():  
       
       query = "\"import " + keyword + "\" "  + config_dict["IMPORT_SEARCH_QUERY"]  
-      frequency = search_code_in_repo(query, g, quick_sleep, error_sleep, max_size, repo_array) 
+      frequency = search_code_in_repo(query,github, quick_sleep, error_sleep, max_size, repo_array) 
       send_totals_to_file(output_file_name, repo, frequency )
        
     print ("\n Finally ..... Execution is over \n")    
