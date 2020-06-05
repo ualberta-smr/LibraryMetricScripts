@@ -7,10 +7,8 @@ Requires:   A configuration file called Config.json
             
 Output:     A text file called Top_repo.txt which has all the 1000 repository full names (which will be used in GitHub_Phase2.py)
 '''
-#wasn't working on new computer without this
 import sys
 import os
-sys.path.append(os.getcwd())
 
 import datetime
 import random
@@ -105,7 +103,7 @@ def get_top_repos():
     github = None
     github = Github(config_dict["TOKEN"])   # pass the connection token 
     
-    output_file_name = "./Top_Repo.txt"  # this is the output file that we are going to send repo names to
+    output_file_name = "scripts/Popularity/Top_Repo.txt"  # this is the output file that we are going to send repo names to
     
     output_file = open(output_file_name, "w")  
     output_file.close()      

@@ -9,12 +9,8 @@ Output:     A text file called popularity_results.txt which has each library alo
 import random
 from github import Github
 import json  
-from CommonUtilities import Common_Utilities
-
-#This makes the utility_tool visible from this file
-import sys
-sys.path.append('../')
-from SharedFiles.utility_tool import read_json_file
+from scripts.CommonUtilities import Common_Utilities
+from scripts.SharedFiles.utility_tool import read_json_file
 
 #This is where the search happens, an api query is used to collect results. 
 #The query looks like this: "import LIBRARY-NAME" language:java repo:REPO-NAME
@@ -79,12 +75,12 @@ def send_totals_to_file(output_file, keyword, num_found):
 
 def read_repos():
     repo_array = []
-    with open("Popularity/Top_Repo.txt", "r") as f:
+    with open("scripts/Popularity/Top_Repo.txt", "r") as f:
         for line in f:          
             repo_array.append(line.rstrip())
     return repo_array
   
-def main():
+def search_top_repos():
 
     print("Searching for imports in top repos...")
     
@@ -100,7 +96,7 @@ def main():
     
     library_dict = read_libraries(config_dict["LIBRARY_LIST"]) # read all libraries to search against
 
-    output_file_name = config_dict["POPULARITY_OUTPUT_FILE"] # this is the output file that we are going to send libraries with their total counts to
+    output_file_name = "scripts/" + config_dict["POPULARITY_OUTPUT_FILE"] # this is the output file that we are going to send libraries with their total counts to
     
     output_file = open(output_file_name, "w")  
     output_file.close()  
@@ -113,4 +109,5 @@ def main():
        
     print ("\n Finally ..... Execution is over \n")    
     
-main()
+if __name__ == "__main__":
+    search_top_repos()
