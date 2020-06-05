@@ -18,10 +18,6 @@ import json
 from scripts.CommonUtilities import Common_Utilities
 from scripts.SharedFiles.utility_tool import read_json_file
 
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# sys.path.append(BASE_DIR)
-# os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
-# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
 import django
 import pickle
 import pygal

@@ -17,27 +17,18 @@ import pickle
 from github import Github, Repository, GitTag
 import getpass
 import json
-from CommonUtilities import Common_Utilities
-
-#This makes the utility_tool visible from this file
-import sys
-sys.path.append('../')
-from SharedFiles.utility_tool import read_json_file
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
-os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
+from scripts.CommonUtilities import Common_Utilities
+from scripts.SharedFiles.utility_tool import read_json_file
 import django
 import pickle
 import pygal
-django.setup()
+
 
 from librarycomparison.models import Library
 
 def loadLastModificationDateData():
 	data = {}
-	filename = 'LastModificationDate/lastmodificationdate.pkl'
+	filename = 'scripts/LastModificationDate/lastmodificationdate.pkl'
 	if os.path.isfile(filename):
 		with open(filename, 'rb') as input:
 			try:
@@ -48,10 +39,12 @@ def loadLastModificationDateData():
 	return data
 
 def saveData(data):
-	with open('LastModificationDate/lastmodificationdate.pkl', 'wb') as output:
+	with open('scripts/LastModificationDate/lastmodificationdate.pkl', 'wb') as output:
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
-def getLastModificationDates(token):
+def getLastModificationDates():
+	config_dict = Common_Utilities.read_config_file() # read all config data 
+	token = config_dict["TOKEN"]
 	
 	data = loadLastModificationDateData()
 	  
@@ -72,10 +65,7 @@ def getLastModificationDates(token):
 		data[library.github_repo] = dates_string
 		saveData(data)
 
-def main():
-        config_dict = Common_Utilities.read_config_file() # read all config data 
-        getLastModificationDates(config_dict["TOKEN"])
         
 if __name__ == "__main__":
-  main()
+  getLastModificationDates()
 

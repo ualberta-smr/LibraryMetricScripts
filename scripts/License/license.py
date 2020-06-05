@@ -17,21 +17,12 @@ from github import Github, Repository, GitTag
 from github.GithubException import UnknownObjectException
 import getpass
 import json 
-from CommonUtilities import Common_Utilities
+from scripts.CommonUtilities import Common_Utilities
+from scripts.SharedFiles.utility_tool import read_json_file
 
-#This makes the utility_tool visible from this file
-import sys
-sys.path.append('../')
-from SharedFiles.utility_tool import read_json_file
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
-os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
 import django
 import pickle
 import pygal
-django.setup()
 
 from librarycomparison.models import Library
 
@@ -48,10 +39,12 @@ def loadLicenseData():
 	return data
 
 def saveData(data):
-	with open('License/license.pkl', 'wb') as output:
+	with open('scripts/License/license.pkl', 'wb') as output:
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
-def getLicenses(token):
+def getLicenses():
+	config_dict = Common_Utilities.read_config_file() # read all ini data 
+	token = config_dict["TOKEN"]
 	data = loadLicenseData()
 
 	github = Github(token)
@@ -68,10 +61,6 @@ def getLicenses(token):
 			data[library.github_repo] = 'None'
 			saveData(data)
 
-def main():
-        config_dict = Common_Utilities.read_config_file() # read all ini data 
-        getLicenses(config_dict["TOKEN"])
-
 if __name__ == "__main__":
-        main()
+        getLicenses()
 

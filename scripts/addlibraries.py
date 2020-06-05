@@ -6,15 +6,6 @@ from scripts.SharedFiles.utility_tool import read_json_file
 
 import json
 import datetime 
-
-import os
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
-os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
-import django
-django.setup()
-
 from librarycomparison.models import Domain,Library
 
 def addlibraries():
