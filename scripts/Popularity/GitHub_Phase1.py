@@ -15,9 +15,10 @@ sys.path.append(os.getcwd())
 import datetime
 import random
 import sys
+import traceback
 from github import Github, GithubException
 from datetime import date
-from CommonUtilities import Common_Utilities
+from scripts.CommonUtilities import Common_Utilities
 
 #Outputs all the repositories found into a text file
 def output_to_file(repos_file, repo_set):
@@ -41,9 +42,9 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
             print('You have 0/%d API calls remianing. Reset time: %d' % (rate.limit, rate.reset ))
             Common_Utilities.go_to_sleep("Reached API limit per minute, Going to sleep for ", quick_sleep) 
         else:
-            print('You have %d/%d API calls remaining' % (rate.remaining/rate.limit))
+            print('You have %d/%d API calls remaining' % (rate.remaining,rate.limit))
       
-        print ('Base query: %' % base_query)
+        print ('Base query: %s' % base_query)
         curr_query = base_query + " stars:>100"
 
             
@@ -84,10 +85,10 @@ def query_repo(output_file_name, base_query, github, quick_sleep, error_sleep, m
     except Exception as e:
         output_to_file(output_file_name, repo_set)
         print("Error: abuse detection mechanism detected.. outputting what we have...")
-        print(e)
+        traceback.print_exc()
 
 #Main function where we set the variables from the configuration file and connect to github 
-def main():
+def get_top_repos():
 
     print("Retrieving list of top repos... \n")
     
@@ -104,7 +105,7 @@ def main():
     github = None
     github = Github(config_dict["TOKEN"])   # pass the connection token 
     
-    output_file_name = "Popularity/Top_Repo.txt"  # this is the output file that we are going to send repo names to
+    output_file_name = "./Top_Repo.txt"  # this is the output file that we are going to send repo names to
     
     output_file = open(output_file_name, "w")  
     output_file.close()      
@@ -116,4 +117,5 @@ def main():
              
     print ("\nFinally ..... Execution is over \n")
       
-main()
+if __name__ == "__main__":
+    get_top_repos()
