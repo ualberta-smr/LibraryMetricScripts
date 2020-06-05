@@ -22,6 +22,17 @@ sys.path.append('../')
 from SharedFiles.utility_tool import read_json_file
 from CommonUtilities import Common_Utilities
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
+import django
+import pickle
+import pygal
+django.setup()
+
+from librarycomparison.models import Library
+
 
 def loadLastDiscussedSOData():
   data = {}
@@ -51,13 +62,11 @@ def getLastDiscussedDates():
 
   
   data = loadLastDiscussedSOData()
-  
-  tags = []
-  LibraryData = read_json_file('SharedFiles/LibraryData.json')
-  for line in LibraryData:
-    tags.append(line['SOtags'])
 
-  for tag in tags:
+  libraries = Library.objects.all()
+
+  for library in libraries:
+    tag = library.so_tag
     questions = so.questions(sort='creation', order='DESC', tagged=[tag,'java'])
 
     dates_string = ""

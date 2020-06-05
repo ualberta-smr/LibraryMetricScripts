@@ -24,6 +24,17 @@ import sys
 sys.path.append('../')
 from SharedFiles.utility_tool import read_json_file
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
+import django
+import pickle
+import pygal
+django.setup()
+
+from librarycomparison.models import Library
+
 def loadLastModificationDateData():
 	data = {}
 	filename = 'LastModificationDate/lastmodificationdate.pkl'
@@ -44,16 +55,12 @@ def getLastModificationDates(token):
 	
 	data = loadLastModificationDateData()
 	  
-	repositories = []
-	LibraryData = read_json_file('SharedFiles/LibraryData.json')
-	for line in LibraryData:
-		repositories.append(line['FullRepoName'])
+	github = Github(token)
+	libraries = Library.objects.all()
 	
-	g = Github(token)
-	
-	for repository in repositories:
-		print ("getting data for" , repository)
-		repo = g.get_repo(repository)
+	for library in libraries:
+		print ("getting data for" , library.name)
+		repo = github.get_repo(library.github_repo)
 		dates_string = ""
 		i = 0
 		for c in repo.get_commits():
@@ -63,7 +70,7 @@ def getLastModificationDates(token):
 				dates_string += ';'
 			dates_string += c.commit.author.date.strftime('%m/%d/%Y')
 			i += 1
-		data[repository] = dates_string
+		data[library.github_repo] = dates_string
 		saveData(data)
 
 def main():

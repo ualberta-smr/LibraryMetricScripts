@@ -1,15 +1,12 @@
 # Description:
-# - Obtains the Release Frequency (in days) of a library based on its Github repository. Additionally, this script the date and name of
-# all releases of a library (see class ReleaseData)
+# - Records release data of a library. Actual release frequency is calculated in filldb
 #
 #Requirements: 
 # - You will need to install PyGithub
-# - You will need to input your Github credentials to make use of the Github API
 #Input:
-# - A file with the library repository names (LibraryData.json)
+# - nothing needed; reads data from DB
 #Output:
-# - A pickle file called releasefrequency.pkl which will contain a dictionary where the key is the name of the repository and the
-#value is a ReleaseData object (which contains a list of names of releases with its dates)
+# - no file output. Release data will be stored in the DB
 #How to run: 
 # - Just run the script.
 
@@ -25,81 +22,38 @@ import sys
 sys.path.append('../')
 from SharedFiles.utility_tool import read_json_file
 
-class ReleaseData:
-	def __init__(self, repository):
-		self.repository = repository
-		self.release_dates = []
-		self.release_names = []
-		self.release_frequency_average = 0.0
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
+import django
+import pickle
+import pygal
+django.setup()
 
-	def addReleaseName(self, name):
-		self.release_names.append(name)
+from librarycomparison.models import Library, LibraryRelease, MetricsEntry
 
-	def addReleaseDate(self, date):
-		self.release_dates.append(date)
-
-	def calculateReleaseFrequency(self):
-		self.release_dates.sort()
-		number_of_differences = len(self.release_dates)-1
-		total_seconds = 0
-		for i in range(1, len(self.release_dates)):
-			total_seconds += int((self.release_dates[i] - self.release_dates[i-1]).total_seconds())
-		#divide the average by the number of seconds per day
-		self.release_frequency_average = float(total_seconds/number_of_differences/86400)
-
-def printData(data):
-	for repo, dates in data.items():
-		print(repo)
-		print(dates)
-		print("")
-
-def loadReleaseFrequencyData():
-	data = {}
-	filename = 'ReleaseFrequency/releasefrequency.pkl'
-	if os.path.isfile(filename):
-		with open(filename, 'rb') as input:
-			try:
-				print("Loading data")
-				data = pickle.load(input)
-				print("done")
-				#print(data)
-				printData(data)
-			except EOFError:
-				print("Failed to load pickle file")
-	return data
-
-def saveData(data):
-	with open('ReleaseFrequency/releasefrequency.pkl', 'wb') as output:
-		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def getReleaseDates(token):
 	
-	data = loadReleaseFrequencyData()
+	github = Github(token)
+	libraries = Library.objects.all()
+	
+	for library in libraries:
+		
+		print("Getting release data for ", library.name)
 
-	repositories = []
-	LibraryData = read_json_file('SharedFiles/LibraryData.json')
-	for line in LibraryData:
-		repositories.append(line['FullRepoName'])
-	
-	g = Github(token)
-	
-	for repository in repositories:
+		repo = github.get_repo(library.github_repo)
 		
-		print("Getting release data for ", repository)
-		if repository in data:
-			continue
-		
-		r = g.get_repo(repository)
-		release_data = ReleaseData(repository)
-		
-		#Obtain the date of the git tag
-		for tag in r.get_tags():
-			release_data.addReleaseDate(tag.commit.commit.author.date)
-			release_data.addReleaseName(tag.name)
-		release_data.calculateReleaseFrequency()
-		
-		data[repository] = release_data
-		saveData(data)
+		for tag in repo.get_tags():
+			lib_releases = library.releases.filter(name__exact=tag.name)
+			if not lib_releases:
+				release = LibraryRelease()
+				release.library = library
+				release.name = tag.name
+				release.release_date = tag.commit.commit.author.date
+				release.save()
+
 
 def main():
 		config_dict = Common_Utilities.read_config_file() # read all config data 

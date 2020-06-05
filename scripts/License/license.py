@@ -24,6 +24,17 @@ import sys
 sys.path.append('../')
 from SharedFiles.utility_tool import read_json_file
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
+import django
+import pickle
+import pygal
+django.setup()
+
+from librarycomparison.models import Library
+
 def loadLicenseData():
 	data = {}
 	filename = 'License/license.pkl'
@@ -43,23 +54,18 @@ def saveData(data):
 def getLicenses(token):
 	data = loadLicenseData()
 
-	repositories = []
-	LibraryData = read_json_file('SharedFiles/LibraryData.json')
-	for line in LibraryData:
-		repositories.append(line['FullRepoName'])
+	github = Github(token)
+	libraries = Library.objects.all()
 	
-	g = Github(token)
-	
-	for repository in repositories:
-		if repository in data:
+	for library in libraries:
+		if library.github_repo in data:
 			continue
 		try:
-			r = g.get_repo(repository)
-			print(repository)
-			data[repository] = r.get_license().license.name
+			repo = github.get_repo(library.github_repo)
+			data[library.github_repo] = repo.get_license().license.name
 			saveData(data)
 		except UnknownObjectException:
-			data[repository] = 'None'
+			data[library.github_repo] = 'None'
 			saveData(data)
 
 def main():
