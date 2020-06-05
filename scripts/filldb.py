@@ -70,25 +70,26 @@ def create_popularity_chart(domain):
 
     if metrics == None:
         continue
-        
-    for metric in metrics:
-    
 
-    if library.name in domain_dic.keys():
-      domain_dic[library.name].append(metricsentry.popularity)
-    else:
-      popularity_data_arr = []
-      popularity_data_arr.append(metricsentry.popularity)
-      domain_dic[library.name] = popularity_data_arr
+    for metric in metrics:
+
+      if library.name in domain_dic.keys():
+        domain_dic[library.name].append(metric.popularity)
+      else:
+        popularity_data_arr = []
+        popularity_data_arr.append(metric.popularity)
+        domain_dic[library.name] = popularity_data_arr
   
   line_chart.x_labels = map(str, create_date_range(start_date,end_date))
-  line_chart.title = domain 
-  for keys, values in domain_dic.items():    
+  line_chart.title = domain.name
+
+  for keys, values in domain_dic.items():
+    print("keys:", str(keys), "values", str(values))    
     line_chart.add(keys, values)
   
   data = line_chart.render_data_uri()
   line_chart.render_in_browser()
-  saveData(data, domain + '_popularity_chart.pkl')
+  saveData(data, domain.name + '_popularity_chart.pkl')
   
   save_chart_in_db(domain, "popularity", '_popularity_chart')
 
