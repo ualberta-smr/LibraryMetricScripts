@@ -32,7 +32,7 @@ def loadLastModificationDateData():
 	if os.path.isfile(filename):
 		with open(filename, 'rb') as input:
 			try:
-				print("Loading data")
+				print("Loading last modification data")
 				data = pickle.load(input)
 			except EOFError:
 				print("Failed to load pickle file")
@@ -40,7 +40,7 @@ def loadLastModificationDateData():
 
 def saveData(data):
 	with open('scripts/LastModificationDate/lastmodificationdate.pkl', 'wb') as output:
-		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+		pickle.dump(data, output, pickle.DEFAULT_PROTOCOL)
 
 def getLastModificationDates():
 	config_dict = Common_Utilities.read_config_file() # read all config data 

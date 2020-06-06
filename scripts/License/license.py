@@ -40,7 +40,7 @@ def loadLicenseData():
 
 def saveData(data):
 	with open('scripts/License/license.pkl', 'wb') as output:
-		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+		pickle.dump(data, output, pickle.DEFAULT_PROTOCOL)
 
 def getLicenses():
 	config_dict = Common_Utilities.read_config_file() # read all ini data 

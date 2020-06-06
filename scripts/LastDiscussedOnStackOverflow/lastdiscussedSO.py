@@ -17,26 +17,16 @@ import pickle
 import json
 import stackexchange
 
-import sys
-sys.path.append('../')
-from SharedFiles.utility_tool import read_json_file
-from CommonUtilities import Common_Utilities
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
-os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
-import django
-import pickle
-import pygal
-django.setup()
+from scripts.SharedFiles.utility_tool import read_json_file
+from scripts.CommonUtilities import Common_Utilities
 
 from librarycomparison.models import Library
 
 
 def loadLastDiscussedSOData():
   data = {}
-  filename = 'LastDiscussedOnStackOverflow/lastdiscussedSO.pkl'
+  filename = 'scripts/LastDiscussedOnStackOverflow/lastdiscussedSO.pkl'
   if os.path.isfile(filename):
     with open(filename, 'rb') as input:
       try:
@@ -48,8 +38,8 @@ def loadLastDiscussedSOData():
   return data
 
 def saveData(data):
-  with open('LastDiscussedOnStackOverflow/lastdiscussedSO.pkl', 'wb') as output:
-    pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+  with open('scripts/LastDiscussedOnStackOverflow/lastdiscussedSO.pkl', 'wb') as output:
+    pickle.dump(data, output, pickle.DEFAULT_PROTOCOL)
 
 def getLastDiscussedDates():
 

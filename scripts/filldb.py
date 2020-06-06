@@ -1,29 +1,17 @@
-import os
-import sys
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
-os.environ['DJANGO_SETTINGS_MODULE'] = 'librarycomparison.settings'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "librarycomparison.settings")
-import django
-import pickle
-import pygal
-django.setup()
 
 from librarycomparison.models import Domain, Library, Issue, LibraryRelease, MetricsEntry, Metric, Chart
-
-#from ReleaseFrequency.releasefrequency import ReleaseData, loadReleaseFrequencyData
-from License.license import loadLicenseData
-from LastModificationDate.lastmodificationdate import loadLastModificationDateData
-from LastDiscussedOnStackOverflow.lastdiscussedSO import loadLastDiscussedSOData
-# from IssueMetrics.issues import loadData, IssueData
+from scripts.License.license import loadLicenseData
+from scripts.LastModificationDate.lastmodificationdate import loadLastModificationDateData
+from scripts.LastDiscussedOnStackOverflow.lastdiscussedSO import loadLastDiscussedSOData
 from datetime import datetime, timezone, date
 from dateutil.relativedelta import *
-
-from CommonUtilities import Common_Utilities
+import pygal
+import pickle
+from scripts.CommonUtilities import Common_Utilities
 
 def saveData(data, filename):
   with open(filename, 'wb') as output:
-    pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+    pickle.dump(data, output, pickle.DEFAULT_PROTOCOL)
 
 def get_latest_metrics_entry(library):
 	try:
@@ -386,7 +374,7 @@ def create_issue_classification_chart(domain):
 	save_chart_in_db(domain, "Issue Classification", '_issue_classification_chart')
 
 def fillPopularityData():
-  with open("popularity_results.txt") as f:
+  with open("scripts/popularity_results.txt") as f:
     lines = f.readlines()
   lines = [x.strip() for x in lines]
   for line in lines:
@@ -426,7 +414,11 @@ def calculateReleaseFrequency():
 def fillLastModificationDateData():
 	data = loadLastModificationDateData()
 	for repo, dates in data.items():
-		library = Library.objects.get(github_repo=repo)
+		try:
+			library = Library.objects.get(github_repo=repo)
+		except:
+			print("ERROR: Could not find last modification data for lib.. skipping", repo)
+			continue
 		metricsentry = get_latest_metrics_entry(library)
 		if metricsentry == None:
 			continue
@@ -481,7 +473,12 @@ def fillIssueData():
 def fillLastDiscussedSOData():
     data = loadLastDiscussedSOData()
     for tag, dates in data.items():
-        library = Library.objects.get(so_tag=tag)
+        try:
+            library = Library.objects.get(so_tag=tag)
+        except:
+            print("ERROR: Could not find SO data for lib.. skipping", tag)
+            continue
+        
         metricsentry = get_latest_metrics_entry(library)
         if metricsentry == None:
             continue
@@ -505,7 +502,7 @@ def fillLicenseData():
 
 
 def fillBreakingChanges():
-        with open("breakingchanges/breakingchanges.csv") as f:
+        with open("scripts/breakingchanges/breakingchanges.csv") as f:
                 lines = f.readlines()
         lines = [x.strip() for x in lines]
 
@@ -542,11 +539,9 @@ def fillBreakingChanges():
             metricsentry.save()
 
         for library in Library.objects.all():
-            try:
-                metricsentry = MetricsEntry.objects.filter(library=library).latest('created_on')
-            except:
-                print("ERROR: no metricsentry for library", library.name)
-                continue
+            metricsentry = get_latest_metrics_entry(library)
+            if metricsentry == None:
+               continue
             release_count = library.releases.all().count()
             if release_count == 0:
                     metricsentry.backwards_compatibility = 0
@@ -597,17 +592,17 @@ def createCharts():
     create_last_discussed_chart(domain)
     create_last_modification_chart(domain)
 
+def filldb():
+	fillPopularityData()
+	calculateReleaseFrequency()
+	fillBreakingChanges()
+	fillLastModificationDateData()
+	fillLastDiscussedSOData()
+	fillLicenseData()
+	fillIssueData()
+	fillOverallScore()
+	createCharts()
+
 if __name__ == '__main__':
-  d = date.today()
-  entrymonth = d.month
-  entryyear = d.year
+	filldb()
   
-  fillPopularityData()
-  calculateReleaseFrequency()
-  fillBreakingChanges()
-  fillLastModificationDateData()
-  fillLastDiscussedSOData()
-  fillLicenseData()
-  fillIssueData()
-  fillOverallScore()
-  createCharts()

@@ -3,6 +3,8 @@
 #pass in the python command you want to use (depending on the version)
 pythoncmd=$1 #python3.8
 
+cd scripts
+
 echo "Making sure all libraries are in the database..."
 $pythoncmd addlibraries.py
 
