@@ -527,13 +527,13 @@ def fillLicenseData():
 
 
 def fillBreakingChanges():
-		try
+		try:
             with open("scripts/breakingchanges/breakingchanges.csv") as f:
                 lines = f.readlines()
         except:
         	print("ERROR: Cannot find breaking changes file... skipping")
         	return 
-        	
+
         lines = [x.strip() for x in lines]
 
         i = 0
