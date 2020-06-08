@@ -83,8 +83,7 @@ def getIssueData(token, performance_classifier, security_classifier):
       repo = github.get_repo(library.github_repo)
       max_issue_number = repo.get_issues(state="all",since=latest_issue_date)[0].number
 
-    #TODO: CHANGE BACK!!! to max_issue_number
-    for i in range(first_issue, 4):
+    for i in range(first_issue, max_issue_number):
       looped = True
       try:
         gh_issue = repo.get_issue(i)
