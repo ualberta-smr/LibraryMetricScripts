@@ -8,6 +8,8 @@ from dateutil.relativedelta import *
 import pygal
 import pickle
 from scripts.CommonUtilities import Common_Utilities
+import traceback
+import pytz
 
 def saveData(data, filename):
   with open(filename, 'wb') as output:
@@ -82,9 +84,13 @@ def create_popularity_chart(domain):
   save_chart_in_db(domain, "popularity", '_popularity_chart')
 
 def save_chart_in_db(domain, metric_name, chart_suffix):
-
 	#save chart in DB
+	
 	metric = Metric.objects.get(name=metric_name)
+
+	if not metric:
+		print("No metric object found for metric: ", metric)
+		return
 
 	chart = Chart.objects.filter(domain=domain).filter(metric=metric)
 	
@@ -138,11 +144,14 @@ def create_release_chart(domain):
 	
 	save_chart_in_db(domain, "release frequency", '_release_chart')
 
-def parseDateString(date_string):
+def parseDateString(date_string, is_jira_dates=False):
 	strings = date_string.split(';')
 	dates = []
 	for date in strings:
-		dates.append(datetime.strptime(date, '%m/%d/%Y'))
+		if is_jira_dates: #uses offset
+			dates.append(datetime.strptime(date, "%m/%d/%Y, %H:%M:%S %z"))
+		else:
+			dates.append(datetime.strptime(date, "%m/%d/%Y, %H:%M:%S %Z"))
 	return dates
 
 def create_last_discussed_chart(domain):
@@ -197,7 +206,7 @@ def create_last_discussed_chart(domain):
     line_chart.y_labels = y_labels
     data = line_chart.render_data_uri()
     saveData(data, domain_name + '_last_discussed_chart.pkl')
-    save_chart_in_db(domain, "last discussed on SO", '_last_discussed_chart')
+    save_chart_in_db(domain, "last discussed on so", '_last_discussed_chart')
 
 def create_last_modification_chart(domain):
 	domain_name = domain.name
@@ -289,7 +298,7 @@ def create_issue_response_chart(domain):
 	libraries = selected_domain.libraries.all()
 	issue_date_set = set()
 	for issue in Issue.objects.all():
-		if issue.first_response_date != None:
+		if issue.first_response_date:
 			issue_date_set.add(issue.creation_date)
 
 	issue_date_list = sorted(list(issue_date_set))
@@ -321,7 +330,7 @@ def create_issue_closing_chart(domain):
 	libraries = selected_domain.libraries.all()
 	issue_date_set = set()
 	for issue in Issue.objects.all():
-		if issue.first_response_date != None:
+		if issue.first_response_date:
 			issue_date_set.add(issue.creation_date)
 
 	issue_date_list = sorted(list(issue_date_set))
@@ -371,7 +380,7 @@ def create_issue_classification_chart(domain):
 	line_chart.add('None', no_classification_issues)
 	data = line_chart.render_data_uri()
 	saveData(data, domain_name + '_issue_classification_chart.pkl')
-	save_chart_in_db(domain, "Issue Classification", '_issue_classification_chart')
+	save_chart_in_db(domain, "issue classification", '_issue_classification_chart')
 
 def fillPopularityData():
   with open("scripts/popularity_results.txt") as f:
@@ -399,13 +408,15 @@ def calculateReleaseFrequency():
 		print("calculating release frequency for library.. ", library.name)
 		metricsentry = get_latest_metrics_entry(library)
 		if metricsentry == None:
+			print("ERROR: in release frequency, could not find a metrics entry for library", library.name)
 			continue
+
 		metricsentry.breaking_changes = 0
 		libreleases = library.releases.order_by('release_date')
 		number_of_differences = len(libreleases)-1
 		total_seconds = 0
 		for i in range(1, len(libreleases)):
-			total_seconds += int((libreleases[i].release_date - libreleases[i].release_date).total_seconds())
+			total_seconds += int((libreleases[i].release_date - libreleases[i-1].release_date).total_seconds())
 		#divide the average by the number of seconds per day
 		metricsentry.release_frequency = float(total_seconds/number_of_differences/86400)
 		metricsentry.save()
@@ -417,13 +428,14 @@ def fillLastModificationDateData():
 		try:
 			library = Library.objects.get(github_repo=repo)
 		except:
-			print("ERROR: Could not find last modification data for lib.. skipping", repo)
+			print("ERROR: Could not find library listed in last modification data.. skipping", repo)
 			continue
 		metricsentry = get_latest_metrics_entry(library)
 		if metricsentry == None:
 			continue
 		metricsentry.last_modification_dates = dates
-		metricsentry.last_modification_date = datetime.strptime(dates.split(';')[0], '%m/%d/%Y')
+
+		metricsentry.last_modification_date = pytz.utc.localize(datetime.strptime(dates.split(';')[0], "%m/%d/%Y, %H:%M:%S %Z"))
 		metricsentry.save()
 
 def fillIssueData():
@@ -440,10 +452,21 @@ def fillIssueData():
         total_response_time = 0
         total_issues_with_comments = 0
         metricsentry = get_latest_metrics_entry(library)
+
         if metricsentry == None:
+            print("ERROR: in issue data, could not find a metrics entry for library", library.name)
             continue
 
         lib_issues = library.issues.all()
+
+        #if we don't have issue data for whatever reason, record as -1
+        if lib_issues.count() == 0:
+            metricsentry.issue_closing_time = -1
+            metricsentry.issue_response_time = -1
+            metricsentry.performance = -1
+            metricsentry.security = -1
+            metricsentry.save()
+            continue
 
         for issue in lib_issues:
             if issue.performance_issue == True:
@@ -460,15 +483,17 @@ def fillIssueData():
                 total_response_time += response_time
                 total_issues_with_comments += 1
 
+            total_issues += 1
+
         try:
             metricsentry.issue_closing_time = float(total_closing_time/total_closed_issues/86400)
-            metricsentry.repsonse_time = float(total_response_time/total_issues_with_comments/86400)
+            metricsentry.issue_response_time = float(total_response_time/total_issues_with_comments/86400)
             metricsentry.performance = total_performance_issues/total_issues*100
             metricsentry.security = total_security_issues/total_issues*100
             metricsentry.save()
-        except:
-            print("No issues found so not calculating issue_closing_time, response_time, performance, or security")
-
+        except Exception as e:
+            print("Could not calculate issue values for ", library.name)
+            traceback.print_exc()
 
 def fillLastDiscussedSOData():
     data = loadLastDiscussedSOData()
@@ -476,14 +501,14 @@ def fillLastDiscussedSOData():
         try:
             library = Library.objects.get(so_tag=tag)
         except:
-            print("ERROR: Could not find SO data for lib.. skipping", tag)
+            print("ERROR: Could not find library listed in SO data.. skipping", tag)
             continue
         
         metricsentry = get_latest_metrics_entry(library)
         if metricsentry == None:
             continue
         if(dates != None):
-            metricsentry.last_discussed_so = datetime.strptime(dates.split(';')[0], '%m/%d/%Y')
+            metricsentry.last_discussed_so = pytz.utc.localize(datetime.strptime(dates.split(';')[0], "%m/%d/%Y, %H:%M:%S %Z"))
             metricsentry.last_discussed_so_dates = dates
         else:
             metricsentry.last_discussed_so = ''

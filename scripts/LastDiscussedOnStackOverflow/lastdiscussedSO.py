@@ -30,7 +30,6 @@ def loadLastDiscussedSOData():
   if os.path.isfile(filename):
     with open(filename, 'rb') as input:
       try:
-        print("Loading data")
         data = pickle.load(input)
       except EOFError:
         print("Failed to load pickle file")
@@ -65,7 +64,7 @@ def getLastDiscussedDates():
         break
       if i > 0:
         dates_string += ';'
-      dates_string += questions[i].creation_date.strftime("%m/%d/%Y, %H:%M:%S")
+      dates_string += questions[i].creation_date.strftime("%m/%d/%Y, %H:%M:%S") + " UTC"
 
     if len(dates_string) == 0:
       data[tag] = None

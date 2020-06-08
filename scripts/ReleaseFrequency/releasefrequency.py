@@ -11,19 +11,13 @@
 # - Just run the script.
 
 import os
-import pickle
 from github import Github, Repository, GitTag
 import getpass
 import json
 from scripts.CommonUtilities import Common_Utilities
 from scripts.SharedFiles.utility_tool import read_json_file
-
-import django
-import pickle
-import pygal
-django.setup()
-
 from librarycomparison.models import Library, LibraryRelease, MetricsEntry
+import pytz
 
 
 def getReleaseDates(token):
@@ -43,7 +37,7 @@ def getReleaseDates(token):
 				release = LibraryRelease()
 				release.library = library
 				release.name = tag.name
-				release.release_date = tag.commit.commit.author.date
+				release.release_date = pytz.utc.localize(tag.commit.commit.author.date)
 				release.save()
 
 

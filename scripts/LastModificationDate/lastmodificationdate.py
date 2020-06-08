@@ -60,7 +60,7 @@ def getLastModificationDates():
 				break
 			if i > 0:
 				dates_string += ';'
-			dates_string += c.commit.author.date.strftime("%m/%d/%Y, %H:%M:%S")
+			dates_string += c.commit.author.date.strftime("%m/%d/%Y, %H:%M:%S") + " UTC"
 			i += 1
 		data[library.github_repo] = dates_string
 		saveData(data)

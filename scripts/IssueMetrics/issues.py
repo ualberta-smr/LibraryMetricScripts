@@ -30,6 +30,8 @@ import json
 from scripts.CommonUtilities import Common_Utilities
 from scripts.SharedFiles.utility_tool import read_json_file
 from librarycomparison.models import Library, Issue
+import pytz
+import traceback
 
 
 def get_latest_issue(library):
@@ -102,8 +104,8 @@ def getIssueData(token, performance_classifier, security_classifier):
 
       new_issue = Issue()
       new_issue.issue_id = str(gh_issue.number) #the actual issue id on github is the number; not sure what the issue_id in PyGithub is
-      new_issue.creation_date = gh_issue.created_at
-      new_issue.closing_date = gh_issue.closed_at
+      new_issue.creation_date = pytz.utc.localize(gh_issue.created_at)
+      new_issue.closing_date = pytz.utc.localize(gh_issue.closed_at)
       new_issue.library = library
       try:
         new_issue.title = gh_issue.title
@@ -149,7 +151,14 @@ def getIssueDataJIRA(urls, performance_classifier, security_classifier):
     issues_in_db = Issue.objects.filter(library=library)
     print("Current repository in jira issues: ", library.name)
     xmlString = urllib.request.urlopen(library.jira_url).read().decode('utf-8')
-    root = xml.etree.ElementTree.fromstring(xmlString)
+
+    try:
+      root = xml.etree.ElementTree.fromstring(xmlString)
+    except:
+      print("ERROR: failed to parse jira xml for library (url might have changed)", library.name)
+      traceback.print_exception()
+      return
+
     channel = root.find('channel')
 
     for issue in channel.findall('item'):
