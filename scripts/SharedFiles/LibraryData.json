@@ -42,7 +42,7 @@
    "SOtags": "logback",
    "Package": "ch.qos.logback",
    "GitHubURL": "git://github.com/qos-ch/logback.git",
-   "JIRAURL": "https://jira.qos.ch/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+LOGBACK+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments\t\t"
+   "JIRAURL": "https://jira.qos.ch/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+LOGBACK+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments"
  },
  {
    "LibraryName": "commons-logging",
