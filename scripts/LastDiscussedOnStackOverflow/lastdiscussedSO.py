@@ -65,7 +65,7 @@ def getLastDiscussedDates():
         break
       if i > 0:
         dates_string += ';'
-      dates_string += questions[i].creation_date.strftime('%m/%d/%Y')
+      dates_string += questions[i].creation_date.strftime("%m/%d/%Y, %H:%M:%S")
 
     if len(dates_string) == 0:
       data[tag] = None
