@@ -42,6 +42,11 @@ def run():
 
 	filldb()
 
+	try:
+		os.mkdir("scripts/charts")
+	except:
+		print("Charts directory already exists")
+
 	for file in glob.glob(r'scripts/*_chart.pkl'):
 		shutil.copy2(file, 'scripts/charts/')
 
