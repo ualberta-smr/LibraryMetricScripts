@@ -28,7 +28,7 @@ from librarycomparison.models import Library
 
 def loadLicenseData():
 	data = {}
-	filename = 'License/license.pkl'
+	filename = 'scripts/License/license.pkl'
 	if os.path.isfile(filename):
 		with open(filename, 'rb') as input:
 			try:
@@ -51,13 +51,13 @@ def getLicenses():
 	libraries = Library.objects.all()
 	
 	for library in libraries:
-		if library.github_repo in data:
-			continue
 		try:
 			repo = github.get_repo(library.github_repo)
 			data[library.github_repo] = repo.get_license().license.name
 			saveData(data)
 		except UnknownObjectException:
+			print("ERROR: could not get license for lib", library.name)
+			traceback.print_exc()
 			data[library.github_repo] = 'None'
 			saveData(data)
 
