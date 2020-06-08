@@ -45,7 +45,7 @@ def get_latest_issue(library):
   return None
 
 def sleep(github):
-  github_limits = github.github.get_rate_limit()
+  github_limits = github.get_rate_limit()
   if github_limits.core.remaining == 0:
     Common_Utilities.go_to_sleep("API hour limit exceeded,Go to sleep for ", 3600)
 
@@ -68,7 +68,7 @@ def getIssueData(token, performance_classifier, security_classifier):
     latest_issue_date = datetime(1700,1,1)
     if latest_issue:
     	latest_issue_date = latest_issue.creation_date
-    	first_issue = int(latest_issue.issue_id)
+    	first_issue = int(latest_issue.issue_id) + 1
 
 
     try:
@@ -89,7 +89,7 @@ def getIssueData(token, performance_classifier, security_classifier):
       except UnknownObjectException:
         continue
       except RateLimitExceededException:
-        Common_Utilities.go_to_sleep("API limit exceeded,Go to sleep for ", 60)
+        sleep(github)
         #repo = g.get_repo(repo_name)
         i -= 1
         continue
@@ -122,7 +122,7 @@ def getIssueData(token, performance_classifier, security_classifier):
             break
           break
         except RateLimitExceededException:
-          Common_Utilities.go_to_sleep("API limit exceeded,Go to sleep for ", quick_sleep)
+          sleep(github)
 
         except Exception as e:
           print(e)
@@ -138,7 +138,7 @@ def getIssueData(token, performance_classifier, security_classifier):
     
     #sleep only if requests to github have been made
     if looped:
-      Common_Utilities.go_to_sleep("Sleeping before next library..Go to sleep for ", 180)
+      sleep(github)
 
 def getIssueDataJIRA(urls, performance_classifier, security_classifier):
   dict = {}
