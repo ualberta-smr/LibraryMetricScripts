@@ -12,6 +12,15 @@ import json
 from scripts.CommonUtilities import Common_Utilities
 from scripts.SharedFiles.utility_tool import read_json_file
 
+
+def sleep(github):
+  github_limits = github.get_rate_limit()
+  if github_limits.core.remaining == 1:
+    Common_Utilities.go_to_sleep("API hour limit exceeded,Go to sleep for ", 3600)
+
+  if github_limits.search.remaining == 0:
+    Common_Utilities.go_to_sleep("API minute limit exceeded,Go to sleep for ", 61)
+
 #This is where the search happens, an api query is used to collect results. 
 #The query looks like this: "import LIBRARY-NAME" language:java repo:REPO-NAME
 #For each Query, if we get ANY results then that means the library was used in that repo
@@ -22,17 +31,12 @@ def search_code_in_repo(query, github, quick_sleep, error_sleep, max_size, Repo_
   while roll_back:
     roll_back = False
     frequency = 0
-    #check github for rate limit 
+
     try:
     
-      rate_limit = github.get_rate_limit()
-      rate = rate_limit.search            
-      # this reate limit is not accurate as github may stop you before you reach your limit.
-      print ("search limit: " + str(rate) + ". Reset Time: " + str(rate.reset))
-      if rate.remaining == 0:
-        #print(f'You have 0/{rate.limit} API calls remianing. Reset time: {rate.reset}')            
-        Common_Utilities.go_to_sleep("No more resources to use, Go to sleep for ", error_sleep)  
-           
+      #check if we need to sleep because we exceeded rate limits
+      sleep(github)
+
       index = 0
       tracking_counter = 0
       arraysize = len(Repo_Array)     
