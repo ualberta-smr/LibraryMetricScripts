@@ -12,7 +12,7 @@ import traceback
 import pytz
 
 def saveData(data, filename):
-  with open(filename, 'wb') as output:
+  with open("scripts/" + filename, 'wb') as output:
     pickle.dump(data, output, pickle.DEFAULT_PROTOCOL)
 
 def get_latest_metrics_entry(library):

@@ -36,7 +36,7 @@ def read_config_file():
 #returns binary representation of a pkl image
 def pkl_to_blob(file_name):
 
-    pkl_file = open(file_name + ".pkl", "rb")
+    pkl_file = open("scripts/" + file_name + ".pkl", "rb")
 
     img_data = pickle.load(pkl_file)
 
