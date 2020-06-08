@@ -1,5 +1,0 @@
-junit-team/junit4:682
-cbeust/testng:51
-junit/junit:297
-dom4j/dom4j:77
-hunterhacker/jdom:74
