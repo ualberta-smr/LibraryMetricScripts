@@ -103,7 +103,8 @@ def getIssueData(token, performance_classifier, security_classifier):
       new_issue = Issue()
       new_issue.issue_id = str(gh_issue.number) #the actual issue id on github is the number; not sure what the issue_id in PyGithub is
       new_issue.creation_date = pytz.utc.localize(gh_issue.created_at)
-      new_issue.closing_date = pytz.utc.localize(gh_issue.closed_at)
+      if gh_issue.closed_at:
+        new_issue.closing_date = pytz.utc.localize(gh_issue.closed_at)
       new_issue.library = library
       try:
         new_issue.title = gh_issue.title
@@ -118,7 +119,7 @@ def getIssueData(token, performance_classifier, security_classifier):
           for comment in gh_issue.get_comments():
             if comment.user == gh_issue.user:
               continue
-            new_issue.first_response_date = comment.created_at
+            new_issue.first_response_date = pytz.utc.localize(comment.created_at)
             break
           break
         except RateLimitExceededException:
