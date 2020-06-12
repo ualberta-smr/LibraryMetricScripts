@@ -23,6 +23,7 @@ from scripts.SharedFiles.utility_tool import read_json_file
 import django
 import pickle
 import pygal
+import traceback
 
 from librarycomparison.models import Library
 
@@ -51,6 +52,7 @@ def getLicenses():
 	libraries = Library.objects.all()
 	
 	for library in libraries:
+		print ("Getting license for ", library.name)
 		try:
 			repo = github.get_repo(library.github_repo)
 			data[library.github_repo] = repo.get_license().license.name
@@ -60,6 +62,7 @@ def getLicenses():
 			traceback.print_exc()
 			data[library.github_repo] = 'None'
 			saveData(data)
+			continue
 
 if __name__ == "__main__":
         getLicenses()
