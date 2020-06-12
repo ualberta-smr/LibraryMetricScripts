@@ -33,7 +33,6 @@ from librarycomparison.models import Library, Issue
 import pytz
 import traceback
 
-
 def get_latest_issue(library):
   #get latest issue we have for this repo
 
@@ -149,14 +148,13 @@ def getIssueDataJIRA(urls, performance_classifier, security_classifier):
   for library in libraries:
     issues_in_db = Issue.objects.filter(library=library)
     print("Current repository in jira issues: ", library.name)
-    xmlString = urllib.request.urlopen(library.jira_url).read().decode('utf-8')
-
     try:
+      xmlString = urllib.request.urlopen(library.jira_url).read().decode('utf-8')
       root = xml.etree.ElementTree.fromstring(xmlString)
     except:
       print("ERROR: failed to parse jira xml for library (url might have changed)", library.name)
-      traceback.print_exception()
-      return
+      traceback.print_exc()
+      continue
 
     channel = root.find('channel')
 
@@ -188,7 +186,12 @@ def getIssueDataJIRA(urls, performance_classifier, security_classifier):
             continue
           new_issue.first_response_date = datetime.strptime(comment.get('created'), '%a, %d %b %Y %H:%M:%S %z')
           break
-      new_issue.save()
+      try: 
+        new_issue.save()
+      except: 
+        print("failed to create title for issue ", issue_id, "... replacing with blank")
+        new_issue.title = ""
+        new_issue.save()
       #saveData(issue_data, issue_data_pkl)
       #Common_Utilities.go_to_sleep("Sleeping before next library..Go to sleep for ", 180)
 
