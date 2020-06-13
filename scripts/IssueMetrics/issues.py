@@ -81,6 +81,19 @@ def getIssueData(token, performance_classifier, security_classifier):
 
       repo = github.get_repo(library.github_repo)
       max_issue_number = repo.get_issues(state="all",since=latest_issue_date)[0].number
+    except:
+      sleep(github)
+      repo = github.get_repo(library.github_repo)
+
+      if repo:
+        issues = repo.get_issues(state="all",since=latest_issue_date)
+        if issues:
+          if len(issues) > 0
+            max_issue_number = repo.get_issues(state="all",since=latest_issue_date)[0].number
+          else:
+            print("ERROR: issues returned cannot be indexed")
+        else:
+          print("ERROR: no issues returned from github for repo ", library.name)
 
     for i in range(first_issue, max_issue_number):
       looped = True
