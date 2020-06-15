@@ -418,7 +418,10 @@ def calculateReleaseFrequency():
 		for i in range(1, len(libreleases)):
 			total_seconds += int((libreleases[i].release_date - libreleases[i-1].release_date).total_seconds())
 		#divide the average by the number of seconds per day
-		metricsentry.release_frequency = float(total_seconds/number_of_differences/86400)
+		if number_of_differences <= 0:
+			metricsentry.release_frequency = -1 #if there was no release data, record -1
+		else:
+			metricsentry.release_frequency = float(total_seconds/number_of_differences/86400)
 		metricsentry.save()
 
 
@@ -434,8 +437,10 @@ def fillLastModificationDateData():
 		if metricsentry == None:
 			continue
 		metricsentry.last_modification_dates = dates
-
-		metricsentry.last_modification_date = pytz.utc.localize(datetime.strptime(dates.split(';')[0], "%m/%d/%Y, %H:%M:%S %Z"))
+		try:
+			metricsentry.last_modification_date = pytz.utc.localize(datetime.strptime(dates.split(';')[0], "%m/%d/%Y, %H:%M:%S %Z"))
+		except:
+			print("Failed to parse last modification date date: ", dates.split(';')[0])
 		metricsentry.save()
 
 def fillIssueData():
@@ -498,6 +503,7 @@ def fillIssueData():
 def fillLastDiscussedSOData():
     data = loadLastDiscussedSOData()
     for tag, dates in data.items():
+        print("getting last discussed date for", tag)
         try:
             library = Library.objects.get(so_tag=tag)
         except:
@@ -507,18 +513,21 @@ def fillLastDiscussedSOData():
         metricsentry = get_latest_metrics_entry(library)
         if metricsentry == None:
             continue
-        if(dates != None):
+        if dates:
             metricsentry.last_discussed_so = pytz.utc.localize(datetime.strptime(dates.split(';')[0], "%m/%d/%Y, %H:%M:%S %Z"))
             metricsentry.last_discussed_so_dates = dates
         else:
-            metricsentry.last_discussed_so = ''
             metricsentry.last_discussed_so_dates = ''
         metricsentry.save()
 
 def fillLicenseData():
 	data = loadLicenseData()
 	for repo, license in data.items():
-		library = Library.objects.get(github_repo=repo)
+		try:
+			library = Library.objects.get(github_repo=repo)
+		except:
+			print("Could not get library in license data",  repo)
+			continue
 		metricsentry = get_latest_metrics_entry(library)
 		if metricsentry == None:
 			continue
@@ -623,14 +632,23 @@ def createCharts():
     create_last_modification_chart(domain)
 
 def filldb():
+	print("Filling popularity...")
 	fillPopularityData()
+	print("Calculating release frequency...")
 	calculateReleaseFrequency()
+	print("Calculating breaking changes...")
 	fillBreakingChanges()
+	print("Filling last modification data...")
 	fillLastModificationDateData()
+	print("Filling last discussed on SO....")
 	fillLastDiscussedSOData()
+	print("Filling license data...")
 	fillLicenseData()
+	print("Calculating issue data...")
 	fillIssueData()
+	print("Calculating overall score...")
 	fillOverallScore()
+	print("Creating charts...")
 	createCharts()
 
 if __name__ == '__main__':
