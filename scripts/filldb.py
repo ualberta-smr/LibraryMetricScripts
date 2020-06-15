@@ -43,7 +43,7 @@ def create_popularity_chart(domain):
   
   line_chart  = pygal.DateTimeLine(x_label_rotation=45, height=200, width=1000,x_value_formatter=lambda dt: dt.strftime('%b %d, %Y'))
    
-  line_chart.title = domain.name
+  line_chart.title = "Number of top GitHub projects using this library on given date"
   
   end_date = MetricsEntry.objects.latest('created_on').created_on
   start_date = end_date - relativedelta(years=1)
@@ -128,8 +128,6 @@ def create_release_chart(domain):
 
 	x_label_list.append(max_date.strftime('%b %d %Y'))
 
-	print("labels:" , x_label_list)
-
 	line_chart.x_labels_major = x_label_list #[release_date_list[0].strftime('%b %d %Y'), release_date_list[-1].strftime('%b %d %Y')]
 	line_chart.title = 'Timeline of Releases'
 
@@ -154,7 +152,6 @@ def create_release_chart(domain):
 	line_chart.y_labels = y_labels
 	data = line_chart.render_data_uri()
 	saveData(data, domain_name + '_release_chart.pkl')
-	line_chart.render_in_browser()
 	save_chart_in_db(domain, "release frequency", '_release_chart')
 
 def parseDateString(date_string, is_jira_dates=False):
@@ -162,9 +159,9 @@ def parseDateString(date_string, is_jira_dates=False):
 	dates = []
 	for date in strings:
 		if is_jira_dates: #uses offset
-			dates.append(datetime.strptime(date, "%m/%d/%Y, %H:%M:%S %z"))
+			dates.append(datetime.strptime(date, "%m/%d/%Y, %H:%M:%S %z").date())
 		else:
-			dates.append(datetime.strptime(date, "%m/%d/%Y, %H:%M:%S %Z"))
+			dates.append(datetime.strptime(date, "%m/%d/%Y, %H:%M:%S %Z").date())
 	return dates
 
 def create_last_discussed_chart(domain):
@@ -310,22 +307,30 @@ def create_issue_response_chart(domain):
 	selected_domain = Domain.objects.get(name=domain_name)
 	libraries = selected_domain.libraries.all()
 	issue_date_set = set()
-	for issue in Issue.objects.all():
-		if issue.first_response_date:
-			issue_date_set.add(issue.creation_date)
+
+
+	end_date = pytz.utc.localize(datetime.today())
+	start_date = end_date - relativedelta(years=1)
+
+	for library in libraries:
+		for issue in library.issues.filter(creation_date__gte=start_date).filter(creation_date__lte=end_date).order_by('creation_date'):
+			if issue.first_response_date:
+				issue_date_set.add(issue.first_response_date.date())
 
 	issue_date_list = sorted(list(issue_date_set))
 	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), issue_date_list)
 	line_chart.x_labels_major = [issue_date_list[0].strftime('%b %d %Y'), issue_date_list[-1].strftime('%b %d %Y')]
-	line_chart.title = 'Issue Response Times. X_axis = issue creation date, Y_axis = number of days to respond'
+	line_chart.title = 'Response Times for Issues Created in the Last Year'
+	line_chart.x_title= 'Issue creation date' 
+	line_chart.y_title = 'Number of days to respond'
 
 	for library in libraries:
-		issues = library.issues.all()
+		issues = library.issues.filter(creation_date__gte=start_date).filter(creation_date__lte=end_date).order_by('creation_date')
 		issue_list = []
 		for i in range(0, len(issue_date_list)):
 			found = False;
 			for j in range(0, len(issues)):
-				if issues[j].first_response_date != None and issue_date_list[i] == issues[j].creation_date:
+				if issues[j].first_response_date != None and issue_date_list[i] == issues[j].first_response_date.date():
 					found = True
 					issue_list.append(int((issues[j].first_response_date - issues[j].creation_date).total_seconds())/86400)
 			if found == False:
@@ -342,23 +347,30 @@ def create_issue_closing_chart(domain):
 	selected_domain = Domain.objects.get(name=domain_name)
 	libraries = selected_domain.libraries.all()
 	issue_date_set = set()
-	for issue in Issue.objects.all():
-		if issue.first_response_date:
-			issue_date_set.add(issue.creation_date)
+
+	end_date = pytz.utc.localize(datetime.today())
+	start_date = end_date - relativedelta(years=1)
+
+	for library in libraries:
+		for issue in library.issues.filter(creation_date__gte=start_date).filter(creation_date__lte=end_date).order_by('creation_date'):
+			if issue.closing_date:
+				issue_date_set.add(issue.closing_date.date())
 
 	issue_date_list = sorted(list(issue_date_set))
 	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), issue_date_list)
 	line_chart.x_labels_major = [issue_date_list[0].strftime('%b %d %Y'),
 	  issue_date_list[-1].strftime('%b %d %Y')]
-	line_chart.title = 'Issue Closing Times. X_axis = issue creation date, Y_axis = number of days to close'
+	line_chart.title = 'Closing Times for Issues Created in the Last Year'
+	line_chart.x_title= 'Issue creation date' 
+	line_chart.y_title = 'Number of days to close'
 
 	for library in libraries:
-		issues = library.issues.all()
+		issues = library.issues.filter(creation_date__gte=start_date).filter(creation_date__lte=end_date).order_by('creation_date')
 		issue_list = []
 		for i in range(0, len(issue_date_list)):
 			found = False;
 			for j in range(0, len(issues)):
-				if issues[j].closing_date != None and issue_date_list[i] == issues[j].creation_date:
+				if issues[j].closing_date != None and issue_date_list[i] == issues[j].creation_date.date():
 					found = True
 					issue_list.append(int((issues[j].closing_date - issues[j].creation_date).total_seconds())/86400)
 			if found == False:
@@ -372,6 +384,7 @@ def create_issue_closing_chart(domain):
 def create_issue_classification_chart(domain):
 	domain_name = domain.name
 	line_chart = pygal.StackedBar(height=200)
+	line_chart.title = "Number of issues of each type per library"
 	selected_domain = Domain.objects.get(name=domain_name)
 	libraries = selected_domain.libraries.all()
 
@@ -635,32 +648,32 @@ def fillOverallScore():
 def createCharts():
   
   for domain in Domain.objects.all():  
-    #create_popularity_chart(domain)
+    create_popularity_chart(domain)
     create_release_chart(domain)
     # create_breaking_changes_chart(domain)
-    # create_issue_response_chart(domain)
-    # create_issue_closing_chart(domain)
-    # create_issue_classification_chart(domain)
-    # create_last_discussed_chart(domain)
-    # create_last_modification_chart(domain)
+    create_issue_response_chart(domain)
+    create_issue_closing_chart(domain)
+    create_issue_classification_chart(domain)
+    create_last_discussed_chart(domain)
+    create_last_modification_chart(domain)
 
 def filldb():
-	# print("Filling popularity...")
-	# fillPopularityData()
-	# print("Calculating release frequency...")
-	# calculateReleaseFrequency()
-	# print("Calculating breaking changes...")
-	# fillBreakingChanges()
-	# print("Filling last modification data...")
-	# fillLastModificationDateData()
-	# print("Filling last discussed on SO....")
-	# fillLastDiscussedSOData()
-	# print("Filling license data...")
-	# fillLicenseData()
-	# print("Calculating issue data...")
-	# fillIssueData()
-	# print("Calculating overall score...")
-	# fillOverallScore()
+	print("Filling popularity...")
+	fillPopularityData()
+	print("Calculating release frequency...")
+	calculateReleaseFrequency()
+	print("Calculating breaking changes...")
+	fillBreakingChanges()
+	print("Filling last modification data...")
+	fillLastModificationDateData()
+	print("Filling last discussed on SO....")
+	fillLastDiscussedSOData()
+	print("Filling license data...")
+	fillLicenseData()
+	print("Calculating issue data...")
+	fillIssueData()
+	print("Calculating overall score...")
+	fillOverallScore()
 	print("Creating charts...")
 	createCharts()
 
