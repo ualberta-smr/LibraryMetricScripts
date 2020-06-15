@@ -45,19 +45,15 @@ def create_popularity_chart(domain):
    
   line_chart.title = domain.name
   
-  # end_date = datetime.now() 
+  end_date = MetricsEntry.objects.latest('created_on').created_on
+  start_date = end_date - relativedelta(years=1)
   
-  # default_start_date = datetime(2019, 6, 1)
-  # start_date = end_date + relativedelta(months=-24)
-  
-  # if start_date < default_start_date:
-  #   start_date = default_start_date
   
   libraries = domain.libraries.all()#('created_on')# data_set.filter(run_time__gte=start_date).filter(run_time__lte=end_date).order_by('year').order_by('month')
  
   domain_dic = {}
   for library in libraries:   
-    metrics = library.metrics.all()
+    metrics = library.metrics.filter(created_on__gte=start_date).filter(created_on__lte=end_date).order_by('created_on')
 
     if metrics == None:
         continue
@@ -65,10 +61,10 @@ def create_popularity_chart(domain):
     for metric in metrics:
 
       if library.name in domain_dic.keys():
-        domain_dic[library.name].append((metric.created_on,metric.popularity))
+        domain_dic[library.name].append((metric.created_on.date(),metric.popularity))
       else:
         popularity_data_arr = []
-        popularity_data_arr.append((metric.created_on,metric.popularity))
+        popularity_data_arr.append((metric.created_on.date(),metric.popularity))
         domain_dic[library.name] = popularity_data_arr
   
   #line_chart.x_labels = map(str, create_date_range(start_date,end_date))
@@ -78,7 +74,6 @@ def create_popularity_chart(domain):
     line_chart.add(key, value)
   
   data = line_chart.render_data_uri()
-  line_chart.render_in_browser()
   saveData(data, domain.name + '_popularity_chart.pkl')
   
   save_chart_in_db(domain, "popularity", '_popularity_chart')
@@ -112,12 +107,30 @@ def create_release_chart(domain):
 	libraries = selected_domain.libraries.all()
 	releases_dict = {}
 	release_date_set = set()
-	for release in LibraryRelease.objects.all():
-		release_date_set.add(release.release_date)
+	for library in libraries:
+		for release in library.releases.all():
+			release_date_set.add(release.release_date.date())
 
 	release_date_list = sorted(list(release_date_set))
 	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), release_date_list)
-	line_chart.x_labels_major = [release_date_list[0].strftime('%b %d %Y'), release_date_list[-1].strftime('%b %d %Y')]
+
+	#create x-axis labels at each year in interval
+	x_label_list = []
+	min_date =  release_date_list[0]
+	max_date = release_date_list[-1]
+	
+	x_label_list.append(min_date.strftime('%b %d %Y'))
+	curr_date = min_date + relativedelta(years=1)
+	while curr_date <= max_date:
+		#if datetime(curr_date.year, 1, 1) < curr_date: #in case first date is already beyond january, don't append same year again
+		x_label_list.append(datetime(curr_date.year, 1, 1).strftime('%b %d %Y'))
+		curr_date = curr_date + relativedelta(years=1)
+
+	x_label_list.append(max_date.strftime('%b %d %Y'))
+
+	print("labels:" , x_label_list)
+
+	line_chart.x_labels_major = x_label_list #[release_date_list[0].strftime('%b %d %Y'), release_date_list[-1].strftime('%b %d %Y')]
 	line_chart.title = 'Timeline of Releases'
 
 	library_id = 1
@@ -129,7 +142,7 @@ def create_release_chart(domain):
 		for i in range(0, len(release_date_list)):
 			found = False;
 			for j in range(0, len(releases)):
-				if release_date_list[i] == releases[j].release_date:
+				if release_date_list[i] == releases[j].release_date.date():
 					found = True
 					release_list.append(library_id)
 					break
@@ -141,7 +154,7 @@ def create_release_chart(domain):
 	line_chart.y_labels = y_labels
 	data = line_chart.render_data_uri()
 	saveData(data, domain_name + '_release_chart.pkl')
-	
+	line_chart.render_in_browser()
 	save_chart_in_db(domain, "release frequency", '_release_chart')
 
 def parseDateString(date_string, is_jira_dates=False):
@@ -622,32 +635,32 @@ def fillOverallScore():
 def createCharts():
   
   for domain in Domain.objects.all():  
-    create_popularity_chart(domain)
+    #create_popularity_chart(domain)
     create_release_chart(domain)
-    create_breaking_changes_chart(domain)
-    create_issue_response_chart(domain)
-    create_issue_closing_chart(domain)
-    create_issue_classification_chart(domain)
-    create_last_discussed_chart(domain)
-    create_last_modification_chart(domain)
+    # create_breaking_changes_chart(domain)
+    # create_issue_response_chart(domain)
+    # create_issue_closing_chart(domain)
+    # create_issue_classification_chart(domain)
+    # create_last_discussed_chart(domain)
+    # create_last_modification_chart(domain)
 
 def filldb():
-	print("Filling popularity...")
-	fillPopularityData()
-	print("Calculating release frequency...")
-	calculateReleaseFrequency()
-	print("Calculating breaking changes...")
-	fillBreakingChanges()
-	print("Filling last modification data...")
-	fillLastModificationDateData()
-	print("Filling last discussed on SO....")
-	fillLastDiscussedSOData()
-	print("Filling license data...")
-	fillLicenseData()
-	print("Calculating issue data...")
-	fillIssueData()
-	print("Calculating overall score...")
-	fillOverallScore()
+	# print("Filling popularity...")
+	# fillPopularityData()
+	# print("Calculating release frequency...")
+	# calculateReleaseFrequency()
+	# print("Calculating breaking changes...")
+	# fillBreakingChanges()
+	# print("Filling last modification data...")
+	# fillLastModificationDateData()
+	# print("Filling last discussed on SO....")
+	# fillLastDiscussedSOData()
+	# print("Filling license data...")
+	# fillLicenseData()
+	# print("Calculating issue data...")
+	# fillIssueData()
+	# print("Calculating overall score...")
+	# fillOverallScore()
 	print("Creating charts...")
 	createCharts()
 
