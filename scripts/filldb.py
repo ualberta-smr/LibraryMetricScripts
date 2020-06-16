@@ -76,9 +76,9 @@ def create_popularity_chart(domain):
   data = line_chart.render_data_uri()
   saveData(data, domain.name + '_popularity_chart.pkl')
   
-  save_chart_in_db(domain, "popularity", '_popularity_chart')
+  save_chart_in_db(line_chart, domain, metric_name="popularity")
 
-def save_chart_in_db(domain, metric_name, chart_suffix):
+def save_chart_in_db(pygal_chart, domain, metric_name):
 	#save chart in DB
 	
 	metric = Metric.objects.get(name=metric_name)
@@ -97,7 +97,7 @@ def save_chart_in_db(domain, metric_name, chart_suffix):
 	else:
 		chart = Chart.objects.filter(domain=domain).get(metric=metric)
 
-	chart.chart = Common_Utilities.pkl_to_blob(domain.name + chart_suffix)
+	chart.chart = Common_Utilities.chart_to_blob(pygal_chart)#domain.name + chart_suffix)
 	chart.save()
 
 def create_release_chart(domain):
@@ -152,7 +152,7 @@ def create_release_chart(domain):
 	line_chart.y_labels = y_labels
 	data = line_chart.render_data_uri()
 	saveData(data, domain_name + '_release_chart.pkl')
-	save_chart_in_db(domain, "release frequency", '_release_chart')
+	save_chart_in_db(line_chart, domain, metric_name="release frequency")
 
 def parseDateString(date_string, is_jira_dates=False):
 	strings = date_string.split(';')
@@ -216,7 +216,7 @@ def create_last_discussed_chart(domain):
     line_chart.y_labels = y_labels
     data = line_chart.render_data_uri()
     saveData(data, domain_name + '_last_discussed_chart.pkl')
-    save_chart_in_db(domain, "last discussed on so", '_last_discussed_chart')
+    save_chart_in_db(line_chart, domain, metric_name="last discussed on so")
 
 def create_last_modification_chart(domain):
 	domain_name = domain.name
@@ -266,7 +266,7 @@ def create_last_modification_chart(domain):
 	line_chart.y_labels = y_labels
 	data = line_chart.render_data_uri()
 	saveData(data, domain_name + '_last_modification_chart.pkl')
-	save_chart_in_db(domain, "last modification date", '_last_modification_chart')
+	save_chart_in_db(line_chart, domain, metric_name="last modification date")
 
 def create_breaking_changes_chart(domain):
 	domain_name = domain.name
@@ -299,7 +299,7 @@ def create_breaking_changes_chart(domain):
 		line_chart.add(library.name, release_list)
 	data = line_chart.render_data_uri()
 	saveData(data, domain_name + '_breaking_changes_chart.pkl')
-	save_chart_in_db(domain, "breaking changes", '_breaking_changes_chart')
+	save_chart_in_db(line_chart, domain, metric_name="breaking changes")
 
 def create_issue_response_chart(domain):
 	domain_name = domain.name
@@ -338,7 +338,7 @@ def create_issue_response_chart(domain):
 		line_chart.add(library.name, issue_list)
 	data = line_chart.render_data_uri()
 	saveData(data, domain_name + '_issue_response_chart.pkl')
-	save_chart_in_db(domain, "issue response", '_issue_response_chart')
+	save_chart_in_db(line_chart, domain, metric_name="issue response")
 
 
 def create_issue_closing_chart(domain):
@@ -378,7 +378,7 @@ def create_issue_closing_chart(domain):
 		line_chart.add(library.name, issue_list)
 	data = line_chart.render_data_uri()
 	saveData(data, domain_name + '_issue_closing_chart.pkl')
-	save_chart_in_db(domain, "issue closing", '_issue_closing_chart')
+	save_chart_in_db(line_chart, domain, metric_name="issue closing")
 
 
 def create_issue_classification_chart(domain):
@@ -406,7 +406,7 @@ def create_issue_classification_chart(domain):
 	line_chart.add('None', no_classification_issues)
 	data = line_chart.render_data_uri()
 	saveData(data, domain_name + '_issue_classification_chart.pkl')
-	save_chart_in_db(domain, "issue classification", '_issue_classification_chart')
+	save_chart_in_db(line_chart,domain, metric_name="issue classification")
 
 def fillPopularityData():
   with open("scripts/popularity_results.txt") as f:
@@ -650,7 +650,7 @@ def createCharts():
   for domain in Domain.objects.all():  
     create_popularity_chart(domain)
     create_release_chart(domain)
-    # create_breaking_changes_chart(domain)
+    create_breaking_changes_chart(domain)
     create_issue_response_chart(domain)
     create_issue_closing_chart(domain)
     create_issue_classification_chart(domain)

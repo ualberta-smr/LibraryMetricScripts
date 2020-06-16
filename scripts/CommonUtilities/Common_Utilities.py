@@ -10,6 +10,7 @@ import base64
 import sys
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
+import cairosvg
 
 #This is a sleep function so pause the script since GitHub does not allow frequent calls.
 def go_to_sleep (msg, time_of_sleep):
@@ -33,32 +34,7 @@ def read_config_file():
         dictKeys = json.loads(myfile.read(),strict=False)
     return dictKeys 
 
-#returns binary representation of a pkl image
-def pkl_to_blob(file_name):
-
-    pkl_file = open("scripts/" + file_name + ".pkl", "rb")
-
-    img_data = pickle.load(pkl_file)
-
-    img_data = img_data.split(",")
-
-    value = base64.b64decode(img_data[1])
-
-    pkl_file.close()
-
-    #return value
-    pkl_file.close()
-
-    with open(file_name + ".svg", "wb") as file:
-         file.write(value)
-
-    drawing = svg2rlg(file_name + ".svg")    
-
-    renderPM.drawToFile(drawing, file_name + ".png", fmt="PNG")
-
-    with open(file_name + ".png", "rb") as image:
-      content = image.read()
-
-    return bytearray(content)
-
+#returns png binary representation of a pygal chart
+def chart_to_blob(pygal_chart):
+    return cairosvg.svg2png(bytestring=pygal_chart.render(), dpi=300)
 
