@@ -283,7 +283,9 @@ def create_breaking_changes_chart(domain):
 	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), release_date_list)
 	line_chart.x_labels_major = [release_date_list[0].strftime('%b %d %Y'), release_date_list[len(release_date_list)//2].strftime('%b %d %Y'),
 	  release_date_list[-1].strftime('%b %d %Y')]
-	line_chart.title = 'Breaking Changes in Releases. X_axis = Release Dates, Y_axis = Number of Breaking changes'
+	line_chart.title = 'Breaking Changes in Releases.'
+	line_chart.x_title= ' Release Dates' 
+	line_chart.y_title = 'Number of Breaking changes'
 
 	for library in libraries:
 		releases = library.releases.all()
