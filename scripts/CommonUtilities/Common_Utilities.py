@@ -44,19 +44,21 @@ def pkl_to_blob(file_name):
 
     value = base64.b64decode(img_data[1])
 
-    return value
-    # pkl_file.close()
+    pkl_file.close()
 
-    # with open(file_name + ".svg", "wb") as file:
-    #      file.write(value)
+    #return value
+    pkl_file.close()
 
-    # drawing = svg2rlg(file_name + ".svg")    
+    with open(file_name + ".svg", "wb") as file:
+         file.write(value)
 
-    # renderPM.drawToFile(drawing, file_name + ".png", fmt="PNG")
+    drawing = svg2rlg(file_name + ".svg")    
 
-    # with open(file_name + ".png", "rb") as image:
-    #   content = image.read()
+    renderPM.drawToFile(drawing, file_name + ".png", fmt="PNG")
 
-    # return bytearray(content)
+    with open(file_name + ".png", "rb") as image:
+      content = image.read()
+
+    return bytearray(content)
 
 
