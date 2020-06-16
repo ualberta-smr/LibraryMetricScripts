@@ -275,8 +275,9 @@ def create_breaking_changes_chart(domain):
 	libraries = selected_domain.libraries.all()
 	releases_dict = {}
 	release_date_set = set()
-	for release in LibraryRelease.objects.all():
-		release_date_set.add(release.release_date)
+	for library in libraries:
+		for release in library.releases.all():
+			release_date_set.add(release.release_date.date())
 
 	release_date_list = sorted(list(release_date_set))
 	line_chart.x_labels = map(lambda d: d.strftime('%b %d %Y'), release_date_list)
@@ -290,7 +291,7 @@ def create_breaking_changes_chart(domain):
 		for i in range(0, len(release_date_list)):
 			found = False;
 			for j in range(0, len(releases)):
-				if release_date_list[i] == releases[j].release_date:
+				if release_date_list[i] == releases[j].release_date.date():
 					found = True
 					release_list.append(releases[j].breaking_changes)
 					#break
@@ -598,6 +599,7 @@ def fillBreakingChanges():
             target_release.save()
             metricsentry = get_latest_metrics_entry(target_library)
             if metricsentry == None:
+                print("No metrics entry for", library)
                 continue
             metricsentry.breaking_changes += allbreakingchanges
             metricsentry.non_breaking_changes += allnonbreakingchanges
@@ -674,7 +676,7 @@ def filldb():
 	fillIssueData()
 	print("Calculating overall score...")
 	fillOverallScore()
-	print("Creating charts...")
+	# print("Creating charts...")
 	createCharts()
 
 if __name__ == '__main__':
