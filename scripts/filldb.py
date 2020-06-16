@@ -43,7 +43,7 @@ def create_popularity_chart(domain):
   
   line_chart  = pygal.DateTimeLine(x_label_rotation=45, height=200, width=1000,x_value_formatter=lambda dt: dt.strftime('%b %d, %Y'))
    
-  line_chart.title = "Number of top GitHub projects using this library on given date"
+  line_chart.title = "Number of top 1000 GitHub projects using this library on given date"
   
   end_date = MetricsEntry.objects.latest('created_on').created_on
   start_date = end_date - relativedelta(years=1)
@@ -609,7 +609,7 @@ def fillBreakingChanges():
                continue
             release_count = library.releases.all().count()
             if release_count == 0:
-                    metricsentry.backwards_compatibility = 0
+                    metricsentry.backwards_compatibility = -1
             else:
                     metricsentry.backwards_compatibility = metricsentry.breaking_changes/release_count
             metricsentry.save()
