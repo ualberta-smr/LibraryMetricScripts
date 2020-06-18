@@ -17,19 +17,19 @@ import pickle
 import json
 import stackexchange
 
-import sys
-sys.path.append('../')
-from SharedFiles.utility_tool import read_json_file
-from CommonUtilities import Common_Utilities
+
+from scripts.SharedFiles.utility_tool import read_json_file
+from scripts.CommonUtilities import Common_Utilities
+
+from librarycomparison.models import Library
 
 
 def loadLastDiscussedSOData():
   data = {}
-  filename = 'LastDiscussedOnStackOverflow/lastdiscussedSO.pkl'
+  filename = 'scripts/LastDiscussedOnStackOverflow/lastdiscussedSO.pkl'
   if os.path.isfile(filename):
     with open(filename, 'rb') as input:
       try:
-        print("Loading data")
         data = pickle.load(input)
       except EOFError:
         print("Failed to load pickle file")
@@ -37,12 +37,12 @@ def loadLastDiscussedSOData():
   return data
 
 def saveData(data):
-  with open('LastDiscussedOnStackOverflow/lastdiscussedSO.pkl', 'wb') as output:
-    pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+  with open('scripts/LastDiscussedOnStackOverflow/lastdiscussedSO.pkl', 'wb') as output:
+    pickle.dump(data, output, pickle.DEFAULT_PROTOCOL)
 
 def getLastDiscussedDates():
 
-  config_dict = Common_Utilities.read_ini_file() # read all ini data 
+  config_dict = Common_Utilities.read_config_file() # read all config data 
   user_api_key = config_dict["SO_TOKEN"]
 
 
@@ -51,13 +51,11 @@ def getLastDiscussedDates():
 
   
   data = loadLastDiscussedSOData()
-  
-  tags = []
-  LibraryData = read_json_file('SharedFiles/LibraryData.json')
-  for line in LibraryData:
-    tags.append(line['SOtags'])
 
-  for tag in tags:
+  libraries = Library.objects.all()
+
+  for library in libraries:
+    tag = library.so_tag
     questions = so.questions(sort='creation', order='DESC', tagged=[tag,'java'])
 
     dates_string = ""
@@ -66,7 +64,7 @@ def getLastDiscussedDates():
         break
       if i > 0:
         dates_string += ';'
-      dates_string += questions[i].creation_date.strftime('%m/%d/%Y')
+      dates_string += questions[i].creation_date.strftime("%m/%d/%Y, %H:%M:%S") + " UTC"
 
     if len(dates_string) == 0:
       data[tag] = None

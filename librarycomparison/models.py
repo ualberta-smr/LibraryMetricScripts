@@ -74,12 +74,12 @@ class MetricsEntry(models.Model):
 	issue_response_time = models.FloatField(default=0)
 	performance = models.FloatField(default=0)
 	security = models.FloatField(default=0)
-	last_modification_dates = models.CharField(max_length=200, default=0)
+	last_modification_dates = models.CharField(max_length=1000, default=0)
 	last_modification_date = models.DateTimeField(default=None,null=True, blank=True)
 	backwards_compatibility = models.FloatField(default=0)
-	breaking_changes = models.IntegerField(default=0)
-	non_breaking_changes = models.IntegerField(default=0)
-	last_discussed_so_dates = models.CharField(max_length=200, default=0,null=True)
+	breaking_changes = models.IntegerField(default=0,null=True)
+	non_breaking_changes = models.IntegerField(default=0,null=True)
+	last_discussed_so_dates = models.CharField(max_length=1000, default=0,null=True)
 	last_discussed_so = models.DateTimeField(default=None, null=True, blank=True)
 	license = models.CharField(max_length=100, default="None")
 	overall_score = models.FloatField(default=0)
@@ -92,7 +92,7 @@ class MetricsEntry(models.Model):
 
 class Issue(models.Model):
 	#This means that a library can have several issues
-	library = models.ForeignKey(Library, on_delete=models.CASCADE)
+	library = models.ForeignKey(Library, on_delete=models.CASCADE, related_name='issues')
 	issue_id = models.CharField(max_length=20)
 	title = models.CharField(max_length=500)
 	performance_issue = models.BooleanField()
@@ -106,10 +106,10 @@ class Issue(models.Model):
 
 class LibraryRelease(models.Model):
 	#This means that a library can have several releases
-	library = models.ForeignKey(Library, on_delete=models.CASCADE)
+	library = models.ForeignKey(Library, on_delete=models.CASCADE, related_name='releases')
 	name = models.CharField(max_length=100)
 	release_date = models.DateTimeField()
-	breaking_changes = models.IntegerField()
+	breaking_changes = models.IntegerField(default=0)
 
 	class Meta:
 		db_table = "LibraryRelease"
@@ -176,14 +176,14 @@ class UserManager(BaseUserManager):
         return self._create_user(username, **extra_fields)
 
 class PluginUser(AbstractBaseUser, PermissionsMixin):
-	username = models.CharField(max_length=15, unique=True)
-	occupation = models.CharField(max_length=100)
-	programming_skills = models.IntegerField(default=0) #high, low etc?
-	java_skills = models.IntegerField(default=0) #high, low etc?
-	projects = models.ManyToManyField(ProjectType, related_name="users_with_proj_type") #a user could work with multiple types of projects
-	teams = models.ManyToManyField(TeamType, related_name="users_with_team_type") #a user could work in multiple types of teams
-	plugin_rating = models.IntegerField(default=0) #1 to 5 stars
-	optional_feedback = models.CharField(max_length=300, default="")
+	username = models.CharField(max_length=50, unique=True)
+	occupation = models.CharField(max_length=100, blank=True, default="", null=True)
+	programming_skills = models.IntegerField(default=0,blank=True, null=True) #high, low etc?
+	java_skills = models.IntegerField(default=0,blank=True, null=True) #high, low etc?
+	projects = models.ManyToManyField(ProjectType, related_name="users_with_proj_type", blank=True) #a user could work with multiple types of projects
+	teams = models.ManyToManyField(TeamType, related_name="users_with_team_type", blank=True) #a user could work in multiple types of teams
+	plugin_rating = models.IntegerField(default=0,blank=True, null=True) #1 to 5 stars
+	optional_feedback = models.CharField(max_length=300, blank=True, default="", null=True)
 
 	objects = UserManager()
 

@@ -3,33 +3,82 @@
 #pass in the python command you want to use (depending on the version)
 pythoncmd=$1 #python3.8
 
+cd scripts
+
 echo "Making sure all libraries are in the database..."
 $pythoncmd addlibraries.py
+
+if [ $? -eq 0 ]; then
+    echo "Added libraries..."
+else
+    exit 1
+fi
 
 echo "Obtaining Popularity..."
 rm -f Popularity/*.txt
 $pythoncmd Popularity/GitHub_Phase1.py
+
+if [ $? -eq 0 ]; then
+    echo "Found top repos..."
+else
+    exit 1
+fi
+
 $pythoncmd Popularity/GitHub_Phase2.py
 
+if [ $? -eq 0 ]; then
+    echo "Got popularity... "
+else
+    exit 1
+fi
+
 echo "Obtaining Release Frequency..."
-rm -f ReleaseFrequency/*.pkl
 $pythoncmd ReleaseFrequency/releasefrequency.py
+
+if [ $? -eq 0 ]; then
+    echo "Got release frequency..."
+else
+    exit 1
+fi
 
 echo "Obtaining License Information..."
 rm -f License/*.pkl
 $pythoncmd License/license.py
 
+if [ $? -eq 0 ]; then
+    echo "Got license info..."
+else
+    exit 1
+fi
+
 echo "Obtaining Last Modification Date..."
 rm -f LastModificationDate/*.pkl
 $pythoncmd LastModificationDate/lastmodificationdate.py
+
+if [ $? -eq 0 ]; then
+    echo "Got last modification date..."
+else
+    exit 1
+fi
 
 echo "Obtaining Last Discussed on Stack Overflow..."
 rm -f LastDiscussedOnStackOverflow/*.pkl
 $pythoncmd LastDiscussedOnStackOverflow/lastdiscussedSO.py
 
+if [ $? -eq 0 ]; then
+    echo "Got last discussed on SO..."
+else
+    exit 1
+fi
+
 echo "Obtaining issue metrics..."
-rm -f IssueMetrics/*.pkl
 $pythoncmd IssueMetrics/issues.py
+
+if [ $? -eq 0 ]; then
+    echo "Got issues..."
+else
+    exit 1
+fi
 
 #Not included in this library due to licensing issues
 #This code was kindly shared with us by Laerte Xavier, but we
@@ -50,17 +99,16 @@ fi
 
 echo "Updating database..."
 cp Popularity/popularity_results.txt .
-cp ReleaseFrequency/*.pkl .
 cp License/*.pkl .
 cp LastModificationDate/*.pkl .
 cp LastDiscussedOnStackOverflow/*.pkl .
-cp IssueMetrics/*.pkl .
-cp IssueMetrics/performanceclassifier.py .
-cp IssueMetrics/securityclassifier.py .
 $pythoncmd filldb.py
-rm -f performanceclassifier.py
-rm -f securityclassifier.py
-rm -f popularity_results.txt
+
+if [ $? -eq 0 ]; then
+    echo "Filled db with info..."
+else
+    exit 1
+fi
 
 DIR="../../../charts/"
 if [ -d "$DIR" ]; then
@@ -68,7 +116,7 @@ if [ -d "$DIR" ]; then
     mv *_chart.pkl ../../../charts/
 else
     echo "${DIR} NOT found, creating local charts folder"
-    mkdir charts
+    mkdir -p charts
     mv *_chart.pkl charts/
 fi
 
@@ -81,4 +129,5 @@ else
     echo "No breaking changes files to remove"
 fi
 
+rm -f popularity_results.txt
 rm *.pkl

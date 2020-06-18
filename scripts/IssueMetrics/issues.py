@@ -1,20 +1,16 @@
 #Description:
-# - This file extracts the Issue Closing Time (in days), the Issue Response Time, and the Performance and Security metrics of a library
-# based on its Github repository.
+# - This file retrieves new issue data from github or Jira for the libraries in the DB. 
+# - Assumes that addlibraries was already run to add any new libraries in the LibraryData.json file.
+# - It first checks the last issue stored in the DB and retrieves new issues since then
 #
 #Requirements: 
 # - You will need to install PyGithub
-# - You will need to input your Github credentials to make use of the Github API
 #Input:
-# - LibraryData.json - includes the list of repositories whose bug reports are hosted on Github and a list of libraries whose bug reports are hosted on JIRA
 # - performanceclassifier.py - the machine learning performance classifier used to classify performance issues
 # - securityclassifier.py - the machine learning performance classifier used to classify security issues
 # - performancedataset.xlsx, performancewords.txt, securitydataset.xlsx, securitywords.txt <- files needed for the classifiers
 #Output:
-# issuedata.pkl - a pickle file containing a dictionary where the key is a repository and its value is a list of IssueData objects (see class)
-# issueresponsetime.pkl a piclkle file containing a dictionary where the key is a repository and its value is the issue response time in days (stored as float)
-# issueclosingtime.pkl a piclkle file containing a dictionary where the key is a repository and its value is the issue closing time in days (stored as float)
-#
+# - no file output. Issue data will be stored in the DB
 #How to run: 
 # - Just run the script (make sure the input files are in the same directory)
 
@@ -28,259 +24,205 @@ import time
 from datetime import datetime
 from github import Github, Repository
 from github.GithubException import UnknownObjectException, RateLimitExceededException, GithubException
-from performanceclassifier import PerformanceClassifier
-from securityclassifier import SecurityClassifier
+from .performanceclassifier import PerformanceClassifier
+from .securityclassifier import SecurityClassifier
 import json
-from CommonUtilities import Common_Utilities
+from scripts.CommonUtilities import Common_Utilities
+from scripts.SharedFiles.utility_tool import read_json_file
+from librarycomparison.models import Library, Issue
+import pytz
+import traceback
 
-#This makes the utility_tool visible from this file
-import sys
-sys.path.append('../')
-from SharedFiles.utility_tool import read_json_file
+def get_latest_issue(library):
+  #get latest issue we have for this repo
 
-issue_closing_time_pkl = 'IssueMetrics/issueclosingtime.pkl'
-issue_data_pkl = 'IssueMetrics/issuedata.pkl'
-issue_resp_time_pkl = 'IssueMetrics/issueresponsetime.pkl'
+  latest_issue_date = datetime(1700,1,1)
+  issues = Issue.objects.filter(library=library)
 
-class IssueData:
+  if issues:
+    #latest_issue_date = issues.latest('creation_date').creation_date
+    return issues.latest('creation_date')
 
-  def __init__(self, issue_id):
-    self.issue_id = issue_id
-    self.title = None
-    self.closing_date = None
-    self.first_comment_date = None
-    self.creation_date = None
-    self.performance_issue = None
-    self.security_issue = None
-    self.state = None
+  return None
 
-  def addState(self, state):
-    self.state = state
+def sleep(github):
+  github_limits = github.get_rate_limit()
+  if github_limits.core.remaining == 0:
+    Common_Utilities.go_to_sleep("API hour limit exceeded,Go to sleep for ", 3600)
 
-  def addFirstResponseDate(self, date):
-    self.first_comment_date = date
-
-  def addCreationDate(self, date):
-    self.creation_date = date
-
-  def addClosingDate(self, date):
-    self.closing_date = date
-
-  def addTitle(self, title):
-    self.title = title
-
-  def setPerformanceIssue(self, value):
-    self.performance_issue = value
-
-  def setSecurityIssue(self, value):
-    self.security_issue = value
-
-  def __str__(self):
-    return self.issue_id
+  if github_limits.search.remaining == 0:
+    Common_Utilities.go_to_sleep("API minute limit exceeded,Go to sleep for ", 61)
 
 
-def loadData(filename):
-  data = {}
-  if os.path.isfile(filename):
-    with open(filename, 'rb') as input:
-      try:
-        data = pickle.load(input)
-      except EOFError:
-        print("Error loading data")
-  return data
+def getIssueData(token, performance_classifier, security_classifier):
 
-def saveData(data, filename):
-  with open(filename, 'wb') as output:
-    pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+  libraries = Library.objects.filter(jira_url__exact="").exclude(jira_url__isnull=True)
 
+  github = Github(token)
 
-def calculateAverageClosingTime():
-  issue_data = loadData(issue_data_pkl)
-  issue_closing_times = {}
-  for repo, issues in issue_data.items():
-    total_closing_time = 0
-    total_closed_issues = 0
-    for issue in issues:
-      if issue.closing_date == None:
-        continue
-      closing_time = int((issue.closing_date - issue.creation_date).total_seconds())
-      total_closing_time += closing_time
-      total_closed_issues += 1
-    issue_closing_times[repo] = float(total_closing_time/total_closed_issues/86400)
-  saveData(issue_closing_times, issue_closing_time_pkl)
-
-def calculateAverageResponseTime():
-  issue_data = loadData(issue_data_pkl)
-  issue_response_times = {}
-  for repo, issues in issue_data.items():
-    total_response_time = 0
-    total_issues_with_comments = 0
-    for issue in issues:
-      if issue.first_comment_date == None:
-        continue
-      response_time = int((issue.first_comment_date - issue.creation_date).total_seconds())
-      total_response_time += response_time
-      total_issues_with_comments += 1
-    issue_response_times[repo] = float(total_response_time/total_issues_with_comments/86400)
-  saveData(issue_response_times, issue_resp_time_pkl)
-
-def getIssueData(token, arr):
-
-  repositories = []
-  for line in arr:    
-    if line['JIRAURL'] == "":
-      repositories.append(line['FullRepoName'])
- 
-  issue_data = loadData(issue_data_pkl)
-
-  if issue_data == None:
-    issue_data = {}
-
-  g = Github(token)
-
-  for repository in repositories:
+  for library in libraries:
+    looped = False
     first_issue = 1
-    print("Current repository: ", repository)
+    print("========Current repository: ", library.github_repo)
+    
+    latest_issue = get_latest_issue(library)
+    latest_issue_date = datetime(1700,1,1)
+    if latest_issue:
+    	latest_issue_date = latest_issue.creation_date
+    	first_issue = int(latest_issue.issue_id) + 1
+
 
     try:
-      r = g.get_repo(repository)
+      repo = github.get_repo(library.github_repo)
+      max_issue_number = repo.get_issues(state="all", since=latest_issue_date)[0].number
 
-      max_issue_number = r.get_issues(state="all")[0].number
     except RateLimitExceededException:
-      print("Rate Limit Exceeded... Sleeping 1 hour")
-      time.sleep(60*60)
-      g = Github(token)
-      r = g.get_repo(repository)
-      max_issue_number = r.get_issues(state="all")[0].number
+      sleep(github)
+
+      repo = github.get_repo(library.github_repo)
+      max_issue_number = repo.get_issues(state="all",since=latest_issue_date)[0].number
+    except Exception as e:
+      print(e)
+      sleep(github)
+      
+      repo = github.get_repo(library.github_repo)
+
+      if repo:
+        issues = repo.get_issues(state="all",since=latest_issue_date)
+        if issues:
+          if  issues.totalCount > 0:
+            max_issue_number = repo.get_issues(state="all",since=latest_issue_date)[0].number
+          else:
+            print("ERROR: issues returned cannot be indexed")
+        else:
+          print("ERROR: no issues returned from github for repo ", library.name)
 
     for i in range(first_issue, max_issue_number):
+      looped = True
       try:
-        issue = r.get_issue(i)
+        gh_issue = repo.get_issue(i)
       except UnknownObjectException:
         continue
       except RateLimitExceededException:
-        print("Rate Limit Exceeded... Sleeping 1 hour") 
-        time.sleep(60*60)
-        g = Github(token)
-        r = g.get_repo(repository)
+        sleep(github)
+        #repo = g.get_repo(repo_name)
         i -= 1
         continue
       except:
         continue
-      if issue == None:
+      if gh_issue == None:
         continue
-      if issue.pull_request != None:
+      if gh_issue.pull_request != None:
         continue
 
-      new_issue = IssueData(i)
-      new_issue.addTitle(issue.title)
-      new_issue.addCreationDate(issue.created_at)
-      new_issue.addClosingDate(issue.closed_at)
+      new_issue = Issue()
+      new_issue.issue_id = str(gh_issue.number) #the actual issue id on github is the number; not sure what the issue_id in PyGithub is
+      new_issue.creation_date = pytz.utc.localize(gh_issue.created_at)
+      if gh_issue.closed_at:
+        new_issue.closing_date = pytz.utc.localize(gh_issue.closed_at)
+      new_issue.library = library
+      try:
+        new_issue.title = gh_issue.title
+      except:
+        print("failed to create title for issue ", gh_issue.id)
+
+      new_issue.performance_issue = performance_classifier.classify(new_issue.title)
+      new_issue.security_issue = security_classifier.classify(new_issue.title)
 
       while True:
         try:
-          for comment in issue.get_comments():
-            if comment.user == issue.user:
+          for comment in gh_issue.get_comments():
+            if comment.user == gh_issue.user:
               continue
-            new_issue.addFirstResponseDate(comment.created_at)
+            new_issue.first_response_date = pytz.utc.localize(comment.created_at)
             break
           break
         except RateLimitExceededException:
-          print("Rate Limit Exceeded... Sleeping 1 hour")
-          time.sleep(60*60)
-          g = Github(token)
-          r = g.get_repo(repository)
-          issue = r.get_issue(i)
+          sleep(github)
+
         except Exception as e:
           print(e)
           continue
-        
-      if repository in issue_data:
-        issue_data[repository].append(new_issue)
-      else:
-        issue_data[repository] = [new_issue]
-      saveData(issue_data, issue_data_pkl)
+      
+      try: 
+        new_issue.save()
+      except: 
+        print("failed to create title for issue ", gh_issue.id, "... replacing with blank")
+        new_issue.title = ""
+        new_issue.save()
+      #not sure if we need this: library.issue_set.add(issue) library.save()
+    
+    #sleep only if requests to github have been made
+    if looped:
+      sleep(github)
 
-def getIssueDataJIRA(urls):
+def getIssueDataJIRA(urls, performance_classifier, security_classifier):
   dict = {}
-  issue_data = loadData(issue_data_pkl)
 
-  for line in urls:    
-    if line['JIRAURL'] != "":     
-      dict[line['FullRepoName']]=line['JIRAURL']  
-  
- 
-  for repository, url in dict.items():
-    print("Current repository in issues: ", repository)
-    xmlString = urllib.request.urlopen(url).read().decode('utf-8')
-    root = xml.etree.ElementTree.fromstring(xmlString)
+  libraries = Library.objects.exclude(jira_url="")
+
+  for library in libraries:
+    issues_in_db = Issue.objects.filter(library=library)
+    print("Current repository in jira issues: ", library.name)
+    try:
+      xmlString = urllib.request.urlopen(library.jira_url).read().decode('utf-8')
+      root = xml.etree.ElementTree.fromstring(xmlString)
+    except:
+      print("ERROR: failed to parse jira xml for library (url might have changed)", library.name)
+      traceback.print_exc()
+      continue
+
     channel = root.find('channel')
 
-    closed_issues = 0
-    commented_issues = 0
-    total_closing_time = 0
-    total_response_time = 0
-
     for issue in channel.findall('item'):
-      new_issue = IssueData(issue.find('key').text)
-      new_issue.addTitle(issue.find('summary').text)
+      issue_id = issue.find('key').text
 
-      #response time/closing time
-      created_date = datetime.strptime(issue.find('created').text, '%a, %d %b %Y %H:%M:%S %z')
-      new_issue.addCreationDate(created_date)
-      #response time
+      if issues_in_db.filter(issue_id=issue_id):
+        #print("Skipping issue in db: ", issue_id)
+        continue
+
+      new_issue = Issue()
+      new_issue.library = library
+      new_issue.issue_id = issue_id
+      new_issue.title = issue.find('summary').text
+      new_issue.creation_date = datetime.strptime(issue.find('created').text, '%a, %d %b %Y %H:%M:%S %z')
+      new_issue.performance_issue = performance_classifier.classify(new_issue.title)
+      new_issue.security_issue = security_classifier.classify(new_issue.title)
+
+      #closing date
       resolved = issue.find('resolved')
       if resolved != None:
-        resolved_date = datetime.strptime(resolved.text, '%a, %d %b %Y %H:%M:%S %z')
-        new_issue.addClosingDate(resolved_date)
+        new_issue.closing_date = datetime.strptime(resolved.text, '%a, %d %b %Y %H:%M:%S %z')
 
+      #response time
       issueReporter = issue.find('reporter').get('username')
       if issue.find('comments') != None:
         for comment in issue.find('comments'):
           if comment == None or comment.get('author') == issueReporter:
             continue
-          first_comment_date = datetime.strptime(comment.get('created'), '%a, %d %b %Y %H:%M:%S %z')
-          new_issue.addFirstResponseDate(first_comment_date)
+          new_issue.first_response_date = datetime.strptime(comment.get('created'), '%a, %d %b %Y %H:%M:%S %z')
           break
-      if repository in issue_data:
-        issue_data[repository].append(new_issue)
-      else:
-        issue_data[repository] = [new_issue]
-      saveData(issue_data, issue_data_pkl)
+      try: 
+        new_issue.save()
+      except: 
+        print("failed to create title for issue ", issue_id, "... replacing with blank")
+        new_issue.title = ""
+        new_issue.save()
+      #saveData(issue_data, issue_data_pkl)
+      #Common_Utilities.go_to_sleep("Sleeping before next library..Go to sleep for ", 180)
 
-def applyClassifiers():
+def get_issues():
+
   performance_classifier = PerformanceClassifier()
   security_classifier = SecurityClassifier()
-  issue_data = loadData(issue_data_pkl)
-  for repo, issues in issue_data.items():
-    for issue in issues:
-      if performance_classifier.classify(issue.title) == True:
-        issue.performance_issue = True
-      else:
-        issue.performance_issue = False
-
-      if security_classifier.classify(issue.title) == True:
-        issue.security_issue = True
-      else:
-        issue.security_issue = False
-  saveData(issue_data, issue_data_pkl)
-
-def main():
-
-  config_dict = Common_Utilities.read_ini_file() # read all ini data 
+  config_dict = Common_Utilities.read_config_file() # read all config data 
   
-  lib_data_json = read_json_file("SharedFiles/LibraryData.json")
+  lib_data_json = read_json_file(config_dict["LIBRARY_LIST"])
 
-  print("Getting issue data")  
-  getIssueDataJIRA(lib_data_json)
-  getIssueData(config_dict["TOKEN"], lib_data_json)
-
-  print("Calculating avg response time")  
-  calculateAverageResponseTime()
-  print("Calculating avg closing time")  
-  calculateAverageClosingTime()
-  print("Applying classifiers")
-  applyClassifiers()
+  print("Getting JIRA issue data")  
+  getIssueDataJIRA(lib_data_json, performance_classifier, security_classifier)
+  print("Getting GitHub issue data")
+  getIssueData(config_dict["TOKEN"], performance_classifier, security_classifier)
 
 if __name__ == "__main__":
-  main()
+  get_issues()

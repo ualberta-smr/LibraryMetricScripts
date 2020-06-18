@@ -24,7 +24,7 @@ If you would like to get updated metric data, for the same list of libraries we 
 	- Change the value of `TOKEN` to your own GitHub generated token.
 	- Change the value of `SO_TOKEN` to your stack exchange key. 
 - You also need to set a DB to fill with the results of running the script. You will need to create a MySQL database (we call ours libcomp). In the `librarycomparison/settings.py`, change the username, database name, and password in the `DATABASE` information to that of your created database. Afterwards run `python3 manage.py makemigrations` and then `python3 manage.py migrate`. This will create the database schema for you. See notes below about the database schema.
-- Run `update.sh` which will call all the metric scripts. Each metric produces its own output files which you can just look at. However, in addition, the `update.sh` scripts calls the `fill_db.py` script which fills a MySQL database with all the results from all scripts.  
+- Run `python3 -m scripts` from within the main repo directory which will call all the metric scripts. This script runs all metrics and fills the MySQL database with all the results from all scripts.  
 
 # How to Add New Libraries
 
@@ -51,7 +51,7 @@ To add a new library, you need to go to `SharedData/LibraryData.json` and add on
 
 # Data Schema
 
-[ TO BE UPDATED ]
+[ Currently Outdated.. will update soon. Please check librarycomparison/models.py for the latest schema ]
 - The data schema can be found in `librarycomparison/models.py`. The schema is simple:
 - `Domain` stores information about a domain (e.g. name), as well as the metric feedback specific to that domain (latter part is not relevant for this repo per se, but relevant for us in our deployed website to know which metrics to display for which domain)
 - `Library` stores the name, tag, and full repository of a library, as well as all the metric data related to that library. A library must also have a `Domain` object, which has the information about the library domain.

@@ -17,43 +17,42 @@ import pickle
 from github import Github, Repository, GitTag
 import getpass
 import json
-from CommonUtilities import Common_Utilities
+from scripts.CommonUtilities import Common_Utilities
+from scripts.SharedFiles.utility_tool import read_json_file
+import django
+import pickle
+import pygal
 
-#This makes the utility_tool visible from this file
-import sys
-sys.path.append('../')
-from SharedFiles.utility_tool import read_json_file
+
+from librarycomparison.models import Library
 
 def loadLastModificationDateData():
 	data = {}
-	filename = 'LastModificationDate/lastmodificationdate.pkl'
+	filename = 'scripts/LastModificationDate/lastmodificationdate.pkl'
 	if os.path.isfile(filename):
 		with open(filename, 'rb') as input:
 			try:
-				print("Loading data")
+				print("Loading last modification data")
 				data = pickle.load(input)
 			except EOFError:
 				print("Failed to load pickle file")
 	return data
 
 def saveData(data):
-	with open('LastModificationDate/lastmodificationdate.pkl', 'wb') as output:
-		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+	with open('scripts/LastModificationDate/lastmodificationdate.pkl', 'wb') as output:
+		pickle.dump(data, output, pickle.DEFAULT_PROTOCOL)
 
-def getLastModificationDates(token):
+def getLastModificationDates():
+	config_dict = Common_Utilities.read_config_file() # read all config data 
+	token = config_dict["TOKEN"]
 	
 	data = loadLastModificationDateData()
 	  
-	repositories = []
-	LibraryData = read_json_file('SharedFiles/LibraryData.json')
-	for line in LibraryData:
-		repositories.append(line['FullRepoName'])
+	github = Github(token)
+	libraries = Library.objects.all()
 	
-	g = Github(token)
-	
-	for repository in repositories:
-		print ("getting data for" , repository)
-		repo = g.get_repo(repository)
+	for library in libraries:
+		repo = github.get_repo(library.github_repo)
 		dates_string = ""
 		i = 0
 		for c in repo.get_commits():
@@ -61,15 +60,12 @@ def getLastModificationDates(token):
 				break
 			if i > 0:
 				dates_string += ';'
-			dates_string += c.commit.author.date.strftime('%m/%d/%Y')
+			dates_string += c.commit.author.date.strftime("%m/%d/%Y, %H:%M:%S") + " UTC"
 			i += 1
-		data[repository] = dates_string
+		data[library.github_repo] = dates_string
 		saveData(data)
 
-def main():
-        config_dict = Common_Utilities.read_ini_file() # read all ini data 
-        getLastModificationDates(config_dict["TOKEN"])
         
 if __name__ == "__main__":
-  main()
+  getLastModificationDates()
 

@@ -7,14 +7,19 @@ Output:     A text file called popularity_results.txt which has each library alo
 '''
 
 import random
-from github import Github
+from github import Github, GithubException
 import json  
-from CommonUtilities import Common_Utilities
+from scripts.CommonUtilities import Common_Utilities
+from scripts.SharedFiles.utility_tool import read_json_file
 
-#This makes the utility_tool visible from this file
-import sys
-sys.path.append('../')
-from SharedFiles.utility_tool import read_json_file
+
+def sleep(github):
+  github_limits = github.get_rate_limit()
+  if github_limits.core.remaining == 1:
+    Common_Utilities.go_to_sleep("API hour limit exceeded,Go to sleep for ", 3600)
+
+  if github_limits.search.remaining == 0:
+    Common_Utilities.go_to_sleep("API minute limit exceeded,Go to sleep for ", 61)
 
 #This is where the search happens, an api query is used to collect results. 
 #The query looks like this: "import LIBRARY-NAME" language:java repo:REPO-NAME
@@ -26,39 +31,34 @@ def search_code_in_repo(query, github, quick_sleep, error_sleep, max_size, Repo_
   while roll_back:
     roll_back = False
     frequency = 0
-    #check github for rate limit 
+
     try:
     
-      rate_limit = github.get_rate_limit()
-      rate = rate_limit.search            
-      # this reate limit is not accurate as github may stop you before you reach your limit.
-      print ("search limit: " + str(rate) + ". Reset Time: " + str(rate.reset))
-      if rate.remaining == 0:
-        #print(f'You have 0/{rate.limit} API calls remianing. Reset time: {rate.reset}')            
-        Common_Utilities.go_to_sleep("No more resources to use, Go to sleep for ", error_sleep)  
-           
+      #check if we need to sleep because we exceeded rate limits
+      sleep(github)
+
       index = 0
-      tracking_counter = 1
+      tracking_counter = 0
       arraysize = len(Repo_Array)     
       while index < arraysize:      
         try:
-          tracking_counter = tracking_counter + 1                
+          tracking_counter += 1                
           query_final = query + " repo:"+Repo_Array[index] 
-          index = index + 1
+          index += 1
           msg = str(index) + " out of " + str (arraysize) + " Query : " + query_final
           print (msg)
           result = None
           result = github.search_code(query_final)        
           num_found = result.totalCount      
           if  num_found > 0:
-            frequency =  frequency + 1      
+            frequency += 1      
           if tracking_counter % 15 == 0:
-            Common_Utilities.go_to_sleep("Force to sleep after each iteration, Go to sleep for ", quick_sleep)          
-        except:             
-          index = index - 1
+            Common_Utilities.go_to_sleep("Force to sleep after every 15 requests, Go to sleep for ", quick_sleep)          
+        except GithubException:             
+          index -= 1
           Common_Utilities.go_to_sleep("Error: Internal abuse detection mechanism detected,Go to sleep for ", error_sleep)
       
-    except:
+    except GithubException:
       Common_Utilities.go_to_sleep("Error: abuse detection mechanism detected,Go to sleep for ", error_sleep)
       roll_back = True # -1 means a problem detected and we need to re-read the same pages again after sleep. no change of date
    
@@ -79,24 +79,24 @@ def send_totals_to_file(output_file, keyword, num_found):
 
 def read_repos():
     repo_array = []
-    with open("Popularity/Top_Repo.txt", "r") as f:
+    with open("scripts/Popularity/Top_Repo.txt", "r") as f:
         for line in f:          
             repo_array.append(line.rstrip())
     return repo_array
   
-def main():
+def search_top_repos():
 
     print("Searching for imports in top repos...")
     
-    config_dict = Common_Utilities.read_ini_file() # read all ini data
+    config_dict = Common_Utilities.read_config_file() # read all config data
     repo_array = read_repos()    
     
     quick_sleep = int (config_dict["QUICK_SLEEP"]) # regular sleep after each iteration
     error_sleep = int (config_dict["ERROR_SLEEP"]) # Sleep after a serious issue is detected from gitHib, should be around 10min, ie 600 sec
     max_size = int (config_dict["MAXSIZE"]) # max number of results returned per gitHub call, for now it is 1500, but could be changed in the future
     
-    g = None
-    g = Github(config_dict["TOKEN"])   # pass the connection token 
+    github = None
+    github = Github(config_dict["TOKEN"])   # pass the connection token 
     
     library_dict = read_libraries(config_dict["LIBRARY_LIST"]) # read all libraries to search against
 
@@ -107,10 +107,11 @@ def main():
     
     for keyword,repo in library_dict.items():  
       
-      query = "\"import " + keyword + "\" "  + config_dict["SEARCHTERM"]  
-      frequency = search_code_in_repo(query, g, quick_sleep, error_sleep, max_size, repo_array) 
+      query = "\"import " + keyword + "\" "  + config_dict["IMPORT_SEARCH_QUERY"]  
+      frequency = search_code_in_repo(query,github, quick_sleep, error_sleep, max_size, repo_array) 
       send_totals_to_file(output_file_name, repo, frequency )
        
     print ("\n Finally ..... Execution is over \n")    
     
-main()
+if __name__ == "__main__":
+    search_top_repos()

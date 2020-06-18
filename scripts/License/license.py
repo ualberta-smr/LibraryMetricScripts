@@ -17,16 +17,19 @@ from github import Github, Repository, GitTag
 from github.GithubException import UnknownObjectException
 import getpass
 import json 
-from CommonUtilities import Common_Utilities
+from scripts.CommonUtilities import Common_Utilities
+from scripts.SharedFiles.utility_tool import read_json_file
 
-#This makes the utility_tool visible from this file
-import sys
-sys.path.append('../')
-from SharedFiles.utility_tool import read_json_file
+import django
+import pickle
+import pygal
+import traceback
+
+from librarycomparison.models import Library
 
 def loadLicenseData():
 	data = {}
-	filename = 'License/license.pkl'
+	filename = 'scripts/License/license.pkl'
 	if os.path.isfile(filename):
 		with open(filename, 'rb') as input:
 			try:
@@ -37,35 +40,30 @@ def loadLicenseData():
 	return data
 
 def saveData(data):
-	with open('License/license.pkl', 'wb') as output:
-		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+	with open('scripts/License/license.pkl', 'wb') as output:
+		pickle.dump(data, output, pickle.DEFAULT_PROTOCOL)
 
-def getLicenses(token):
+def getLicenses():
+	config_dict = Common_Utilities.read_config_file() # read all ini data 
+	token = config_dict["TOKEN"]
 	data = loadLicenseData()
 
-	repositories = []
-	LibraryData = read_json_file('SharedFiles/LibraryData.json')
-	for line in LibraryData:
-		repositories.append(line['FullRepoName'])
+	github = Github(token)
+	libraries = Library.objects.all()
 	
-	g = Github(token)
-	
-	for repository in repositories:
-		if repository in data:
-			continue
+	for library in libraries:
+		print ("Getting license for ", library.name)
 		try:
-			r = g.get_repo(repository)
-			print(repository)
-			data[repository] = r.get_license().license.name
+			repo = github.get_repo(library.github_repo)
+			data[library.github_repo] = repo.get_license().license.name
 			saveData(data)
 		except UnknownObjectException:
-			data[repository] = 'None'
+			print("ERROR: could not get license for lib", library.name)
+			traceback.print_exc()
+			data[library.github_repo] = 'None'
 			saveData(data)
-
-def main():
-        config_dict = Common_Utilities.read_ini_file() # read all ini data 
-        getLicenses(config_dict["TOKEN"])
+			continue
 
 if __name__ == "__main__":
-        main()
+        getLicenses()
 
