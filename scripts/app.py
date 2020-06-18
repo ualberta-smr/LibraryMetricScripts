@@ -28,7 +28,7 @@ def run():
 	getLastModificationDates()
 	getLastDiscussedDates()
 	get_issues()
-	#TODO: breaking changes
+	#TODO: breaking changes.. since we cannot share code. Will add a packaged way to include this
 
 	shutil.copy2('scripts/Popularity/popularity_results.txt', 'scripts/')
 	for file in glob.glob(r'scripts/License/*.pkl'):

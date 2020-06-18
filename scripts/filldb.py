@@ -678,7 +678,7 @@ def filldb():
 	fillIssueData()
 	print("Calculating overall score...")
 	fillOverallScore()
-	# print("Creating charts...")
+	print("Creating charts...")
 	createCharts()
 
 if __name__ == '__main__':
