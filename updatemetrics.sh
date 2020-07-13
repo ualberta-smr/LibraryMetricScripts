@@ -3,7 +3,7 @@
 now="$(date +'%d/%m/%Y')"
 echo "Starting to update metrics at $now..."
 
-#backup current database first 
+#backup current database first (note that this relies on your DB password being stored in ~/.my.cnf)
 
 echo "Backing up database first ... "
 
