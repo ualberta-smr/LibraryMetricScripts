@@ -9,3 +9,4 @@ pygal>=2.4.0
 python-dateutil>=2.8.1
 svglib>=1.0.0
 cairosvg
+gitpython

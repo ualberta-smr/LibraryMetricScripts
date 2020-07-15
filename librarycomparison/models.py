@@ -110,7 +110,7 @@ class LibraryRelease(models.Model):
 	name = models.CharField(max_length=100)
 	release_date = models.DateTimeField()
 	breaking_changes = models.IntegerField(default=0)
-
+	non_breaking_changes = models.IntegerField(default=-1, null=True)
 	class Meta:
 		db_table = "LibraryRelease"
 
