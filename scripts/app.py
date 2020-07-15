@@ -57,7 +57,7 @@ def run():
 	# for file in glob.glob(r'scripts/LastDiscussedOnStackOverflow/*.pkl'):
 	# 	shutil.copy2(file, 'scripts/')
 
-	filldb()
+	#filldb()
 
 	# try:
 	# 	os.mkdir("scripts/charts")
