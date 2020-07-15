@@ -31,12 +31,8 @@ def count_breaking_changes(library):
     releases = list(library.releases.all().order_by('release_date'))
 
     for index in range(len(releases)):
-        print("index: ", index)
         if index == 0:
             continue
-
-        if index >= 3:
-            break
 
         curr_release = releases[index]
         prev_release = releases[index - 1]
@@ -46,7 +42,6 @@ def count_breaking_changes(library):
         curr_release_dir = clone_release(library, curr_release)
         prev_release_dir = clone_release(library, prev_release)
 
-        #args = + + " " + curr_release_dir
         try:
             breaking_chg_output = subprocess.check_output(["java", "-Xmx20g", "-Xms18g", "-jar", "scripts/BreakingChanges/BreakingChangesJava.jar", prev_release_dir, curr_release_dir])
         except subprocess.CalledProcessError as error:
@@ -54,7 +49,6 @@ def count_breaking_changes(library):
             return
 
         changes = breaking_chg_output.decode().split(",")
-        print("breaking: ", changes[0], "non breaking:", changes[1])
         curr_release.breaking_changes = int(changes[0])
         curr_release.non_breaking_changes  = int(changes[1])
         curr_release.save()
@@ -88,9 +82,6 @@ def get_breaking_changes():
     
     count = 0
     for library in libraries:
-
-        if count > 1:
-            break
         lib_name = library.name
         print ("Getting breaking changes for ", lib_name)
         lib_name = library.name
@@ -103,13 +94,6 @@ def get_breaking_changes():
 
         print ("Cloned repo")
         count_breaking_changes(library)
-
-
-        #subprocess.run(["./scripts/BreakingChanges/countChanges.sh", lib_name])
-
-        # output_projects.write(lib_name + "\n")
-        # output_repos.write(repo + "\n")
-        count += 1
 
 
 if __name__ == "__main__":
