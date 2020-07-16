@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# set -e
+set -e
+
+cd ~/LibraryMetricScripts/ #assumes that's where this repo is
 
 now="$(date +'%d/%m/%Y')"
 echo "Starting to update metrics at $now..."
@@ -13,7 +15,7 @@ mkdir -p ~/DBBackups
 
 today=$(date +'%m-%d-%Y')
 file_name="~/DBBackups/libcomp-bkp-${today}.sql"
-mysqldump --no-create-info --complete-insert --skip-triggers libcomp  Domain Library Issue Metric LibraryRelease MetricsEntry Chart ProjectType TeamType PluginUser PluginUser_groups PluginUser_projects PluginUser_teams PluginFeedback WebsiteFeedback > file_name
+mysqldump --no-create-info --complete-insert --skip-triggers libcomp  Domain Library Issue Metric LibraryRelease MetricsEntry Chart ProjectType TeamType PluginUser PluginUser_groups PluginUser_projects PluginUser_teams PluginFeedback WebsiteFeedback > $file_name
 
 #invoke script
 mkdir -p logs
