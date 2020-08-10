@@ -45,6 +45,7 @@ class Library(models.Model):
 	github_repo = models.CharField(max_length=100, unique=True)
 	github_url = models.CharField(max_length=200, default="None")
 	jira_url = models.CharField(max_length=300, default="None")
+	maven_url = models.CharField(max_length=200, default="None")
 	package = models.CharField(max_length=100, default="None")
 
 	#This means that a domain can have several libraries
@@ -110,7 +111,7 @@ class LibraryRelease(models.Model):
 	name = models.CharField(max_length=100)
 	release_date = models.DateTimeField()
 	breaking_changes = models.IntegerField(default=0)
-
+	non_breaking_changes = models.IntegerField(default=-1, null=True)
 	class Meta:
 		db_table = "LibraryRelease"
 
@@ -219,4 +220,3 @@ class Chart(models.Model):
 	
 	class Meta:
 		db_table = "Chart"
-
