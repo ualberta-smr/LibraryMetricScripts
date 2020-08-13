@@ -37,6 +37,10 @@ def count_breaking_changes(library):
         curr_release = releases[index]
         prev_release = releases[index - 1]
 
+        if curr_release.breaking_changes != -1: #i.e., already calculated this release before
+            print("Skipping release ", curr_release.name)
+            continue
+
         print("Calculating for ", curr_release.name)
 
         curr_release_dir = clone_release(library, curr_release)
