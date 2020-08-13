@@ -14,10 +14,12 @@ from scripts.License.license import getLicenses
 from scripts.LastModificationDate.lastmodificationdate import getLastModificationDates
 from scripts.LastDiscussedOnStackOverflow.lastdiscussedSO import getLastDiscussedDates
 from scripts.IssueMetrics.issues import get_issues
+from scripts.BreakingChanges.breakingchanges import get_breaking_changes
 from scripts.filldb import filldb
 import shutil
 import glob
 import os
+import subprocess
 
 def run():
 	addlibraries()
@@ -28,9 +30,10 @@ def run():
 	getLastModificationDates()
 	getLastDiscussedDates()
 	get_issues()
-	#TODO: breaking changes.. since we cannot share code. Will add a packaged way to include this
+	get_breaking_changes() #must be called after releases are fetched so after release frequency metric
 
 	shutil.copy2('scripts/Popularity/popularity_results.txt', 'scripts/')
+
 	for file in glob.glob(r'scripts/License/*.pkl'):
 		shutil.copy2(file, 'scripts/')
 

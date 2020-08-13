@@ -565,58 +565,28 @@ def fillLicenseData():
 
 
 def fillBreakingChanges():
-        try:
-            with open("scripts/breakingchanges/breakingchanges.csv") as f:
-                lines = f.readlines()
-        except:
-            print("ERROR: Cannot find breaking changes file... skipping")
-            return 
 
-        lines = [x.strip() for x in lines]
+    for library in Library.objects.all():
+        metricsentry = get_latest_metrics_entry(library)
+        if metricsentry == None:
+           continue
 
-        i = 0
-        while i < len(lines):
-            splitline = lines[i].split(":")
-            library = splitline[0]
-            release = splitline[1]
-            if release == '':
-                    i += 2
-                    continue
-            if ';' not in lines[i+1]:
-                    i += 1
-                    allbreakingchanges = 0
-                    allnonbreakingchanges = 0
-            else:
-                    splitline = lines[i+1].split(";")
-                    allbreakingchanges = int(splitline[5])
-                    allnonbreakingchanges = int(splitline[10])
-                    i += 2
-            target_library = Library.objects.get(name=library)
-            try:
-                target_release = target_library.releases.get(name=release)
-            except:
-                print("Skipping: Could not find release",release,"for library", library)
-                continue;
-            target_release.breaking_changes = allbreakingchanges
-            target_release.save()
-            metricsentry = get_latest_metrics_entry(target_library)
-            if metricsentry == None:
-                print("No metrics entry for", library)
-                continue
-            metricsentry.breaking_changes += allbreakingchanges
-            metricsentry.non_breaking_changes += allnonbreakingchanges
-            metricsentry.save()
+        total_breaking_changes = 0
+        total_non_breaking_changes = 0
+        release_count = library.releases.all().count()
 
-        for library in Library.objects.all():
-            metricsentry = get_latest_metrics_entry(library)
-            if metricsentry == None:
-               continue
-            release_count = library.releases.all().count()
-            if release_count == 0:
-                    metricsentry.backwards_compatibility = -1
-            else:
-                    metricsentry.backwards_compatibility = metricsentry.breaking_changes/release_count
-            metricsentry.save()
+        for release in library.releases.all():
+            total_breaking_changes += release.breaking_changes
+            total_non_breaking_changes += release.non_breaking_changes
+
+        metricsentry.breaking_changes = total_breaking_changes
+        metricsentry.non_breaking_changes = total_non_breaking_changes
+
+        if release_count == 0:
+            metricsentry.backwards_compatibility = -1
+        else:
+            metricsentry.backwards_compatibility = metricsentry.breaking_changes/release_count
+        metricsentry.save()
 
 def fillOverallScore():
 

@@ -78,8 +78,8 @@ class MetricsEntry(models.Model):
 	last_modification_dates = models.CharField(max_length=1000, default=0)
 	last_modification_date = models.DateTimeField(default=None,null=True, blank=True)
 	backwards_compatibility = models.FloatField(default=0)
-	breaking_changes = models.IntegerField(default=0,null=True)
-	non_breaking_changes = models.IntegerField(default=0,null=True)
+	breaking_changes = models.IntegerField(default=-1,null=True)
+	non_breaking_changes = models.IntegerField(default=-1,null=True)
 	last_discussed_so_dates = models.CharField(max_length=1000, default=0,null=True)
 	last_discussed_so = models.DateTimeField(default=None, null=True, blank=True)
 	license = models.CharField(max_length=100, default="None")
@@ -110,7 +110,7 @@ class LibraryRelease(models.Model):
 	library = models.ForeignKey(Library, on_delete=models.CASCADE, related_name='releases')
 	name = models.CharField(max_length=100)
 	release_date = models.DateTimeField()
-	breaking_changes = models.IntegerField(default=0)
+	breaking_changes = models.IntegerField(default=-1)
 	non_breaking_changes = models.IntegerField(default=-1, null=True)
 	class Meta:
 		db_table = "LibraryRelease"
