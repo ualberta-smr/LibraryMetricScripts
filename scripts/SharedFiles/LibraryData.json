@@ -58,7 +58,7 @@
    "Domain": "Logging",
    "FullRepoName": "pmwmedia/tinylog",
    "SOtags": "tinylog",
-   "Package": "org.pmw.tinylog",
+   "Package": "org.tinylog",
    "GitHubURL": "git://github.com/pmwmedia/tinylog.git",
    "JIRAURL": ""
  },
