@@ -17,6 +17,9 @@ today=$(date +'%m-%d-%Y')
 file_name="/home/webfiles/DBBackups/libcomp-bkp-${today}.sql"
 mysqldump --no-tablespaces --no-create-info --complete-insert --skip-triggers libcomp  Domain Library Issue Metric LibraryRelease MetricsEntry Chart ProjectType TeamType PluginUser PluginUser_groups PluginUser_projects PluginUser_teams PluginFeedback WebsiteFeedback > $file_name
 
+#pull latest repo changes
+git pull
+
 #invoke script
 mkdir -p logs
 
