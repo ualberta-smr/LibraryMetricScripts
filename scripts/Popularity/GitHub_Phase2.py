@@ -104,12 +104,16 @@ def search_top_repos():
     
     output_file = open(output_file_name, "w")  
     output_file.close()  
-    
+
+    int lib_counter = 1;    
     for keyword,repo in library_dict.items():  
       
+      if lib_counter % 10 == 0:
+         Common_Utilities.go_to_sleep("Sleeping after 10 libraries ", error_sleep)
       query = "\"import " + keyword + "\" "  + config_dict["IMPORT_SEARCH_QUERY"]  
       frequency = search_code_in_repo(query,github, quick_sleep, error_sleep, max_size, repo_array) 
       send_totals_to_file(output_file_name, repo, frequency )
+      lib_counter += 1
        
     print ("\n Finally ..... Execution is over \n")    
     
