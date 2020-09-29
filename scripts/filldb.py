@@ -20,8 +20,9 @@ def get_latest_metrics_entry(library):
 		metricsentry = MetricsEntry.objects.filter(library=library).latest('created_on')
 		return metricsentry
 	except:
-		#no entries found (shouldn't happen in real data)
-		print("ERROR: no metrics found for library, skipping it:", library.name)
+		# This occurs because it doesn’t find a metric entry. Popularity is the first metric to be entered
+		# If an entry was created today then it is used, otherwise it creates a new one
+		print("INFO: no previous metric entry found for library. Popularity will create a new entry")
 		return None
 
 def create_date_range(start_date, end_date):
