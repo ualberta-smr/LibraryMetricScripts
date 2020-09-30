@@ -80,7 +80,7 @@ class MetricsEntry(models.Model):
 	backwards_compatibility = models.FloatField(default=0)
 	breaking_changes = models.IntegerField(default=-1,null=True)
 	non_breaking_changes = models.IntegerField(default=-1,null=True)
-	last_discussed_so_dates = models.CharField(max_length=1000, default=0,null=True)
+	last_discussed_so_dates = models.CharField(max_length=1000, default=None,null=True)
 	last_discussed_so = models.DateTimeField(default=None, null=True, blank=True)
 	license = models.CharField(max_length=100, default="None")
 	overall_score = models.FloatField(default=0)

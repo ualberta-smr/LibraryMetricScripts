@@ -47,7 +47,7 @@ def count_breaking_changes(library):
         prev_release_dir = clone_release(library, prev_release)
 
         try:
-            breaking_chg_output = subprocess.check_output(["java", "-Xmx20g", "-Xms18g", "-jar", "scripts/BreakingChanges/BreakingChangesJava.jar", prev_release_dir, curr_release_dir])
+            breaking_chg_output = subprocess.check_output(["java", "-Xmx12g", "-Xms12g", "-jar", "scripts/BreakingChanges/BreakingChangesJava.jar", prev_release_dir, curr_release_dir])
         except subprocess.CalledProcessError as error:
             print (error.output)
             return

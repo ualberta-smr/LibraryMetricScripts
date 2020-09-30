@@ -56,21 +56,22 @@ def getLastDiscussedDates():
 
   for library in libraries:
     tag = library.so_tag
-    questions = so.questions(sort='creation', order='DESC', tagged=[tag,'java'])
+    if tag != "":
+      questions = so.questions(sort='creation', order='DESC', tagged=[tag,'java'])
 
-    dates_string = ""
-    for i in range(0, 10):
-      if questions == None or i >= len(questions):
-        break
-      if i > 0:
-        dates_string += ';'
-      dates_string += questions[i].creation_date.strftime("%m/%d/%Y, %H:%M:%S") + " UTC"
+      dates_string = ""
+      for i in range(0, 10):
+        if questions == None or i >= len(questions):
+          break
+        if i > 0:
+          dates_string += ';'
+        dates_string += questions[i].creation_date.strftime("%m/%d/%Y, %H:%M:%S") + " UTC"
 
-    if len(dates_string) == 0:
-      data[tag] = None
-    else:
-      data[tag] = dates_string
-    saveData(data)
+      if len(dates_string) == 0:
+        data[tag] = None
+      else:
+        data[tag] = dates_string
+      saveData(data)
 
 if __name__ == "__main__":
   getLastDiscussedDates()
