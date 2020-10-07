@@ -105,7 +105,7 @@ def search_top_repos():
     output_file = open(output_file_name, "w")  
     output_file.close()  
 
-    int lib_counter = 1;    
+    lib_counter = 1
     for keyword,repo in library_dict.items():  
       
       if lib_counter % 10 == 0:

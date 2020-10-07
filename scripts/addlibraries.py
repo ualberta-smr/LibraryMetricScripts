@@ -46,7 +46,7 @@ def addlibraries():
         library.github_repo = entry['FullRepoName']
         library.github_url = entry['GitHubURL']
         library.jira_url = entry['JIRAURL']
-        library.maven_url = entry['MavenURL']
+        library.maven_url = entry['MavenURL'] if 'MavenURL' in entry else ""
         library.save()
 
 if __name__ == "__main__":
