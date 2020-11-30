@@ -1,6 +1,5 @@
-'''
-This file is for the metric breaking changes. 
 
+'''
 It reads lib data from the DB and then calls the breaking changes java code
 from Laerte Xavier to calculate breaking changes between each pair of releases
 
@@ -43,14 +42,19 @@ def count_breaking_changes(library):
 
         print("Calculating for ", curr_release.name)
 
-        curr_release_dir = clone_release(library, curr_release)
-        prev_release_dir = clone_release(library, prev_release)
-
         try:
+            curr_release_dir = clone_release(library, curr_release)
+            prev_release_dir = clone_release(library, prev_release)
+
+        
             breaking_chg_output = subprocess.check_output(["java", "-Xmx20g", "-Xms18g", "-jar", "scripts/BreakingChanges/BreakingChangesJava.jar", prev_release_dir, curr_release_dir])
         except subprocess.CalledProcessError as error:
+            print("Skipping release", str(curr_release))
             print (error.output)
-            return
+            continue
+        except:
+            print("Something went wrong while cloning. Skipping release", str(curr_release))
+            continue
 
         changes = breaking_chg_output.decode().split(",")
         curr_release.breaking_changes = int(changes[0])
