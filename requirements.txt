@@ -10,3 +10,5 @@ python-dateutil>=2.8.1
 svglib>=1.0.0
 cairosvg
 gitpython
+mysqlclient>=1.4.6
+djangorestframework>=3.11
