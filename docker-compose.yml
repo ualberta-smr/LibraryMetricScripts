@@ -4,9 +4,11 @@ services:
     build:
       context: ..
       dockerfile: ./LibraryMetricScripts/docker/Dockerfile
+    stdin_open: true
+    tty: true
     container_name: "librarycomparison"
     volumes:
-      - "./LibraryMetricScripts/librarycomparison:/app"
+      - "./librarycomparisonswebsite/librarycomparison:/app"
     ports:
       - "8000:8000"
   db:
@@ -15,6 +17,5 @@ services:
       - "3306:3306"
     environment:
        MYSQL_DATABASE: "libcomp"
-       MYSQL_USER: "root"
        MYSQL_PASSWORD: "password"
        MYSQL_ROOT_PASSWORD: "password"
