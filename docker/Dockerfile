@@ -5,7 +5,7 @@ WORKDIR /main
 COPY ./LibraryMetricScripts /main/LibraryMetricScripts
 COPY ./librarycomparisonswebsite /main/librarycomparisonswebsite
 
-ENV PYTHONPATH="/main/scripts:${PYTHONPATH}"
+ENV PYTHONPATH="/main/LibraryMetricScripts/scripts:${PYTHONPATH}"
 
 RUN apt-get update; \
     apt-get -y install sudo; \
@@ -16,4 +16,4 @@ RUN apt-get update; \
     pip install --trusted-host pypi.python.org -r ./LibraryMetricScripts/requirements.txt; \
     pip install --trusted-host pypi.python.org -r ./librarycomparisonswebsite/requirements.txt;
 
-ENTRYPOINT [ "./LibraryMetricScripts/docker/start.sh" ]
+ENTRYPOINT [ "bash", "./LibraryMetricScripts/docker/start.sh" ]
