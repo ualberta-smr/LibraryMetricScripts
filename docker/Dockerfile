@@ -2,10 +2,9 @@ FROM python:3.8.0-slim
 
 WORKDIR /main
 
-COPY ./LibraryMetricScripts /main/LibraryMetricScripts
-COPY ./librarycomparisonswebsite /main/librarycomparisonswebsite
+COPY . /main
 
-ENV PYTHONPATH="/main/LibraryMetricScripts/scripts:${PYTHONPATH}"
+ENV PYTHONPATH="/main/scripts:${PYTHONPATH}"
 
 RUN apt-get update; \
     apt-get -y install sudo; \
@@ -13,7 +12,6 @@ RUN apt-get update; \
     gcc \
     default-mysql-client \
     default-mysql-server; \
-    pip install --trusted-host pypi.python.org -r ./LibraryMetricScripts/requirements.txt; \
-    pip install --trusted-host pypi.python.org -r ./librarycomparisonswebsite/requirements.txt;
+    pip install --trusted-host pypi.python.org -r requirements.txt;
 
-ENTRYPOINT [ "bash", "./LibraryMetricScripts/docker/start.sh" ]
+ENTRYPOINT [ "bash", "./docker/start.sh" ]

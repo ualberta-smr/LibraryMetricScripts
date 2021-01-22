@@ -1,21 +1,26 @@
 version: "3.9"
 services:
-  django-server:
+  metric-script:
+    network_mode: host
     build:
-      context: ..
-      dockerfile: ./LibraryMetricScripts/docker/Dockerfile
+      context: .
+      dockerfile: ./docker/Dockerfile
     stdin_open: true
     tty: true
-    container_name: "librarycomparison"
-    volumes:
-      - "./librarycomparisonswebsite/librarycomparison:/app"
-    ports:
-      - "8000:8000"
+    container_name: "metric-script"
   db:
+    network_mode: host
     image: mysql:latest
     ports:
       - "3306:3306"
     environment:
        MYSQL_DATABASE: "libcomp"
-       MYSQL_PASSWORD: "password"
-       MYSQL_ROOT_PASSWORD: "password"
+       MYSQL_PASSWORD: "enter pwd"
+       MYSQL_ROOT_PASSWORD: "enter pwd"
+  web:
+    network_mode: host
+    image: xiaolez/metricwebsite_should_work:latest
+    stdin_open: true
+    tty: true
+    ports:
+      - "8000:8000"
