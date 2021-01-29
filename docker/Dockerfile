@@ -11,7 +11,9 @@ RUN apt-get update; \
     sudo apt-get -y install default-libmysqlclient-dev \
     gcc \
     default-mysql-client \
-    default-mysql-server; \
+    default-mysql-server \
+    git \
+    libpangocairo-1.0-0; \
     pip install --trusted-host pypi.python.org -r requirements.txt;
 
 ENTRYPOINT [ "bash", "./docker/start.sh" ]
