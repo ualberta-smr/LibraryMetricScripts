@@ -7,7 +7,7 @@ You'll need to have Docker and Docker Compose installed.
 - You first need to set up some of the configuration parameters in the file `Config.json`:
 	- Change the value of `TOKEN` to your own GitHub generated token. ([How to create Github TOKEN](https://github.com/ualberta-smr/LibraryMetricScripts/wiki/Creating-access-tokens#github-token))
 	- Change the value of `SO_TOKEN` to your stack exchange key. ([How to create StackOverflow TOKEN](https://github.com/ualberta-smr/LibraryMetricScripts/wiki/Creating-access-tokens#stackoverflow-token))
-- Update the Database Host and Port in `settings.py`
+- Updates the Database Host and Port in `settings.py`.
 ```python
 DATABASES = {
     'default': {
@@ -22,6 +22,11 @@ DATABASES = {
 
 }
 ```
+- Updates hostname from `127.0.0.1` to `db` in updatemetrics.sh
+`mysqldump --no-tablespaces --no-create-info --complete-insert --skip-triggers  -h db --user=root -p libcomp Domain Library Issue Metric LibraryRelease MetricsEntry Chart ProjectType TeamType PluginUser PluginUser_groups PluginUser_projects PluginUser_teams PluginFeedback WebsiteFeedback > $file_name`
+
+- You can update the `MAXSIZE` to 100 in `Config.json` for testing purpose.
+
 ## Creating the image
 
 1. Builds/Rebuilds the image (not start the containers) in the docker-compose.yml file:
@@ -53,6 +58,7 @@ docker exec -it librarycomparisons_web sh ./start.sh
 -   `make`: Runs Django makemigrations
 -   `createsuperuser`: Runs Django createsuperuser
 
+To access the website, use http://127.0.0.1:8000/comparelibraries/
 
 3. Stops containers and removes containers, networks, volumes, and images created by up
 
