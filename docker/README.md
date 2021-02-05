@@ -35,23 +35,16 @@ DATABASES = {
 docker-compose build --no-cache
 ```
 
-2. Starts the containers
-**Run database:** (Setup db before web)
-```
-docker-compose up db
-```
-**Run metric script and librarycomparisons website:**
-```
-docker-compose up -d
-```
+2. Starts the containers (open both metric-script and web)
 **Open metric script command shell:**
 ```
-docker exec -it metric-script sh ./docker/start.sh
+docker-compose run metric-script
 ```
 -   `updatemetrics`: Update the Metrics (password for root user is `enter pwd`)
-**Open librarycomparisons website command shell:**
+
+**Open librarycomparisons website command shell (Another Tab):**
 ```
-docker exec -it librarycomparisons_web sh ./start.sh
+docker-compose up -d && docker exec -it librarycomparisons_web sh ./start.sh
 ```
 -   `start`: Starts the Django server. The librarycomparison web will run in the `8000` port by default. 
 -   `migrate`: Runs Django migrations
