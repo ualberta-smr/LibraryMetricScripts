@@ -7,24 +7,28 @@ services:
     restart: always
     stdin_open: true
     tty: true
+    volumes:
+      - shared_data:/home/scripts
     container_name: "metric-script"
     depends_on:
       - "db"
   web:
-    image: xiaolez/librarycomparisons_web:latest
+    image: ualbertasmr/librarycomparisons_web:latest
     hostname: web
     restart: always
     stdin_open: true
     tty: true
     ports:
       - "8000:8000"
+    volumes:
+      - shared_data:/home/scripts
     networks:
       default:
     container_name: "librarycomparisons_web"
     depends_on:
       - "db"
   db:
-    image: xiaolez/librarycomparisons_db:latest
+    image: ualbertasmr/librarycomparisons_db:latest
     hostname: db
     restart: always
     command: 
@@ -44,6 +48,7 @@ services:
 
 volumes:
   db_data:
+  shared_data:
 
 networks:
   default:
