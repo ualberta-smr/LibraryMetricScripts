@@ -11,13 +11,13 @@ echo "Starting to update metrics at $now..."
 
 echo "Backing up database first ... "
 
-mkdir -p ../home/DBBackups
+mkdir -p ~/DBBackups
 
 today=$(date +'%m-%d-%Y')
 file_name="/home/webfiles/DBBackups/libcomp-bkp-${today}.sql"
-mysqldump --no-tablespaces --no-create-info --complete-insert --skip-triggers libcomp  Domain Library Issue Metric LibraryRelease MetricsEntry Chart ProjectType TeamType PluginUser PluginUser_groups PluginUser_projects PluginUser_teams PluginFeedback WebsiteFeedback > $file_name	mysqldump --no-tablespaces --no-create-info --complete-insert --skip-triggers  -h 127.0.0.1 --user=root -p libcomp Domain Library Issue Metric LibraryRelease MetricsEntry Chart ProjectType TeamType PluginUser PluginUser_groups PluginUser_projects PluginUser_teams PluginFeedback WebsiteFeedback > $file_name
+mysqldump --no-tablespaces --no-create-info --complete-insert --skip-triggers libcomp  Domain Library Issue Metric LibraryRelease MetricsEntry Chart ProjectType TeamType PluginUser PluginUser_groups PluginUser_projects PluginUser_teams PluginFeedback WebsiteFeedback > $file_name
 
-#pull latest repo changes	
+#pull latest repo changes
 git pull
 
 #pull latest repo changes but stash first to maintain config changes
