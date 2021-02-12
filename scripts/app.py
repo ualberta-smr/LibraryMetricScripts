@@ -30,8 +30,8 @@ def run():
     getLicenses()
     getLastModificationDates()
     getLastDiscussedDates()
-    # get_issues()
-    # get_breaking_changes() #must be called after releases are fetched so after release frequency metric
+    get_issues()
+    get_breaking_changes() #must be called after releases are fetched so after release frequency metric
  
     config_dict = Common_Utilities.read_config_file()
     output_path = config_dict["OUTPUT_PATH"]
@@ -47,7 +47,7 @@ def run():
     for file in glob.glob(r'scripts/LastDiscussedOnStackOverflow/*.pkl'):
         shutil.copy2(file, output_path)
 
-    # filldb()
+    filldb()
 
     try:
         os.mkdir(output_path + "charts")
