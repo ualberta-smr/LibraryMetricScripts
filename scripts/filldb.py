@@ -11,8 +11,13 @@ from scripts.CommonUtilities import Common_Utilities
 import traceback
 import pytz
 
+global output_path
+config_dict = Common_Utilities.read_config_file()
+output_path = config_dict["OUTPUT_PATH"]
+
 def saveData(data, filename):
-  with open("scripts/" + filename, 'wb') as output:
+  global output_path
+  with open(output_path + filename, 'wb') as output:
     pickle.dump(data, output, pickle.DEFAULT_PROTOCOL)
 
 def get_latest_metrics_entry(library):
@@ -413,7 +418,8 @@ def create_issue_classification_chart(domain):
 	save_chart_in_db(line_chart,domain, metric_name="issue classification")
 
 def fillPopularityData():
-  with open("scripts/popularity_results.txt") as f:
+  global output_path
+  with open(output_path + "popularity_results.txt") as f:
     lines = f.readlines()
   lines = [x.strip() for x in lines]
   for line in lines:
