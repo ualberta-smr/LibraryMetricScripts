@@ -9,6 +9,7 @@ from sklearn.naive_bayes import MultinomialNB
 from github import Github, Repository
 import string
 
+nltk.download('punkt')
 stemmer = PorterStemmer()
 
 def stem_words(tokens):
