@@ -41,7 +41,7 @@ docker-compose run metric-script
 -   `updatemetrics`: Update the Metrics (password for root user is `enter pwd`)
 **Open librarycomparisons website command shell:**
 ```
-docker-compose run web
+docker-compose run --service-ports web
 ```
 -   `start`: Starts the Django server. The librarycomparison web will run in the `8000` port by default. 
 -   `migrate`: Runs Django migrations
