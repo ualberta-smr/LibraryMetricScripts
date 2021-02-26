@@ -7,6 +7,7 @@ You'll need to have Docker and Docker Compose installed.
 - You first need to set up some of the configuration parameters in the file `Config.json`:
 	- Change the value of `TOKEN` to your own GitHub generated token. ([How to create Github TOKEN](https://github.com/ualberta-smr/LibraryMetricScripts/wiki/Creating-access-tokens#github-token))
 	- Change the value of `SO_TOKEN` to your stack exchange key. ([How to create StackOverflow TOKEN](https://github.com/ualberta-smr/LibraryMetricScripts/wiki/Creating-access-tokens#stackoverflow-token))
+    - Change `"OUTPUT_PATH"` to  `"../home/scripts/"`.
 - Updates the Database Host and Port in `settings.py`.
 ```python
 DATABASES = {
