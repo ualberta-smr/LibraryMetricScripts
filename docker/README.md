@@ -32,17 +32,9 @@ docker-compose build --no-cache
 ```
 
 2. Starts the containers
-**Run database:** (Setup db before web)
+**Run metric script:**
 ```
-docker-compose up db
-```
-**Run metric script and librarycomparisons website:**
-```
-docker-compose up -d
-```
-**Open metric script command shell:**
-```
-docker-compose run script
+docker-compose run metric-script
 ```
 -   `createmetrics`: Create the Metrics
 -   `updatemetrics`: Update the Metrics (password for root user is `enter pwd`)
