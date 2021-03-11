@@ -28,6 +28,7 @@ docker-compose up
 docker-compose run metric-script
 ```
 -   `createmetrics`: Create the Metrics
+
 **(Optional) Open librarycomparisons website command shell:**
 ```
 docker-compose run --service-ports web
@@ -39,7 +40,7 @@ docker-compose run --service-ports web
 
 To access the website, use http://127.0.0.1:8000/comparelibraries/
 
-### ### 3. Stops containers and removes containers, networks, volumes, and images created by up
+### 3. Stops containers and removes containers, networks, volumes, and images created by up
 
 ```
 docker-compose down
