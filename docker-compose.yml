@@ -36,6 +36,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
+      - ./database:/docker-entrypoint-initdb.d
       - db_data:/var/lib/mysql
     networks:
       default:
@@ -43,8 +44,8 @@ services:
       MYSQL_HOST: localhost 
       MYSQL_PORT: 3306
       MYSQL_DATABASE: "libcomp"
-      MYSQL_PASSWORD: "enter pwd"
-      MYSQL_ROOT_PASSWORD: "enter pwd"
+      MYSQL_PASSWORD: "mypwd"
+      MYSQL_ROOT_PASSWORD: "mypwd"
 
 volumes:
   db_data:

@@ -85,9 +85,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',        
         'NAME': 'libcomp',
         'USER': 'root',
-        # 'HOST': 'db',
-        # 'PORT' : 3306,
-        'PASSWORD': 'enter pwd'
+        'HOST': 'db',
+        'PORT' : 3306,
+        'PASSWORD': 'mypwd'
     }
 
 }
