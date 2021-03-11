@@ -8,38 +8,27 @@ You'll need to have Docker and Docker Compose installed.
 	- Change the value of `TOKEN` to your own GitHub generated token. ([How to create Github TOKEN](https://github.com/ualberta-smr/LibraryMetricScripts/wiki/Creating-access-tokens#github-token))
 	- Change the value of `SO_TOKEN` to your stack exchange key. ([How to create StackOverflow TOKEN](https://github.com/ualberta-smr/LibraryMetricScripts/wiki/Creating-access-tokens#stackoverflow-token))
     - Change `"OUTPUT_PATH"` to  `"../home/scripts/"`.
-- Updates the Database Host and Port in `settings.py`.
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',        
-        'NAME': 'libcomp',
-        'USER': 'root',
-        'HOST': 'db',
-        'PORT' : 3306,
-     	'PASSWORD': 'enter pwd',
-    }
-}
-```
 
 - You can update the `MAXSIZE` to 100 in `Config.json` for testing purpose.
 
 ## Creating the image
-
-1. Builds/Rebuilds the image (not start the containers) in the docker-compose.yml file:
+### 1. Builds/Rebuilds the image (not start the containers) in the docker-compose.yml file:
 
 ```
 docker-compose build --no-cache
 ```
 
-2. Starts the containers
+### 2. Starts the containers
+**Starts the containers && Start the server**
+```
+docker-compose up
+```
 **Run metric script:**
 ```
 docker-compose run metric-script
 ```
 -   `createmetrics`: Create the Metrics
--   `updatemetrics`: Update the Metrics (password for root user is `enter pwd`)
-**Open librarycomparisons website command shell:**
+**(Optional) Open librarycomparisons website command shell:**
 ```
 docker-compose run --service-ports web
 ```
@@ -50,8 +39,44 @@ docker-compose run --service-ports web
 
 To access the website, use http://127.0.0.1:8000/comparelibraries/
 
-3. Stops containers and removes containers, networks, volumes, and images created by up
+### ### 3. Stops containers and removes containers, networks, volumes, and images created by up
 
 ```
 docker-compose down
+```
+Remove volume: `docker-compose down -v`. Warning: this will permanently delete the contents in the db_data volume, wiping out any previous database you had there
+
+### 4. Setup Metric Table if you create the docker volumn for the first time
+```
+docker exec  librarymetricscripts_db_1 /bin/sh -c  'mysql -uroot -p"mypwd"  libcomp  < docker-entrypoint-initdb.d/metric-setup.sql'
+```
+
+## Accessing docker container mysql databases
+1. docker exec -it MyContainer mysql -uroot -pMyPassword
+eg: `docker exec -it librarymetricscripts_db_1 mysql -uroot -p"mypwd"`
+2. Show MySQL Databases: `show databases;`
+```
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| libcomp            |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+```
+3. Show MySQL Tables: 
+```
+use libcomp;
+show tables;
+```
+4. Show Table's schema
+```
+describe libcomp.Metric;
+```
+5. Show the values of Metric table
+```
+select * from libcomp.Metric;
 ```
