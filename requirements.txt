@@ -12,3 +12,4 @@ cairosvg
 gitpython
 mysqlclient>=1.4.6
 djangorestframework>=3.11
+beautifulsoup4>=4.9.3

@@ -10,6 +10,7 @@ import pickle
 from scripts.CommonUtilities import Common_Utilities
 import traceback
 import pytz
+import locale
 
 def saveData(data, filename):
   with open("scripts/" + filename, 'wb') as output:
@@ -428,7 +429,7 @@ def fillPopularityData():
     if metricsentry == None or metricsentry.created_on.date() != datetime.today().date():
         metricsentry = MetricsEntry()
         metricsentry.library = library
-        metricsentry.popularity = int(popularity)
+        metricsentry.popularity = locale.atoi(popularity)
         metricsentry.save()
     else:
         print("DID NOT CREATE new entry for:", library.name)
@@ -637,7 +638,7 @@ def filldb():
 	fillPopularityData()
 	print("Calculating release frequency...")
 	calculateReleaseFrequency()
-	print("Calculating breaking changes...")
+	print("Filling breaking changes...")
 	fillBreakingChanges()
 	print("Filling last modification data...")
 	fillLastModificationDateData()
@@ -645,7 +646,7 @@ def filldb():
 	fillLastDiscussedSOData()
 	print("Filling license data...")
 	fillLicenseData()
-	print("Calculating issue data...")
+	print("Filling issue data...")
 	fillIssueData()
 	print("Calculating overall score...")
 	fillOverallScore()
