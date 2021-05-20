@@ -62,10 +62,10 @@
  {
    "LibraryName": "tinylog",
    "Domain": "Logging",
-   "FullRepoName": "pmwmedia/tinylog",
+   "FullRepoName": "tinylog-org/tinylog",
    "SOtags": "tinylog",
    "Package": "org.tinylog",
-   "GitHubURL": "git://github.com/pmwmedia/tinylog.git",
+   "GitHubURL": "git://github.com/tinylog-org/tinylog.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.tinylog/tinylog"
  },
@@ -172,10 +172,10 @@
  {
    "LibraryName": "conceal",
    "Domain": "Cryptography",
-   "FullRepoName": "facebook/conceal",
+   "FullRepoName": "facebookarchive/conceal",
    "SOtags": "facebook-conceal",
    "Package": "com.facebook.crypto",
-   "GitHubURL": "git://github.com/facebook/conceal.git",
+   "GitHubURL": "git://github.com/facebookarchive/conceal.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.facebook.conceal/conceal"
  },
@@ -432,10 +432,10 @@
  {
    "LibraryName": "jcommon",
    "Domain": "Collections",
-   "FullRepoName": "facebook/jcommon",
+   "FullRepoName": "facebookarchive/jcommon",
    "SOtags": "facebook-jcommon",
    "Package": "com.facebook.util",
-   "GitHubURL": "git://github.com/facebook/jcommon.git",
+   "GitHubURL": "git://github.com/facebookarchive/jcommon.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.facebook.jcommon/util"
  },
