@@ -10,7 +10,6 @@ import pickle
 from scripts.CommonUtilities import Common_Utilities
 import traceback
 import pytz
-import locale
 
 def saveData(data, filename):
   with open("scripts/" + filename, 'wb') as output:
@@ -429,7 +428,7 @@ def fillPopularityData():
     if metricsentry == None or metricsentry.created_on.date() != datetime.today().date():
         metricsentry = MetricsEntry()
         metricsentry.library = library
-        metricsentry.popularity = locale.atoi(popularity)
+        metricsentry.popularity = int(popularity.replace(',', ''))
         metricsentry.save()
     else:
         print("DID NOT CREATE new entry for:", library.name)
