@@ -180,16 +180,6 @@
    "MavenURL":"https://mvnrepository.com/artifact/com.facebook.conceal/conceal"
  },
  {
-   "LibraryName": "chimera",
-   "Domain": "Cryptography",
-   "FullRepoName": "intel-hadoop/chimera",
-   "SOtags": "intel-chimera",
-   "Package": "com.intel.chimera",
-   "GitHubURL": "git://github.com/intel-hadoop/chimera.git",
-   "JIRAURL": "",
-   "MavenURL":"https://mvnrepository.com/artifact/com.intel.chimera/chimera"
- },
- {
    "LibraryName": "spongycastle",
    "Domain": "Cryptography",
    "FullRepoName": "rtyley/spongycastle",
