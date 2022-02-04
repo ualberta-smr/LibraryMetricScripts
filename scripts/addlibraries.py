@@ -49,5 +49,15 @@ def addlibraries():
         library.maven_url = entry['MavenURL']
         library.save()
 
+    #remove any libraries in the DB that are not in the config file (i.e., sync file and DB lib list)
+    libraries_to_consider = [entry['LibraryName'] for entry in libraries]
+
+    for library in Library.objects.all():
+        if library.name in libraries_to_consider:
+            continue
+        else:
+            print("Library ", library.name, " no longer exists in config file. Removing its data")
+            library.delete()
+
 if __name__ == "__main__":
     addlibraries()
