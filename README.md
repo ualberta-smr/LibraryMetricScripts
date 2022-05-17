@@ -21,8 +21,8 @@ Each script describes its input and output.
 If you would like to get updated metric data, for the same list of libraries we have (found in `SharedFiles/LibraryData.json`, please follow the following steps:
 
 - You first need to set up some of the configuration parameters in the file `Config.json`:
-	- Change the value of `TOKEN` to your own GitHub generated token.
-	- Change the value of `SO_TOKEN` to your stack exchange key. 
+	- Change the value of `TOKEN` to your own GitHub generated token. ([How to create Github TOKEN](https://github.com/ualberta-smr/LibraryMetricScripts/wiki/Creating-access-tokens#github-token))
+	- Change the value of `SO_TOKEN` to your stack exchange key. ([How to create StackOverflow TOKEN](https://github.com/ualberta-smr/LibraryMetricScripts/wiki/Creating-access-tokens#stackoverflow-token))
 - You also need to set a DB to fill with the results of running the script. You will need to create a MySQL database (we call ours libcomp). In the `librarycomparison/settings.py`, change the username, database name, and password in the `DATABASE` information to that of your created database. Afterwards run `python3 manage.py makemigrations` and then `python3 manage.py migrate`. This will create the database schema for you. See notes below about the database schema.
 - Run `python3 -m scripts` from within the main repo directory which will call all the metric scripts. This script runs all metrics and fills the MySQL database with all the results from all scripts.  
 

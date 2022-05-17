@@ -8,5 +8,6 @@
         "MAXSIZE": "1000",
         "POPULARITY_OUTPUT_FILE":"scripts/Popularity/popularity_results.txt",
         "TIME_SPAN":"365",
-        "SO_TOKEN":"enter your SO token"
+        "SO_TOKEN":"enter your SO token",
+        "OUTPUT_PATH": "../home/scripts/"
     }

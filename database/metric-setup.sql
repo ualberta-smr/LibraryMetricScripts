@@ -1,0 +1,10 @@
+use libcomp;
+alter table Metric add unique (name);
+insert into Metric(name) value("popularity");
+insert into Metric(name) value("release frequency");
+insert into Metric(name) value("last discussed on so");
+insert into Metric(name) value("last modification date");
+insert into Metric(name) value("breaking changes");
+insert into Metric(name) value("issue response");
+insert into Metric(name) value("issue closing");
+insert into Metric(name) value("issue classification");
