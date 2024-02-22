@@ -28,6 +28,8 @@ def get_num_dependents(repo):
 		return 0
 
 	dependents = soup.find('a', href= dependent_href) #returns, for example, "1,234,000 Repositories"
+	if dependents == None:
+		return 0
 	#regex from https://www.regexpal.com/98336
 	num_dependents = re.search(r'(\d{0,3},)?(\d{3},)?\d{0,3}', dependents.text.strip()).group(0)
 	print(num_dependents)
