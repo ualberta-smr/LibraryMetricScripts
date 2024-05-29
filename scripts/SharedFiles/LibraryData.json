@@ -5,7 +5,7 @@
    "FullRepoName": "junit-team/junit4",
    "SOtags": "junit",
    "Package": "org.junit",
-   "GitHubURL": "git://github.com/junit-team/junit4.git",
+   "GitHubURL": "git@github.com:junit-team/junit4.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/junit/junit"
  },
@@ -15,7 +15,7 @@
    "FullRepoName": "cbeust/testng",
    "SOtags": "testng",
    "Package": "org.testng",
-   "GitHubURL": "git://github.com/cbeust/testng.git",
+   "GitHubURL": "git@github.com:cbeust/testng.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.testng/testng"
  },
@@ -25,7 +25,7 @@
    "FullRepoName": "qos-ch/slf4j",
    "SOtags": "slf4j",
    "Package": "org.slf4j",
-   "GitHubURL": "git://github.com/qos-ch/slf4j.git",
+   "GitHubURL": "git@github.com:qos-ch/slf4j.git",
    "JIRAURL": "https://jira.qos.ch/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+SLF4J+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/org.slf4j/slf4j-api"
  },
@@ -35,7 +35,7 @@
    "FullRepoName": "apache/logging-log4j2",
    "SOtags": "log4j",
    "Package": "org.apache.log4j",
-   "GitHubURL": "git://github.com/apache/logging-log4j2.git",
+   "GitHubURL": "git@github.com:apache/logging-log4j2.git",
    "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+LOG4J2+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=created&field=reporter&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/log4j/log4j"
  },
@@ -45,7 +45,7 @@
    "FullRepoName": "qos-ch/logback",
    "SOtags": "logback",
    "Package": "ch.qos.logback",
-   "GitHubURL": "git://github.com/qos-ch/logback.git",
+   "GitHubURL": "git@github.com:qos-ch/logback.git",
    "JIRAURL": "https://jira.qos.ch/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+LOGBACK+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/ch.qos.logback/logback-classic"
  },
@@ -55,7 +55,7 @@
    "FullRepoName": "apache/commons-logging",
    "SOtags": "apache-commons-logging",
    "Package": "org.apache.commons.logging",
-   "GitHubURL": "git://github.com/apache/commons-logging.git",
+   "GitHubURL": "git@github.com:apache/commons-logging.git",
    "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+LOGGING+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/commons-logging/commons-logging"
  },
@@ -65,7 +65,7 @@
    "FullRepoName": "tinylog-org/tinylog",
    "SOtags": "tinylog",
    "Package": "org.tinylog",
-   "GitHubURL": "git://github.com/tinylog-org/tinylog.git",
+   "GitHubURL": "git@github.com:tinylog-org/tinylog.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.tinylog/tinylog"
  },
@@ -75,7 +75,7 @@
    "FullRepoName": "Netflix/blitz4j",
    "SOtags": "blitz4j",
    "Package": "com.netflix.blitz4j",
-   "GitHubURL": "git://github.com/Netflix/blitz4j.git",
+   "GitHubURL": "git@github.com:Netflix/blitz4j.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.netflix.blitz4j/blitz4j"
  },
@@ -85,7 +85,7 @@
    "FullRepoName": "EsotericSoftware/minlog",
    "SOtags": "minlog",
    "Package": "com.esotericsoftware.minlog",
-   "GitHubURL": "git://github.com/EsotericSoftware/minlog.git",
+   "GitHubURL": "git@github.com:EsotericSoftware/minlog.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.esotericsoftware/minlog"
  },
@@ -95,7 +95,7 @@
    "FullRepoName": "google/guava",
    "SOtags": "guava",
    "Package": "com.google.common",
-   "GitHubURL": "git://github.com/google/guava.git",
+   "GitHubURL": "git@github.com:google/guava.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.google.guava/guava"
  },
@@ -105,7 +105,7 @@
    "FullRepoName": "apache/commons-lang",
    "SOtags": "apache-commons-lang",
    "Package": "org.apache.commons.lang",
-   "GitHubURL": "git://github.com/apache/commons-lang.git",
+   "GitHubURL": "git@github.com:apache/commons-lang.git",
    "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+LANG+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/org.apache.commons/commons-lang3"
  },
@@ -115,7 +115,7 @@
    "FullRepoName": "mockito/mockito",
    "SOtags": "mockito",
    "Package": "org.mockito",
-   "GitHubURL": "git://github.com/mockito/mockito.git",
+   "GitHubURL": "git@github.com:mockito/mockito.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.mockito/mockito-core"
  },
@@ -125,7 +125,7 @@
    "FullRepoName": "easymock/easymock",
    "SOtags": "easymock",
    "Package": "org.easymock",
-   "GitHubURL": "git://github.com/easymock/easymock.git",
+   "GitHubURL": "git@github.com:easymock/easymock.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.easymock/easymock"
  },
@@ -135,7 +135,7 @@
    "FullRepoName": "powermock/powermock",
    "SOtags": "powermock",
    "Package": "org.powermock",
-   "GitHubURL": "git://github.com/powermock/powermock.git",
+   "GitHubURL": "git@github.com:powermock/powermock.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.powermock/powermock-module-junit4"
  },
@@ -145,7 +145,7 @@
    "FullRepoName": "jmock-developers/jmock-library",
    "SOtags": "jmock",
    "Package": "org.jmock",
-   "GitHubURL": "git://github.com/jmock-developers/jmock-library.git",
+   "GitHubURL": "git@github.com:jmock-developers/jmock-library.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.jmock/jmock"
  },
@@ -155,7 +155,7 @@
    "FullRepoName": "bcgit/bc-java",
    "SOtags": "bouncycastle",
    "Package": "org.bouncycastle",
-   "GitHubURL": "git://github.com/bcgit/bc-java.git",
+   "GitHubURL": "git@github.com:bcgit/bc-java.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.bouncycastle"
  },
@@ -165,7 +165,7 @@
    "FullRepoName": "apache/commons-crypto",
    "SOtags": "apache-commons-crypto",
    "Package": "org.apache.commons.crypto",
-   "GitHubURL": "git://github.com/apache/commons-crypto.git",
+   "GitHubURL": "git@github.com:apache/commons-crypto.git",
    "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+CRYPTO+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/org.apache.commons/commons-crypto"
  },
@@ -175,7 +175,7 @@
    "FullRepoName": "facebookarchive/conceal",
    "SOtags": "facebook-conceal",
    "Package": "com.facebook.crypto",
-   "GitHubURL": "git://github.com/facebookarchive/conceal.git",
+   "GitHubURL": "git@github.com:facebookarchive/conceal.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.facebook.conceal/conceal"
  },
@@ -185,7 +185,7 @@
    "FullRepoName": "rtyley/spongycastle",
    "SOtags": "spongycastle",
    "Package": "org.spongycastle",
-   "GitHubURL": "git://github.com/rtyley/spongycastle.git",
+   "GitHubURL": "git@github.com:rtyley/spongycastle.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.madgag.spongycastle/core"
  },
@@ -195,7 +195,7 @@
    "FullRepoName": "google/keyczar",
    "SOtags": "keyczar",
    "Package": "org.keyczar",
-   "GitHubURL": "git://github.com/google/keyczar.git",
+   "GitHubURL": "git@github.com:google/keyczar.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.keyczar/keyczar"
  },
@@ -205,7 +205,7 @@
    "FullRepoName": "google/conscrypt",
    "SOtags": "conscrypt",
    "Package": "com.android.org.conscrypt",
-   "GitHubURL": "git://github.com/google/conscrypt.git",
+   "GitHubURL": "git@github.com:google/conscrypt.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.conscrypt/conscrypt-android"
  },
@@ -215,7 +215,7 @@
    "FullRepoName": "google/gson",
    "SOtags": "gson",
    "Package": "com.google.gson",
-   "GitHubURL": "git://github.com/google/gson.git",
+   "GitHubURL": "git@github.com:google/gson.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.google.code.gson/gson"
  },
@@ -225,7 +225,7 @@
    "FullRepoName": "fangyidong/json-simple",
    "SOtags": "json-simple",
    "Package": "org.json.simple",
-   "GitHubURL": "git://github.com/fangyidong/json-simple.git",
+   "GitHubURL": "git@github.com:fangyidong/json-simple.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple"
  },
@@ -235,7 +235,7 @@
    "FullRepoName": "h2database/h2database",
    "SOtags": "h2",
    "Package": "org.h2",
-   "GitHubURL": "git://github.com/h2database/h2database.git",
+   "GitHubURL": "git@github.com:h2database/h2database.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.h2database/h2"
  },
@@ -245,7 +245,7 @@
    "FullRepoName": "w11k/lsql",
    "SOtags": "lsql",
    "Package": "com.w11k.lsql",
-   "GitHubURL": "git://github.com/w11k/lsql.git",
+   "GitHubURL": "git@github.com:w11k/lsql.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.apache.spark/spark-sql"
  },
@@ -255,7 +255,7 @@
    "FullRepoName": "apache/derby",
    "SOtags": "derby",
    "Package": "org.apache.derby",
-   "GitHubURL": "git://github.com/apache/derby.git",
+   "GitHubURL": "git@github.com:apache/derby.git",
    "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+DERBY+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/org.apache.derby/derby"
  },
@@ -265,7 +265,7 @@
    "FullRepoName": "apache/shiro",
    "SOtags": "shiro",
    "Package": "org.apache.shiro",
-   "GitHubURL": "git://github.com/apache/shiro.git",
+   "GitHubURL": "git@github.com:apache/shiro.git",
    "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+SHIRO+AND+issuetype+%3D+Bug+ORDER+BY+key+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/org.apache.shiro/shiro-core"
  },
@@ -275,7 +275,7 @@
    "FullRepoName": "spring-projects/spring-security",
    "SOtags": "spring-security",
    "Package": "org.springframework.security",
-   "GitHubURL": "git://github.com/spring-projects/spring-security.git",
+   "GitHubURL": "git@github.com:spring-projects/spring-security.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.springframework.security/spring-security-core"
  },
@@ -285,7 +285,7 @@
    "FullRepoName": "hibernate/hibernate-orm",
    "SOtags": "hibernate",
    "Package": "org.hibernate",
-   "GitHubURL": "git://github.com/hibernate/hibernate-orm.git",
+   "GitHubURL": "git@github.com:hibernate/hibernate-orm.git",
    "JIRAURL": "https://hibernate.atlassian.net/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+HHH+AND+issuetype+%3D+Bug+order+by+created+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core"
  },
@@ -295,7 +295,7 @@
    "FullRepoName": "mybatis/mybatis-3",
    "SOtags": "mybatis",
    "Package": "org.apache.ibatis",
-   "GitHubURL": "git://github.com/mybatis/mybatis-3.git",
+   "GitHubURL": "git@github.com:mybatis/mybatis-3.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.mybatis/mybatis"
  },
@@ -305,7 +305,7 @@
    "FullRepoName": "j256/ormlite-android",
    "SOtags": "ormlite",
    "Package": "com.j256.ormlite",
-   "GitHubURL": "git://github.com/j256/ormlite-android.git",
+   "GitHubURL": "git@github.com:j256/ormlite-android.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.j256.ormlite/ormlite-android"
  },
@@ -315,7 +315,7 @@
    "FullRepoName": "apache/xerces2-j",
    "SOtags": "xerces2-j",
    "Package": "org.apache.xerces",
-   "GitHubURL": "git://github.com/apache/xerces2-j.git",
+   "GitHubURL": "git@github.com:apache/xerces2-j.git",
    "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+XERCESJ+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/xerces/xercesImpl"
  },
@@ -325,7 +325,7 @@
    "FullRepoName": "dom4j/dom4j",
    "SOtags": "dom4j",
    "Package": "org.dom4j",
-   "GitHubURL": "git://github.com/dom4j/dom4j.git",
+   "GitHubURL": "git@github.com:dom4j/dom4j.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/dom4j/dom4j"
  },
@@ -335,7 +335,7 @@
    "FullRepoName": "hunterhacker/jdom",
    "SOtags": "jdom",
    "Package": "org.jdom",
-   "GitHubURL": "git://github.com/hunterhacker/jdom.git",
+   "GitHubURL": "git@github.com:hunterhacker/jdom.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.jdom/jdom"
  },
@@ -345,7 +345,7 @@
    "FullRepoName": "vert-x3/vertx-mail-client",
    "SOtags": "vertx-mail-client",
    "Package": "io.vertx.ext.mail",
-   "GitHubURL": "git://github.com/vert-x3/vertx-mail-client.git",
+   "GitHubURL": "git@github.com:vert-x3/vertx-mail-client.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/io.vertx/vertx-mail-client"
  },
@@ -355,7 +355,7 @@
    "FullRepoName": "apache/commons-email",
    "SOtags": "apache-commons-email",
    "Package": "org.apache.commons.mail",
-   "GitHubURL": "git://github.com/apache/commons-email.git",
+   "GitHubURL": "git@github.com:apache/commons-email.git",
    "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+EMAIL+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/org.apache.commons/commons-email"
  },
@@ -365,7 +365,7 @@
    "FullRepoName": "apache/commons-collections",
    "SOtags": "apache-commons-collection",
    "Package": "org.apache.commons.collections",
-   "GitHubURL": "git://github.com/apache/commons-collections.git",
+   "GitHubURL": "git@github.com:apache/commons-collections.git",
    "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+COLLECTIONS+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/org.apache.commons/commons-collections4"
  },
@@ -375,7 +375,7 @@
    "FullRepoName": "vigna/fastutil",
    "SOtags": "fastutil",
    "Package": "it.unimi.dsi.fastutil",
-   "GitHubURL": "git://github.com/vigna/fastutil.git",
+   "GitHubURL": "git@github.com:vigna/fastutil.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/it.unimi.dsi/fastutil"
  },
@@ -385,7 +385,7 @@
    "FullRepoName": "jankotek/mapdb",
    "SOtags": "mapdb",
    "Package": "org.mapdb",
-   "GitHubURL": "git://github.com/jankotek/mapdb.git",
+   "GitHubURL": "git@github.com:jankotek/mapdb.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.mapdb/mapdb"
  },
@@ -395,7 +395,7 @@
    "FullRepoName": "carrotsearch/hppc",
    "SOtags": "hppc",
    "Package": "com.carrotsearch.hppc",
-   "GitHubURL": "git://github.com/carrotsearch/hppc.git",
+   "GitHubURL": "git@github.com:carrotsearch/hppc.git",
    "JIRAURL": "https://issues.carrot2.org/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+HPPC+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/com.carrotsearch/hppc"
  },
@@ -405,7 +405,7 @@
    "FullRepoName": "stephenc/high-scale-lib",
    "SOtags": "high-scale-lib",
    "Package": "org.cliffc.high_scale_lib",
-   "GitHubURL": "git://github.com/stephenc/high-scale-lib.git",
+   "GitHubURL": "git@github.com:stephenc/high-scale-lib.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.github.stephenc.high-scale-lib/high-scale-lib"
  },
@@ -415,7 +415,7 @@
    "FullRepoName": "eclipse/eclipse-collections",
    "SOtags": "eclipse-collections",
    "Package": "org.eclipse.collections",
-   "GitHubURL": "git://github.com/eclipse/eclipse-collections.git",
+   "GitHubURL": "git@github.com:eclipse/eclipse-collections.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.eclipse.collections/eclipse-collections"
  },
@@ -425,7 +425,7 @@
    "FullRepoName": "facebookarchive/jcommon",
    "SOtags": "facebook-jcommon",
    "Package": "com.facebook.util",
-   "GitHubURL": "git://github.com/facebookarchive/jcommon.git",
+   "GitHubURL": "git@github.com:facebookarchive/jcommon.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.facebook.jcommon/util"
  },
@@ -435,7 +435,7 @@
    "FullRepoName": "haifengl/smile",
    "SOtags": "smile",
    "Package": "smile",
-   "GitHubURL": "git://github.com/haifengl/smile.git",
+   "GitHubURL": "git@github.com:haifengl/smile.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/com.github.haifengl/smile-core"
  },
@@ -445,7 +445,7 @@
    "FullRepoName": "deeplearning4j/deeplearning4j",
    "SOtags": "deeplearning4j",
    "Package": "org.deeplearning4j",
-   "GitHubURL": "git://github.com/deeplearning4j/deeplearning4j.git",
+   "GitHubURL": "git@github.com:deeplearning4j/deeplearning4j.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/org.deeplearning4j/deeplearning4j-core"
  },
@@ -455,7 +455,7 @@
    "FullRepoName": "Waikato/moa",
    "SOtags": "moa",
    "Package": "moa",
-   "GitHubURL": "git://github.com/Waikato/moa.git",
+   "GitHubURL": "git@github.com:Waikato/moa.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/nz.ac.waikato.cms.moa/moa"
  },
@@ -465,7 +465,7 @@
    "FullRepoName": "elki-project/elki",
    "SOtags": "elki",
    "Package": "de.lmu.ifi.dbs.elki",
-   "GitHubURL": "git://github.com/elki-project/elki.git",
+   "GitHubURL": "git@github.com:elki-project/elki.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/de.lmu.ifi.dbs.elki/elki"
  },
@@ -475,7 +475,7 @@
    "FullRepoName": "apache/mahout",
    "SOtags": "mahout",
    "Package": "org.apache.mahout",
-   "GitHubURL": "git://github.com/apache/mahout.git",
+   "GitHubURL": "git@github.com:apache/mahout.git",
    "JIRAURL": "https://issues.apache.org/jira/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?jqlQuery=project+%3D+MAHOUT+AND+issuetype+%3D+Bug+ORDER+BY+priority+DESC%2C+updated+DESC&tempMax=1000&field=summary&field=reporter&field=created&field=resolved&field=comments",
    "MavenURL":"https://mvnrepository.com/artifact/org.apache.mahout/mahout-mr"
  },
@@ -485,7 +485,7 @@
    "FullRepoName": "mimno/Mallet",
    "SOtags": "mallet",
    "Package": "cc.mallet",
-   "GitHubURL": "git://github.com/mimno/Mallet.git",
+   "GitHubURL": "git@github.com:mimno/Mallet.git",
    "JIRAURL": "",
    "MavenURL":"https://mvnrepository.com/artifact/cc.mallet/mallet"
  }
