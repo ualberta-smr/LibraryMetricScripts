@@ -1,0 +1,55 @@
+version: "3.9"
+services:
+  metric-script:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    restart: always
+    stdin_open: true
+    tty: true
+    volumes:
+      - shared_data:/home/scripts
+    container_name: "metric-script"
+    depends_on:
+      - "db"
+  web:
+    image: ualbertasmr/librarycomparisons_web:latest
+    hostname: web
+    restart: always
+    stdin_open: true
+    tty: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - shared_data:/home/scripts
+    networks:
+      default:
+    container_name: "librarycomparisons_web"
+    depends_on:
+      - "db"
+  db:
+    image: ualbertasmr/librarycomparisons_db:latest
+    hostname: db
+    restart: always
+    command: 
+      --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/mysql
+    networks:
+      default:
+    environment:
+      MYSQL_HOST: localhost 
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: "libcomp"
+      MYSQL_PASSWORD: "mypwd"
+      MYSQL_ROOT_PASSWORD: "mypwd"
+
+volumes:
+  db_data:
+  shared_data:
+
+networks:
+  default:
